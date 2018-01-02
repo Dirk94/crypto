@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\Coins\RegisterFormRequest;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+
+class AuthController extends Controller
+{
+    public function register(RegisterFormRequest $request)
+    {
+        $user = new User($request->all());
+        $user->save();
+
+        return response()->json(['user' => $user]);
+    }
+
+    public function login(Request $request)
+    {
+        $token = Auth::validate($request->only(['email', 'password']));
+        if (! $token) {
+            return response()->json(['error' => 'invalid_credentials'], 401);
+        }
+
+        return response()->json(['token' => $token], 200);
+    }
+
+    public function me()
+    {
+        $user = Auth::user();
+        return response()->json(['user' => $user]);
+    }
+}
