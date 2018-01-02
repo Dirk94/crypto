@@ -8392,5 +8392,11 @@ canvas {
   background-color: #4d5364;
   border-color: transparent; }
 
-body {
+.navbar-wrapper {
+  background-color: #1a1c22; }
+
+.nav-item-login {
+  padding-right: 15px; }
+
+.dashboard-wrapper {
   padding-top: 50px; }

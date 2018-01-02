@@ -4,12 +4,16 @@ import 'bootstrap';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
-import App from './components/App.jsx';
+import {BrowserRouter, Route, Switch} from 'react-router-dom';
+import DashboardLayout from "./dashboard/DashboardLayout.jsx";
+import FrontLayout from './front/FrontLayout.jsx';
 
 ReactDOM.render((
     <BrowserRouter>
-        <App />
+        <Switch>
+            <Route path='/dashboard' component={DashboardLayout} />
+            <Route path='/' component={FrontLayout} />
+        </Switch>
     </BrowserRouter>
     ), document.getElementById('root')
 );

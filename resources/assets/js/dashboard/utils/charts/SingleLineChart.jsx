@@ -1,6 +1,5 @@
 import React from 'react';
 import Chart from 'chart.js';
-import Moment from 'moment';
 
 export default class SingleLineChart extends React.Component
 {

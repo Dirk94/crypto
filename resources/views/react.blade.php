@@ -9,13 +9,13 @@
 
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic" rel="stylesheet">
 
-    <link href="app.css" rel="stylesheet">
+    <link href="/app.css" rel="stylesheet">
 </head>
 <body>
 <div id="root">
 </div>
 
-<script src="app.js"></script>
+<script src="/app.js"></script>
 
 </body>
 </html>
