@@ -1,0 +1,35 @@
+---
+# Install all apt dependencies.
+
+- name: Add apt repositories
+  apt_repository:
+    repo: "ppa:ondrej/php"
+    state: "present"
+    update_cache: yes
+
+- name: Install apt packages
+  apt: name={{ item }} update_cache=yes state=latest
+  with_items:
+    - git
+    - mcrypt
+    - nginx
+    - php7.1-cli
+    - php7.1-curl
+    - php7.1-fpm
+    - php7.1-intl
+    - php7.1-json
+    - php7.1-mcrypt
+    - php7.1-mysql
+    - php7.1-mbstring
+    - php7.1-xml
+    - python-mysqldb
+    - mysql-server
+    - zip
+    - unzip
+    - apache2-utils
+    - supervisor
+
+- name: Create devops user
+  user:
+    name: devops
+    group: www-data

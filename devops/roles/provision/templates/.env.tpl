@@ -1,0 +1,22 @@
+APP_NAME=Crypto
+APP_ENV=local
+APP_KEY=base64:3cp9WR4UMcjacAo3I2yBvafFBRrlLHSljKsPaDkhBqc=
+APP_DEBUG=true
+APP_LOG_LEVEL=debug
+APP_URL=http://crypto.local
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE={{ database_name }}
+DB_USERNAME=root
+DB_PASSWORD={{ database_password }}
+
+BROADCAST_DRIVER=log
+CACHE_DRIVER=file
+SESSION_DRIVER=file
+SESSION_LIFETIME=120
+QUEUE_DRIVER=sync
+
+JWT_SECRET={{ jwt_secret }}
+JWT_EXPIRES_AFTER=60

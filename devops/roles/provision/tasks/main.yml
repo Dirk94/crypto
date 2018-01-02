@@ -1,0 +1,5 @@
+---
+
+- include: install_dependencies.yml
+- include: setup_database.yml
+- include: setup_project.yml

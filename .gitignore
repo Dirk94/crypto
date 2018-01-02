@@ -5,6 +5,7 @@
 /vendor
 /.idea
 /.vagrant
+/devops/vault_password.txt
 Homestead.json
 Homestead.yaml
 npm-debug.log
