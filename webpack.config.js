@@ -96,6 +96,6 @@ module.exports = {
         ProvidePluginConfig,
         ExtractTextPluginConfig,
         CopyWebpackPluginConfig,
-        UglifyJsPluginConfig,
+        //UglifyJsPluginConfig,
     ]
 }

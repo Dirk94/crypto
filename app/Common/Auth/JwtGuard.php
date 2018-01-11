@@ -112,7 +112,12 @@ class JwtGuard implements Guard
     {
 
         $user = $this->userProvider->retrieveByCredentials($credentials);
+
         if (! $user) {
+            return null;
+        }
+
+        if (! $this->userProvider->validateCredentials($user, $credentials)) {
             return null;
         }
 

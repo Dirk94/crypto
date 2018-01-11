@@ -8400,3 +8400,9 @@ canvas {
 
 .dashboard-wrapper {
   padding-top: 50px; }
+
+.front-container {
+  padding-top: 50px; }
+
+.loader {
+  color: white !important; }

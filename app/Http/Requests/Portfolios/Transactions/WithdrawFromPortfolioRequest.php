@@ -15,7 +15,7 @@ class WithdrawFromPortfolioRequest extends FormRequest
     {
         $portfolio = Portfolio::find($this->route('portfolio'))->first();
 
-        return Auth::user()->can('modifyTransaction', $portfolio);
+        return Auth::user()->can('write', $portfolio);
     }
 
     /** @param $validator Validator */
@@ -32,10 +32,10 @@ class WithdrawFromPortfolioRequest extends FormRequest
         $validator->after(function($validator) use ($portfolioCoin, $amount) {
             if (! $portfolioCoin) {
                 $validator->errors()->add('out_coin_name', 'The coin does not exists in the portfolio.');
-            }
-
-            if ($portfolioCoin->amount < $amount) {
-                $validator->errors()->add('out_amount', 'Insufficient balance.');
+            } else {
+                if ($portfolioCoin->amount < $amount) {
+                    $validator->errors()->add('out_amount', 'Insufficient balance.');
+                }
             }
         });
     }

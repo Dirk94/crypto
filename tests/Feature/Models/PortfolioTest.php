@@ -31,4 +31,35 @@ class PortfolioTest extends FeatureTestCase
         $this->assertEquals($portfolios->count(), 1);
         $this->assertEquals($portfolios->first()->pivot->permissions, 'owner');
     }
+
+    public function testAddUserToPortfolio()
+    {
+        $user = User::find(1);
+        $portfolio = $user->portfolios()->first();
+
+        $user2 = User::find(2);
+        $token = $this->login($user->id);
+
+        $response = $this->withHeaders([
+            'Authorization' => $token
+        ])->json('POST', route('api.portfolios.users.add', [
+            'portfolio' => $portfolio,
+            'user' => $user2,
+        ]), [
+            'permissions' => 'read'
+        ]);
+
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('portfolio_user', [
+            'portfolio_id' => $portfolio->id,
+            'user_id' => $user->id,
+            'permissions' => 'owner'
+        ]);
+        $this->assertDatabaseHas('portfolio_user', [
+            'portfolio_id' => $portfolio->id,
+            'user_id' => $user2->id,
+            'permissions' => 'read'
+        ]);
+    }
 }

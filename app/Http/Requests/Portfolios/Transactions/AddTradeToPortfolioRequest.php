@@ -14,7 +14,7 @@ class AddTradeToPortfolioRequest extends FormRequest
     {
         $portfolio = Portfolio::find($this->route('portfolio'))->first();
 
-        return Auth::user()->can('modifyTransaction', $portfolio);
+        return Auth::user()->can('write', $portfolio);
     }
 
     /** @param $validator Validator */

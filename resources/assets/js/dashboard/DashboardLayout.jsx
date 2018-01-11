@@ -5,11 +5,13 @@ import Overview from "./pages/Overview.jsx";
 import Settings from "./pages/Settings.jsx";
 import Trades from "./pages/Trades.jsx";
 import Logout from "./pages/Logout.jsx";
+import PrivateRoute from "../utils/Auth/PrivateRoute.jsx";
 
 export default class DashboardLayout extends React.Component
 {
     render()
     {
+
         return (
             <div className="container dashboard-wrapper">
                 <div className="row">
@@ -18,10 +20,10 @@ export default class DashboardLayout extends React.Component
                     </div>
                     <div className="col-md-9 content">
                         <Switch>
-                            <Route exact path='/dashboard' component={Overview} />
-                            <Route exact path='/dashboard/settings' component={Settings} />
-                            <Route exact path='/dashboard/trades' component={Trades} />
-                            <Route exact path='/dashboard/logout' component={Logout} />
+                            <PrivateRoute exact path='/dashboard' component={Overview} />
+                            <PrivateRoute exact path='/dashboard/settings' component={Settings} />
+                            <PrivateRoute exact path='/dashboard/trades' component={Trades} />
+                            <PrivateRoute exact path='/dashboard/logout' component={Logout} />
                         </Switch>
                     </div>
                 </div>

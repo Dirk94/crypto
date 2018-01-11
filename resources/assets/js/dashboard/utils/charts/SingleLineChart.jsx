@@ -3,17 +3,23 @@ import Chart from 'chart.js';
 
 export default class SingleLineChart extends React.Component
 {
+    constructor()
+    {
+        super();
+
+        this.id = "id-" + Math.random().toString(36).substring(7);
+    }
+
     render()
     {
         return (
-            <canvas ref="canvas" />
+            <canvas id={this.id} />
         );
     }
 
     componentDidMount()
     {
-
-        let canvas = this.refs.canvas.getDOMNode().getContext("2d");
+        let canvas = document.getElementById(this.id).getContext("2d");
 
         let options = {
             legend: {
@@ -58,9 +64,9 @@ export default class SingleLineChart extends React.Component
         };
 
         new Chart(canvas, {
-            type: 'line',
-            options: options,
-            data: data,
+           type: 'line',
+           options: options,
+           data: data,
         });
     }
 }

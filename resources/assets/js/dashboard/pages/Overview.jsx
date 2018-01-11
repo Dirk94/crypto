@@ -1,5 +1,6 @@
 import React from 'react';
 import PortfolioBalance from "../utils/PortfolioBalance.jsx";
+import SingleLineChart from "../utils/charts/SingleLineChart.jsx";
 
 export default class Overview extends React.Component
 {
@@ -28,7 +29,12 @@ export default class Overview extends React.Component
 
                 <div className="row">
                     <div className="col-12">
-
+                        <SingleLineChart
+                            labels={['27 Dec', '28 Dec', '29 Dec', '30 Dec', '31 Dec', '1 Jan', 'Yesterday']}
+                            datasetLabel="Portfolio Value"
+                            data={[3123, 4821, 4230, 6021, 6295, 8142, 12231]}
+                            color="rgba(40, 165, 213, 1)"
+                        />
                     </div>
                 </div>
 
