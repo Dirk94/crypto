@@ -18,7 +18,18 @@ export default class SingleLineChart extends React.Component
         );
     }
 
+    componentWillReceiveProps(nextProps)
+    {
+        this.chart.data.datasets[0].data = nextProps.data;
+        this.chart.update();
+    }
+
     componentDidMount()
+    {
+        this.createChart(this.props);
+    }
+
+    createChart(props)
     {
         let canvas = document.getElementById(this.id).getContext("2d");
 
@@ -29,6 +40,9 @@ export default class SingleLineChart extends React.Component
             scales: {
                 yAxes: [{
                     ticks: {
+                        callback: function(label, index, labels) {
+                            return String.formatAsMoney(label, 0);
+                        },
                         beginAtZero: false,
                     },
                 }],
@@ -47,27 +61,27 @@ export default class SingleLineChart extends React.Component
         };
 
         let data = {
-            labels: this.props.labels,
+            labels: props.labels,
             datasets: [{
-                label: this.props.datasetLabel,
-                data: this.props.data,
-                borderColor: this.props.color,
+                label: props.datasetLabel,
+                data: props.data,
+                borderColor: props.color,
                 fill: true,
 
-                borderWidth: 4,
+                borderWidth: 2,
                 lineTension: 0,
 
                 pointRadius: 4,
                 pointHitRadius: 30,
-                pointBackgroundColor: this.props.color,
-                pointBorderColor: this.props.color,
+                pointBackgroundColor: props.color,
+                pointBorderColor: props.color,
             }],
         };
 
-        new Chart(canvas, {
-           type: 'line',
-           options: options,
-           data: data,
+        this.chart = new Chart(canvas, {
+            type: 'line',
+            options: options,
+            data: data,
         });
     }
 }

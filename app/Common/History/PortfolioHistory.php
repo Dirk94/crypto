@@ -10,7 +10,7 @@ use Carbon\Carbon;
 
 class PortfolioHistory
 {
-    const TIME_TO_KEEP_MINUTE_DATA = 1500, // In minutes (25h)
+    const TIME_TO_KEEP_MINUTE_DATA = 2880, // In minutes (48h)
         TIME_TO_KEEP_HOUR_DATA = 168,      // In hours   (7d)
         TIME_TO_KEEP_DAY_DATA = 3650;      // In days    (10y)
 

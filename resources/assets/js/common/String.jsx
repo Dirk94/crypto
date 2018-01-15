@@ -1,9 +1,9 @@
 
 export default class String
 {
-    static formatAsMoney(number)
+    static formatAsMoney(number, decimals = 2)
     {
-        return "$" + String.numberFormat(number);
+        return "$" + String.numberFormat(number, decimals);
     }
 
     static numberFormat(number, decimals = 2, dec_point = '.', thousands_sep = ',')

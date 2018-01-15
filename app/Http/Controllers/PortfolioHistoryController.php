@@ -8,14 +8,25 @@ use App\Models\History\PortfolioCoinDayHistory;
 use App\Models\History\PortfolioCoinHourHistory;
 use App\Models\History\PortfolioCoinMinuteHistory;
 use App\Models\Portfolio;
+use Carbon\Carbon;
 
 class PortfolioHistoryController extends Controller
 {
     public function getMinuteHistory(PortfolioHasReadPermissionRequest $request, Portfolio $portfolio)
     {
+        $pointsToReturn = 12;
+
+        $date = Carbon::now();
+        $date->minute = floor($date->minute / 5 ) * 5;
+
+        $dates = [];
+        for ($i=0; $i<$pointsToReturn; $i++) {
+            $dates[] = $date->subMinutes(5)->format('Y-m-d H:i:00');
+        }
+
         $dataPoints = PortfolioCoinMinuteHistory::wherePortfolioId($portfolio->id)
+            ->whereIn('date', $dates)
             ->orderBy('date', 'DESC')
-            ->limit(PortfolioHistory::TIME_TO_KEEP_MINUTE_DATA)
             ->get([
                 'date', 'btc_value', 'usd_value'
             ]);

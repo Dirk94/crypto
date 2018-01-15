@@ -13,13 +13,67 @@ export default class Overview extends React.Component
         this.state = {
             amount: -1,
             percentage: 0,
+            portfolioId: -1,
+
+            minuteData: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            minuteLabels: [
+                '60m ago',
+                '55m ago',
+                '50m ago',
+                '45m ago',
+                '40m ago',
+                '35m ago',
+                '30m ago',
+                '25m ago',
+                '20m ago',
+                '15m ago',
+                '10m ago',
+                '5m ago',
+            ]
         }
     }
 
     componentDidMount()
     {
         this.getPortfolioData();
-        this.timer = setInterval(() => this.getPortfolioData(), 5000)
+
+        this.timer = setInterval(
+            () => this.getPortfolioData(),
+            1000 * 60 * 5 // every 5 minutes
+        )
+
+        this.timer = setInterval(
+            () => this.getGraphData(),
+            1000 * 60 * 5 // every 5 minutes
+        )
+    }
+
+    getGraphData()
+    {
+        axios.get('/api/portfolios/' + this.state.portfolioId + '/history/minutes', { headers: {
+            'Authorization': Auth.getToken()
+        }})
+            .then((response) => {
+                let data = response.data;
+
+                let newMinuteData = [];
+                for (let i=0; i<data.count; i++) {
+                    let graphItem = data.data[i];
+                    newMinuteData.push(parseFloat(graphItem.usd_value));
+                }
+
+                this.setState({
+                    minuteData: newMinuteData
+                });
+
+            })
+            .catch((error) => {
+                console.log("ERROR");
+                console.log(error);
+            })
+            .finally(() => {
+
+            });
     }
 
     getPortfolioData()
@@ -39,9 +93,12 @@ export default class Overview extends React.Component
                 }
 
                 this.setState({
+                    portfolioId: portfolio.id,
                     amount: parseFloat(portfolio.usd_value),
                     percentage: percentage
                 })
+
+                this.getGraphData();
             })
             .catch((response) => {
                 console.log("ERROR");
@@ -81,9 +138,9 @@ export default class Overview extends React.Component
                 <div className="row">
                     <div className="col-12">
                         <SingleLineChart
-                            labels={['27 Dec', '28 Dec', '29 Dec', '30 Dec', '31 Dec', '1 Jan', 'Yesterday']}
+                            labels={this.state.minuteLabels}
                             datasetLabel="Portfolio Value"
-                            data={[3123, 4821, 4230, 6021, 6295, 8142, 12231]}
+                            data={this.state.minuteData}
                             color="rgba(40, 165, 213, 1)"
                         />
                     </div>

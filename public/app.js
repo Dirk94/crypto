@@ -9678,7 +9678,9 @@ var String = function () {
     _createClass(String, null, [{
         key: 'formatAsMoney',
         value: function formatAsMoney(number) {
-            return "$" + String.numberFormat(number);
+            var decimals = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 2;
+
+            return "$" + String.numberFormat(number, decimals);
         }
     }, {
         key: 'numberFormat',
@@ -60011,7 +60013,11 @@ var Overview = function (_React$Component) {
 
         _this.state = {
             amount: -1,
-            percentage: 0
+            percentage: 0,
+            portfolioId: -1,
+
+            minuteData: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            minuteLabels: ['60m ago', '55m ago', '50m ago', '45m ago', '40m ago', '35m ago', '30m ago', '25m ago', '20m ago', '15m ago', '10m ago', '5m ago']
         };
         return _this;
     }
@@ -60022,14 +60028,45 @@ var Overview = function (_React$Component) {
             var _this2 = this;
 
             this.getPortfolioData();
+
             this.timer = setInterval(function () {
                 return _this2.getPortfolioData();
-            }, 5000);
+            }, 1000 * 60 * 5 // every 5 minutes
+            );
+
+            this.timer = setInterval(function () {
+                return _this2.getGraphData();
+            }, 1000 * 60 * 5 // every 5 minutes
+            );
+        }
+    }, {
+        key: "getGraphData",
+        value: function getGraphData() {
+            var _this3 = this;
+
+            _axios2.default.get('/api/portfolios/' + this.state.portfolioId + '/history/minutes', { headers: {
+                    'Authorization': _Auth2.default.getToken()
+                } }).then(function (response) {
+                var data = response.data;
+
+                var newMinuteData = [];
+                for (var i = 0; i < data.count; i++) {
+                    var graphItem = data.data[i];
+                    newMinuteData.push(parseFloat(graphItem.usd_value));
+                }
+
+                _this3.setState({
+                    minuteData: newMinuteData
+                });
+            }).catch(function (error) {
+                console.log("ERROR");
+                console.log(error);
+            }).finally(function () {});
         }
     }, {
         key: "getPortfolioData",
         value: function getPortfolioData() {
-            var _this3 = this;
+            var _this4 = this;
 
             _axios2.default.get('/api/portfolios', { headers: {
                     'Authorization': _Auth2.default.getToken()
@@ -60044,10 +60081,13 @@ var Overview = function (_React$Component) {
                     percentage = 0;
                 }
 
-                _this3.setState({
+                _this4.setState({
+                    portfolioId: portfolio.id,
                     amount: parseFloat(portfolio.usd_value),
                     percentage: percentage
                 });
+
+                _this4.getGraphData();
             }).catch(function (response) {
                 console.log("ERROR");
                 console.log(response);
@@ -60106,9 +60146,9 @@ var Overview = function (_React$Component) {
                         "div",
                         { className: "col-12" },
                         _react2.default.createElement(_SingleLineChart2.default, {
-                            labels: ['27 Dec', '28 Dec', '29 Dec', '30 Dec', '31 Dec', '1 Jan', 'Yesterday'],
+                            labels: this.state.minuteLabels,
                             datasetLabel: "Portfolio Value",
-                            data: [3123, 4821, 4230, 6021, 6295, 8142, 12231],
+                            data: this.state.minuteData,
                             color: "rgba(40, 165, 213, 1)"
                         })
                     )
@@ -64544,8 +64584,19 @@ var SingleLineChart = function (_React$Component) {
             return _react2.default.createElement('canvas', { id: this.id });
         }
     }, {
+        key: 'componentWillReceiveProps',
+        value: function componentWillReceiveProps(nextProps) {
+            this.chart.data.datasets[0].data = nextProps.data;
+            this.chart.update();
+        }
+    }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
+            this.createChart(this.props);
+        }
+    }, {
+        key: 'createChart',
+        value: function createChart(props) {
             var canvas = document.getElementById(this.id).getContext("2d");
 
             var options = {
@@ -64555,6 +64606,9 @@ var SingleLineChart = function (_React$Component) {
                 scales: {
                     yAxes: [{
                         ticks: {
+                            callback: function callback(label, index, labels) {
+                                return _String2.default.formatAsMoney(label, 0);
+                            },
                             beginAtZero: false
                         }
                     }]
@@ -64573,24 +64627,24 @@ var SingleLineChart = function (_React$Component) {
             };
 
             var data = {
-                labels: this.props.labels,
+                labels: props.labels,
                 datasets: [{
-                    label: this.props.datasetLabel,
-                    data: this.props.data,
-                    borderColor: this.props.color,
+                    label: props.datasetLabel,
+                    data: props.data,
+                    borderColor: props.color,
                     fill: true,
 
-                    borderWidth: 4,
+                    borderWidth: 2,
                     lineTension: 0,
 
                     pointRadius: 4,
                     pointHitRadius: 30,
-                    pointBackgroundColor: this.props.color,
-                    pointBorderColor: this.props.color
+                    pointBackgroundColor: props.color,
+                    pointBorderColor: props.color
                 }]
             };
 
-            new _chart2.default(canvas, {
+            this.chart = new _chart2.default(canvas, {
                 type: 'line',
                 options: options,
                 data: data

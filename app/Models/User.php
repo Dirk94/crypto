@@ -40,13 +40,6 @@ class User extends Authenticatable
         'password',
     ];
 
-    /**
-     * This should return the User Ty
-     */
-    public function getUserType()
-    {
-
-    }
 
     public function portfolios()
     {
