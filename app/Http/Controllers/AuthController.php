@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Common\Helpers\Permissions;
 use App\Http\Requests\Coins\RegisterFormRequest;
+use App\Models\Portfolio;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,6 +16,13 @@ class AuthController extends Controller
     {
         $user = new User($request->all());
         $user->save();
+
+        $portfolio = new Portfolio();
+        $portfolio->name = 'Default Portfolio';
+
+        $user->portfolios()->save($portfolio, [
+            'permissions' => Permissions::OWNER
+        ]);
 
         return response()->json(['user' => $user]);
     }

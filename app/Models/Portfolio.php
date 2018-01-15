@@ -3,6 +3,10 @@ namespace App\Models;
 
 
 use App\Jobs\UpdatePortfolioBalance;
+use App\Models\History\PortfolioCoinDayHistory;
+use App\Models\History\PortfolioCoinHourHistory;
+use App\Models\History\PortfolioCoinMinuteHistory;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -27,11 +31,19 @@ use Illuminate\Database\Eloquent\Model;
  * @property float $usd_value
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Portfolio whereBtcValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Portfolio whereUsdValue($value)
+ * @property-read mixed $btc_value1d_ago
+ * @property-read mixed $usd_value1d_ago
  */
 class Portfolio extends Model
 {
     protected $fillable = [
         'name'
+    ];
+
+    protected $appends = [
+        'usd_value_1d_ago', 'btc_value_1d_ago',
+        'usd_value_1h_ago', 'btc_value_1h_ago',
+        'usd_value_1m_ago', 'btc_value_1m_ago',
     ];
 
     public function depositTransaction(Transaction $transaction)
@@ -112,6 +124,116 @@ class Portfolio extends Model
         $this->btc_value = $totalBtc;
         $this->usd_value = $totalUsd;
         $this->save();
+    }
+
+
+    public function getUsdValue1dAgoAttribute()
+    {
+        $model = $this->getYesterdayHistoryModel();
+
+        if (! $model) {
+            return 0;
+        }
+
+        return $model->usd_value;
+    }
+
+    public function getBtcValue1dAgoAttribute()
+    {
+        $model = $this->getYesterdayHistoryModel();
+
+        if (! $model) {
+            return 0;
+        }
+
+        return $model->btc_value;
+    }
+
+    public function getUsdValue1hAgoAttribute()
+    {
+        $model = $this->getOneHourAgoHistoryModel();
+
+        if (! $model) {
+            return 0;
+        }
+
+        return $model->usd_value;
+    }
+
+    public function getBtcValue1hAgoAttribute()
+    {
+        $model = $this->getOneHourAgoHistoryModel();
+
+        if (! $model) {
+            return 0;
+        }
+
+        return $model->btc_value;
+    }
+
+    public function getUsdValue1mAgoAttribute()
+    {
+        $model = $this->getOneMinuteAgoHistoryModel();
+
+        if (! $model) {
+            return 0;
+        }
+
+        return $model->usd_value;
+    }
+
+    public function getBtcValue1mAgoAttribute()
+    {
+        $model = $this->getOneMinuteAgoHistoryModel();
+
+        if (! $model) {
+            return 0;
+        }
+
+        return $model->btc_value;
+    }
+
+    /** @return PortfolioCoinDayHistory */
+    public function getYesterdayHistoryModel()
+    {
+        // First see if we have an minute record for the current minute.
+        $yesterdayMinute = Carbon::now()->subDay()->format('Y-m-d H:i:00');
+
+        // If no exact match, find the closest.
+        $model = PortfolioCoinMinuteHistory::wherePortfolioId($this->id)
+            ->where('date', '<=', $yesterdayMinute)
+            ->orderBy('date', 'DESC')
+            ->first();
+
+        return $model;
+    }
+
+    /** @return PortfolioCoinHourHistory */
+    public function getOneHourAgoHistoryModel()
+    {
+        // First see if we have an minute record for the current minute.
+        $oneHourAgoMinute = Carbon::now()->subHour()->format('Y-m-d H:i:00');
+
+        // If no exact match, find the closest.
+        $model = PortfolioCoinMinuteHistory::wherePortfolioId($this->id)
+            ->where('date', '<=', $oneHourAgoMinute)
+            ->orderBy('date', 'DESC')
+            ->first();
+
+        return $model;
+    }
+
+    /** @return PortfolioCoinMinuteHistory */
+    public function getOneMinuteAgoHistoryModel()
+    {
+        $oneMinuteAgo = Carbon::now()->subMinute()->format('Y-m-d H:i:00');
+
+        $model = PortfolioCoinMinuteHistory::wherePortfolioId($this->id)
+            ->where('date', '<=', $oneMinuteAgo)
+            ->orderBy('date', 'DESC')
+            ->first();
+
+        return $model;
     }
 
 

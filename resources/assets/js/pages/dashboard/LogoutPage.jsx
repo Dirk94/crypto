@@ -1,5 +1,5 @@
 import React from 'react';
-import Auth from '../../utils/Auth/Auth.jsx';
+import Auth from '../../common/auth/Auth.jsx';
 import { withRouter } from 'react-router-dom';
 
 export default class Logout extends React.Component

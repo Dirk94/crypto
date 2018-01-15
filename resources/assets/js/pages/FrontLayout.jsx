@@ -1,12 +1,10 @@
 import React from 'react';
 import {Link, Route, Switch} from "react-router-dom";
-import Home from './pages/Home.jsx';
-import About from './pages/About.jsx';
-import Register from './pages/Register.jsx';
-import Logout from '../dashboard/pages/Logout.jsx';
-import Login from './pages/Login.jsx';
-import Overview from "../dashboard/pages/Overview.jsx";
-import Auth from "../utils/Auth/Auth.jsx";
+import HomePage from './HomePage.jsx';
+import AboutPage from './AboutPage.jsx';
+import RegisterPage from './RegisterPage.jsx';
+import LoginPage from './LoginPage.jsx';
+import Auth from "../common/auth/Auth.jsx";
 
 export default class FrontLayout extends React.Component
 {
@@ -33,7 +31,7 @@ export default class FrontLayout extends React.Component
                                     </li>
                                 </ul>
 
-                                <div className="form-inline d-none d-md-flex ml-auto">
+                                <div className="form-inline d-md-flex ml-auto">
                                     <ul className="nav navbar-nav mr-auto">
                                         <li className="nav-item nav-item-login">
                                             {Auth.isLoggedIn() ? (
@@ -43,11 +41,7 @@ export default class FrontLayout extends React.Component
                                             )}
                                         </li>
                                         <li className="nav-item">
-                                            {Auth.isLoggedIn() ? (
-                                                <div></div>
-                                            ) : (
-                                                <Link className="btn btn-primary" to="/register">Create Account</Link>
-                                            )}
+                                            {! Auth.isLoggedIn() && ( <Link className="btn btn-primary" to="/register">Create Account</Link> )}
                                         </li>
                                     </ul>
                                 </div>
@@ -57,10 +51,10 @@ export default class FrontLayout extends React.Component
                 </div>
                 <div className="container front-container">
                     <Switch>
-                        <Route exact path='/' component={Home} />
-                        <Route exact path='/about' component={About} />
-                        <Route exact path='/register' component={Register} />
-                        <Route exact pahh='/login' component={Login} />
+                        <Route exact path='/' component={HomePage} />
+                        <Route exact path='/about' component={AboutPage} />
+                        <Route exact path='/register' component={RegisterPage} />
+                        <Route exact pahh='/login' component={LoginPage} />
                     </Switch>
                 </div>
             </div>

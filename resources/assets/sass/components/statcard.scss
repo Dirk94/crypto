@@ -1,0 +1,32 @@
+.statcard-number {
+	&--h3 {
+		font-size: 1.75rem;
+		font-weight: 300;
+		line-height: 1.2;
+		color: white;
+
+		padding-bottom: 10px;
+	}
+
+	&__amount {
+		display: inline-block;
+		padding-right: 10px;
+	}
+
+	&__right {
+		display: inline-block;
+	}
+
+	&__change {
+		font-size: 10px;
+		color: #828a9f;
+
+		position: relative;
+		top: 3px;
+	}
+
+	.delta-indicator {
+		position: relative;
+		top: 8px;
+	}
+}

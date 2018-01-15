@@ -1,8 +1,8 @@
 import React  from 'react';
 import PropTypes from 'prop-types';
-import TextInput from "../utils/input/TextInput.jsx";
+import TextInput from "../../common/input/TextInput.jsx";
 import {Link} from "react-router-dom";
-import Button from "../utils/input/Button.jsx";
+import Button from "../../common/input/Button.jsx";
 
 export default class Register extends React.Component
 {

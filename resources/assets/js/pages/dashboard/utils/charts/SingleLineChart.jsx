@@ -1,5 +1,6 @@
 import React from 'react';
 import Chart from 'chart.js';
+import String from "../../../../common/String.jsx";
 
 export default class SingleLineChart extends React.Component
 {
@@ -39,7 +40,7 @@ export default class SingleLineChart extends React.Component
                         let index = tooltipItem.index;
                         let dataValue = data.datasets[0].data[index];
 
-                        return "$" + dataValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        return String.formatAsMoney(dataValue);
                     },
                 },
             },

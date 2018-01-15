@@ -10,9 +10,9 @@ use Carbon\Carbon;
 
 class PortfolioHistory
 {
-    const TIME_TO_KEEP_MINUTE_DATA = 144, // In minutes
-        TIME_TO_KEEP_HOUR_DATA = 168,      // In hours
-        TIME_TO_KEEP_DAY_DATA = 3650;      // In days
+    const TIME_TO_KEEP_MINUTE_DATA = 1500, // In minutes (25h)
+        TIME_TO_KEEP_HOUR_DATA = 168,      // In hours   (7d)
+        TIME_TO_KEEP_DAY_DATA = 3650;      // In days    (10y)
 
     public static function cleanupOldHistory()
     {

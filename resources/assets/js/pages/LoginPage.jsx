@@ -1,8 +1,9 @@
 import React from 'react';
-import RegisterForm from '../../forms/Register.jsx';
+import LoginForm from './forms/LoginForm.jsx';
 import axios from 'axios';
+import Auth from "../common/auth/Auth.jsx";
 
-export default class Register extends React.Component
+export default class LoginPage extends React.Component
 {
     constructor(props)
     {
@@ -13,7 +14,6 @@ export default class Register extends React.Component
             success: false,
             loading: false,
             user: {
-                name: '',
                 email: '',
                 password: '',
             },
@@ -29,20 +29,18 @@ export default class Register extends React.Component
 
         event.preventDefault();
 
-        axios.post('/api/register', this.state.user)
+        axios.post('/api/login', this.state.user)
             .then((response) => {
-                console.log("success");
-                console.log(response);
+                let token = response.data.token;
 
-                this.setState({
-                    success: true
-                });
+                Auth.authenticateUser(token);
+                this.props.history.push('/dashboard');
             })
             .catch((error) => {
-                let data = error.response.data;
-                console.log(data);
                 this.setState({
-                    errors: data.errors
+                    errors: {
+                        email: ["The email or password is incorrect"]
+                    }
                 });
             })
             .finally(() => {
@@ -65,7 +63,7 @@ export default class Register extends React.Component
     {
         return (
             <div className="col-md-8 offset-md-2">
-                <RegisterForm
+                <LoginForm
                     onSubmit={this.processForm}
                     onChange={this.changeUser}
                     errors={this.state.errors}

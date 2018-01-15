@@ -8406,3 +8406,43 @@ canvas {
 
 .loader {
   color: white !important; }
+
+.statcard-number--h3 {
+  font-size: 1.75rem;
+  font-weight: 300;
+  line-height: 1.2;
+  color: white;
+  padding-bottom: 10px; }
+
+.statcard-number__amount {
+  display: inline-block;
+  padding-right: 10px; }
+
+.statcard-number__right {
+  display: inline-block; }
+
+.statcard-number__change {
+  font-size: 10px;
+  color: #828a9f;
+  position: relative;
+  top: 3px; }
+
+.statcard-number .delta-indicator {
+  position: relative;
+  top: 8px; }
+
+.animated {
+  animation-duration: 1s;
+  animation-fill-mode: both;
+  animation-iteration-count: infinite; }
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0); }
+  40% {
+    transform: translateY(-15px); }
+  60% {
+    transform: translateY(-7px); } }
+
+.bounce {
+  animation-name: bounce; }
