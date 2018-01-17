@@ -18,7 +18,7 @@ class CoinmarketcapApi implements CoinApi
 
     public function updateAllCoins()
     {
-        $response = $this->client->get('');
+        $response = $this->client->get('?limit=0');
         $coinsResponse = json_decode((string) $response->getBody());
 
         foreach($coinsResponse as $jsonObject) {
