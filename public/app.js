@@ -60095,10 +60095,10 @@ var Overview = function (_React$Component) {
 
         var _this = _possibleConstructorReturn(this, (Overview.__proto__ || Object.getPrototypeOf(Overview)).call(this));
 
-        var dataPoints = 50;
+        _this.dataPoints = 50;
         var minuteData = [];
         var minuteLabels = [];
-        for (var i = 0; i < dataPoints; i++) {
+        for (var i = 0; i < _this.dataPoints; i++) {
             minuteData.push(0);
             minuteLabels.push(50 * 5 - i * 5 + 'm ago');
         }
@@ -60142,8 +60142,13 @@ var Overview = function (_React$Component) {
                 var data = response.data;
 
                 var newMinuteData = [];
-                for (var i = 0; i < data.count; i++) {
-                    var graphItem = data.data[i];
+
+                for (var i = 0; i < _this3.dataPoints - data.count; i++) {
+                    newMinuteData.push(0);
+                }
+
+                for (var _i = data.count - 1; _i >= 0; _i--) {
+                    var graphItem = data.data[_i];
                     newMinuteData.push(parseFloat(graphItem.usd_value));
                 }
 

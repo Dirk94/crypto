@@ -10,10 +10,10 @@ export default class Overview extends React.Component
     {
         super();
 
-        const dataPoints = 50;
+        this.dataPoints = 50;
         let minuteData = [];
         let minuteLabels = [];
-        for (let i=0; i<dataPoints; i++) {
+        for (let i=0; i<this.dataPoints; i++) {
             minuteData.push(0);
             minuteLabels.push(((50 * 5) - i*5) + 'm ago');
         }
@@ -52,7 +52,12 @@ export default class Overview extends React.Component
                 let data = response.data;
 
                 let newMinuteData = [];
-                for (let i=0; i<data.count; i++) {
+
+                for (let i=0; i<this.dataPoints - data.count; i++) {
+                    newMinuteData.push(0);
+                }
+
+                for (let i=data.count-1; i>=0; i--) {
                     let graphItem = data.data[i];
                     newMinuteData.push(parseFloat(graphItem.usd_value));
                 }
