@@ -13,7 +13,7 @@ export default class Menu extends React.Component
                     </button>
                     <Link className="sidebar-brand img-responsive" to='/dashboard'>
                         <span className="icon icon-rocket sidebar-brand-icon"></span>
-                        <span className="sidebar-brand-text">CryptoCoinTracker</span>
+                        <span className="sidebar-brand-text">Name</span>
                     </Link>
                 </div>
 

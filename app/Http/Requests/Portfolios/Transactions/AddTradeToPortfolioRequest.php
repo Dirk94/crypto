@@ -24,6 +24,7 @@ class AddTradeToPortfolioRequest extends FormRequest
         $coin = Coin::whereApiName($this->request->get('out_coin_name'))->first();
         $amount = $this->request->get('out_amount');
 
+
         $portfolioCoin = PortfolioCoin::wherePortfolioId($portfolio->id)
             ->whereCoinId($coin->id)
             ->first();
@@ -31,10 +32,10 @@ class AddTradeToPortfolioRequest extends FormRequest
         $validator->after(function($validator) use ($portfolioCoin, $amount) {
             if (! $portfolioCoin) {
                 $validator->errors()->add('out_coin_name', 'The out_coin does not exists in the portfolio.');
-            }
-
-            if ($portfolioCoin->amount < $amount) {
-                $validator->errors()->add('out_amount', 'Insufficient balance.');
+            } else {
+                if ($portfolioCoin->amount < $amount) {
+                    $validator->errors()->add('out_amount', 'Insufficient balance.');
+                }
             }
         });
     }

@@ -15,9 +15,9 @@ export default class PortfolioBalance extends React.Component
     {
         super(props);
 
-        this.setState({
+        this.state = {
             extraClassName: ''
-        });
+        };
     }
 
     componentWillReceiveProps(nextProps) {

@@ -6,6 +6,7 @@ export default class Button extends React.Component
 {
     static propTypes = {
         loading: PropTypes.bool.isRequired,
+        inverse: PropTypes.bool
     }
 
     render()
@@ -13,7 +14,7 @@ export default class Button extends React.Component
         return (
             <div className="form-group">
                 {!this.props.loading && (<button type="submit" className="btn btn-primary">{this.props.children}</button>)}
-                <Loader loading={this.props.loading} />
+                <Loader loading={this.props.loading} inverse={this.props.inverse} />
             </div>
         )
     }

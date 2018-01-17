@@ -34,7 +34,13 @@ class AuthController extends Controller
             return response()->json(['error' => 'invalid_credentials'], 401);
         }
 
-        return response()->json(['token' => $token], 200);
+        $user = User::whereEmail($request->input('email'))->first();
+        $defaultPortfolio = $user->portfolios()->first();
+
+        return response()->json([
+            'token' => $token,
+            'default_portfolio_id' => $defaultPortfolio->id
+        ], 200);
     }
 
     public function me()

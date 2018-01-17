@@ -1,4 +1,5 @@
 import React from 'react';
+import AddTradeModal from "./partials/AddTradeModal.jsx";
 
 export default class Trades extends React.Component
 {
@@ -14,6 +15,8 @@ export default class Trades extends React.Component
                 </div>
 
                 <hr className="mt-3" />
+
+                <AddTradeModal />
 
             </div>
         );

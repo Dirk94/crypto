@@ -12,15 +12,17 @@ use Carbon\Carbon;
 
 class PortfolioHistoryController extends Controller
 {
+    const MINUTE_POINTS_TO_RETURN=50,
+        HOUR_POINTS_TO_RETURN = 50,
+        DAY_POINTS_TO_RETURN = 50;
+
     public function getMinuteHistory(PortfolioHasReadPermissionRequest $request, Portfolio $portfolio)
     {
-        $pointsToReturn = 12;
-
         $date = Carbon::now();
         $date->minute = floor($date->minute / 5 ) * 5;
 
         $dates = [];
-        for ($i=0; $i<$pointsToReturn; $i++) {
+        for ($i=0; $i<self::MINUTE_POINTS_TO_RETURN; $i++) {
             $dates[] = $date->subMinutes(5)->format('Y-m-d H:i:00');
         }
 
@@ -39,9 +41,16 @@ class PortfolioHistoryController extends Controller
 
     public function getHourHistory(PortfolioHasReadPermissionRequest $request, Portfolio $portfolio)
     {
+        $date = Carbon::now();
+
+        $dates = [];
+        for ($i=0; $i<self::HOUR_POINTS_TO_RETURN; $i++) {
+            $dates[] = $date->subHour()->format('Y-m-d H:00:00');
+        }
+
         $dataPoints = PortfolioCoinHourHistory::wherePortfolioId($portfolio->id)
+            ->whereIn('date', $dates)
             ->orderBy('date', 'DESC')
-            ->limit(PortfolioHistory::TIME_TO_KEEP_HOUR_DATA)
             ->get([
                 'date', 'btc_value', 'usd_value'
             ]);
@@ -54,9 +63,16 @@ class PortfolioHistoryController extends Controller
 
     public function getDayHistory(PortfolioHasReadPermissionRequest $request, Portfolio $portfolio)
     {
+        $date = Carbon::now();
+
+        $dates = [];
+        for ($i=0; $i<self::DAY_POINTS_TO_RETURN; $i++) {
+            $dates[] = $date->subDay()->format('Y-m-d');
+        }
+
         $dataPoints = PortfolioCoinDayHistory::wherePortfolioId($portfolio->id)
+            ->whereIn('date', $dates)
             ->orderBy('date', 'DESC')
-            ->limit(PortfolioHistory::TIME_TO_KEEP_DAY_DATA)
             ->get([
                 'date', 'btc_value', 'usd_value'
             ]);

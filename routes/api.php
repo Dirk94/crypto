@@ -6,6 +6,8 @@ Route::post('login', 'AuthController@login')->name('api.login');
 Route::group([
     'middleware' => 'auth',
 ], function() {
+    Route::get('/coins', 'SearchController@searchCoin')->name('api.coins.search');
+
     Route::post('portfolios', 'PortfolioController@createPortfolioForUser')->name('api.portfolios.create');
     Route::get('portfolios', 'PortfolioController@listPortfoliosOfUser')->name('api.portfolios.list');
     Route::get('portfolios/{portfolio}', 'PortfolioController@getPortfolioOfUser')->name('api.portfolios.get');

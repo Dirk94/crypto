@@ -32,6 +32,7 @@ export default class LoginPage extends React.Component
         axios.post('/api/login', this.state.user)
             .then((response) => {
                 let token = response.data.token;
+                localStorage.setItem('defaultPortfolioId', response.data.default_portfolio_id);
 
                 Auth.authenticateUser(token);
                 this.props.history.push('/dashboard');

@@ -10,36 +10,31 @@ export default class Overview extends React.Component
     {
         super();
 
+        const dataPoints = 50;
+        let minuteData = [];
+        let minuteLabels = [];
+        for (let i=0; i<dataPoints; i++) {
+            minuteData.push(0);
+            minuteLabels.push(((50 * 5) - i*5) + 'm ago');
+        }
+
         this.state = {
             amount: -1,
             percentage: 0,
-            portfolioId: -1,
 
-            minuteData: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            minuteLabels: [
-                '60m ago',
-                '55m ago',
-                '50m ago',
-                '45m ago',
-                '40m ago',
-                '35m ago',
-                '30m ago',
-                '25m ago',
-                '20m ago',
-                '15m ago',
-                '10m ago',
-                '5m ago',
-            ]
+            minuteData: minuteData,
+            minuteLabels: minuteLabels
         }
     }
 
     componentDidMount()
     {
         this.getPortfolioData();
+        this.getGraphData();
 
         this.timer = setInterval(
             () => this.getPortfolioData(),
-            1000 * 60 * 5 // every 5 minutes
+            3000 * 60 * 5 // every 5 minutes
         )
 
         this.timer = setInterval(
@@ -50,7 +45,7 @@ export default class Overview extends React.Component
 
     getGraphData()
     {
-        axios.get('/api/portfolios/' + this.state.portfolioId + '/history/minutes', { headers: {
+        axios.get('/api/portfolios/' + localStorage.getItem('defaultPortfolioId') + '/history/minutes', { headers: {
             'Authorization': Auth.getToken()
         }})
             .then((response) => {
