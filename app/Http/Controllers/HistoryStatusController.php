@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Common\History\CoinHistory;
+use App\Models\Coin;
 use App\Models\History\CoinDayHistory;
 use App\Models\History\CoinHourHistory;
 use App\Models\History\CoinMinuteHistory;
@@ -32,6 +33,7 @@ class HistoryStatusController extends Controller
 
         return view('status.coins', [
             'date' => 'Minute',
+            'numberOfCoins' => Coin::count(),
             'missingValues' => $missingValues
         ]);
     }
@@ -58,6 +60,7 @@ class HistoryStatusController extends Controller
 
         return view('status.coins', [
             'date' => 'Hour',
+            'numberOfCoins' => Coin::count(),
             'missingValues' => $missingValues
         ]);
     }
@@ -84,6 +87,7 @@ class HistoryStatusController extends Controller
 
         return view('status.coins', [
             'date' => 'Day',
+            'numberOfCoins' => Coin::count(),
             'missingValues' => $missingValues
         ]);
     }

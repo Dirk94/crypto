@@ -5,7 +5,8 @@
     <div class="row">
         <div class="col-xs-12 col-sm-8 col-md-6" style="margin-top: 25px;">
             <h1>{{ $date }} status</h1>
-            <p>Missing values: {{ count($missingValues) }}</p>
+            <p>Number of coins in DB<br><code>{{ $numberOfCoins }}</code></p>
+            <p>Number of missing values<br><code>{{ count($missingValues) }}</code></p>
 
             <table class="table table-bordered">
                 <thead>
