@@ -60342,12 +60342,12 @@ var Overview = function (_React$Component) {
 
             this.timer = setInterval(function () {
                 return _this2.getPortfolioData();
-            }, 3000 * 60 * 5 // every 5 minutes
+            }, 1000 * 60 * 1 // every 5 minutes
             );
 
             this.timer = setInterval(function () {
                 return _this2.getGraphData();
-            }, 1000 * 60 * 5 // every 5 minutes
+            }, 1000 * 60 * 1 // every 5 minutes
             );
         }
     }, {

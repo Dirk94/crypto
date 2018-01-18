@@ -38,12 +38,12 @@ export default class Overview extends React.Component
 
         this.timer = setInterval(
             () => this.getPortfolioData(),
-            3000 * 60 * 5 // every 5 minutes
+            1000 * 60 * 1 // every 5 minutes
         )
 
         this.timer = setInterval(
             () => this.getGraphData(),
-            1000 * 60 * 5 // every 5 minutes
+            1000 * 60 * 1 // every 5 minutes
         )
     }
 
