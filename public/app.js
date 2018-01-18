@@ -60291,6 +60291,10 @@ var _Auth = __webpack_require__(12);
 
 var _Auth2 = _interopRequireDefault(_Auth);
 
+var _CoinData = __webpack_require__(352);
+
+var _CoinData2 = _interopRequireDefault(_CoinData);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -60332,6 +60336,9 @@ var Overview = function (_React$Component) {
 
             this.getPortfolioData();
             this.getGraphData();
+
+            // Already load the data.
+            _CoinData2.default.getCoinData();
 
             this.timer = setInterval(function () {
                 return _this2.getPortfolioData();
@@ -79144,7 +79151,7 @@ var AddTradeModal = function (_React$Component) {
                 null,
                 _react2.default.createElement(
                     'button',
-                    { type: 'button', className: 'btn btn-subtle', 'data-toggle': 'modal', 'data-target': '#addTradeModal' },
+                    { type: 'button', className: 'btn btn-outline-light btn-float', 'data-toggle': 'modal', 'data-target': '#addTradeModal' },
                     _react2.default.createElement('span', { className: 'icon icon-plus' }),
                     '\xA0 Add Trade'
                 ),
@@ -81386,6 +81393,10 @@ var _SuggestTextInput = __webpack_require__(182);
 
 var _SuggestTextInput2 = _interopRequireDefault(_SuggestTextInput);
 
+var _CoinData = __webpack_require__(352);
+
+var _CoinData2 = _interopRequireDefault(_CoinData);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -81464,10 +81475,8 @@ var CoinTextInput = function (_React$Component) {
         value: function componentDidMount() {
             var _this2 = this;
 
-            _axios2.default.get('/api/coins', { headers: {
-                    'Authorization': _Auth2.default.getToken()
-                } }).then(function (response) {
-                _this2.coins = response.data;
+            _CoinData2.default.getCoinData().then(function (coins) {
+                _this2.coins = coins;
             });
         }
     }, {
@@ -82324,6 +82333,70 @@ exports.default = Login;
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 352 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Auth = __webpack_require__(12);
+
+var _Auth2 = _interopRequireDefault(_Auth);
+
+var _axios = __webpack_require__(15);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * This class contains all the Coin Data that is used for the CoinData input fields.
+ * This makes sure that the Coin Data is loaded at most 1 time.
+ */
+var CoinData = function () {
+    function CoinData() {
+        _classCallCheck(this, CoinData);
+    }
+
+    _createClass(CoinData, null, [{
+        key: 'getCoinData',
+        value: function getCoinData() {
+            return new Promise(function (resolve, reject) {
+                var coins = localStorage.getItem('coindata');
+
+                if (coins !== null) {
+                    console.log("No API request");
+                    return resolve(JSON.parse(coins));
+                }
+
+                console.log("API request");
+                _axios2.default.get('/api/coins', { headers: {
+                        'Authorization': _Auth2.default.getToken()
+                    } }).then(function (response) {
+                    var coins = response.data;
+                    localStorage.setItem('coindata', JSON.stringify(coins));
+                    return resolve(coins);
+                }).catch(function (error) {
+                    return reject(error);
+                });
+            });
+        }
+    }]);
+
+    return CoinData;
+}();
+
+exports.default = CoinData;
 
 /***/ })
 /******/ ]);

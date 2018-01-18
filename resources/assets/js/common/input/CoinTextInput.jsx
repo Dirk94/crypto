@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Auth from "../auth/Auth.jsx";
 import axios from 'axios';
 import SuggestTextInput from "./SuggestTextInput.jsx";
+import CoinData from "../data/CoinData.jsx";
 
 export default class CoinTextInput extends React.Component
 {
@@ -30,11 +31,9 @@ export default class CoinTextInput extends React.Component
 
     componentDidMount()
     {
-        axios.get('/api/coins', { headers: {
-            'Authorization': Auth.getToken()
-        }})
-            .then((response) => {
-                this.coins = response.data;
+        CoinData.getCoinData()
+            .then((coins) => {
+                this.coins = coins;
             });
     }
 

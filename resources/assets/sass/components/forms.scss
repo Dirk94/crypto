@@ -19,11 +19,6 @@ button:hover {
 .btn-float {
 	float: left;
 	margin-right: 15px;
-
-	&:last-of-type {
-		margin-right: 0;
-		clear: both;
-	}
 }
 
 .invalid-feedback {

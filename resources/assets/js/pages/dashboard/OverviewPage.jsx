@@ -3,6 +3,7 @@ import PortfolioBalance from "./utils/PortfolioBalance.jsx";
 import SingleLineChart from "./utils/charts/SingleLineChart.jsx";
 import axios from 'axios';
 import Auth from "../../common/auth/Auth.jsx";
+import CoinData from "../../common/data/CoinData.jsx";
 
 export default class Overview extends React.Component
 {
@@ -31,6 +32,9 @@ export default class Overview extends React.Component
     {
         this.getPortfolioData();
         this.getGraphData();
+
+        // Already load the data.
+        CoinData.getCoinData();
 
         this.timer = setInterval(
             () => this.getPortfolioData(),

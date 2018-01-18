@@ -76,7 +76,7 @@ export default class AddTradeModal extends React.Component
     {
         return (
             <div>
-                <button type="button" className="btn btn-subtle" data-toggle="modal" data-target="#addTradeModal">
+                <button type="button" className="btn btn-outline-light btn-float" data-toggle="modal" data-target="#addTradeModal">
                     <span className="icon icon-plus"></span>&nbsp;
                     Add Trade
                 </button>
