@@ -60377,7 +60377,7 @@ var Overview = function (_React$Component) {
             }).catch(function (error) {
                 console.log("ERROR");
                 console.log(error);
-            }).finally(function () {});
+            });
         }
     }, {
         key: "getPortfolioData",
