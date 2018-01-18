@@ -107,9 +107,6 @@ export default class Overview extends React.Component
             .catch((response) => {
                 console.log("ERROR");
                 console.log(response);
-            })
-            .finally(() => {
-
             });
     }
 

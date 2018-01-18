@@ -60407,7 +60407,7 @@ var Overview = function (_React$Component) {
             }).catch(function (response) {
                 console.log("ERROR");
                 console.log(response);
-            }).finally(function () {});
+            });
         }
     }, {
         key: "render",
