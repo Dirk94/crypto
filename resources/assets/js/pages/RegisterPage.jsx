@@ -35,19 +35,18 @@ export default class Register extends React.Component
                 console.log(response);
 
                 this.setState({
-                    success: true
+                    success: true,
+                    loading: false
                 });
             })
             .catch((error) => {
                 let data = error.response.data;
                 console.log(data);
                 this.setState({
-                    errors: data.errors
+                    errors: data.errors,
+                    loading: false,
                 });
             })
-            .finally(() => {
-                this.setState({loading: false});
-            });
     }
 
     changeUser(event)

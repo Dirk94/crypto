@@ -47,6 +47,8 @@ export default class AddTradeModal extends React.Component
                 this.setState({
                     success: true
                 });
+
+                this.setState({loading: false});
             })
             .catch((error) => {
                 let data = error.response.data;
@@ -54,11 +56,9 @@ export default class AddTradeModal extends React.Component
                 this.setState({
                     errors: data.errors
                 });
-            })
-            .finally(() => {
+
                 this.setState({loading: false});
             });
-
     }
 
     changeFormData(event)

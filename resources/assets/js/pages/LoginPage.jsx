@@ -41,11 +41,9 @@ export default class LoginPage extends React.Component
                 this.setState({
                     errors: {
                         email: ["The email or password is incorrect"]
-                    }
+                    },
+                    loading: false,
                 });
-            })
-            .finally(() => {
-                this.setState({loading: false});
             });
     }
 

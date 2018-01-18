@@ -79122,13 +79122,15 @@ var AddTradeModal = function (_React$Component) {
                 _this2.setState({
                     success: true
                 });
+
+                _this2.setState({ loading: false });
             }).catch(function (error) {
                 var data = error.response.data;
                 console.log(data.errors);
                 _this2.setState({
                     errors: data.errors
                 });
-            }).finally(function () {
+
                 _this2.setState({ loading: false });
             });
         }
@@ -81160,13 +81162,15 @@ var AddDepositModal = function (_React$Component) {
                 _this2.setState({
                     success: true
                 });
+
+                _this2.setState({ loading: false });
             }).catch(function (error) {
                 var data = error.response.data;
                 console.log(data.errors);
                 _this2.setState({
                     errors: data.errors
                 });
-            }).finally(function () {
+
                 _this2.setState({ loading: false });
             });
         }
@@ -81946,16 +81950,16 @@ var Register = function (_React$Component) {
                 console.log(response);
 
                 _this2.setState({
-                    success: true
+                    success: true,
+                    loading: false
                 });
             }).catch(function (error) {
                 var data = error.response.data;
                 console.log(data);
                 _this2.setState({
-                    errors: data.errors
+                    errors: data.errors,
+                    loading: false
                 });
-            }).finally(function () {
-                _this2.setState({ loading: false });
             });
         }
     }, {
@@ -82189,10 +82193,9 @@ var LoginPage = function (_React$Component) {
                 _this2.setState({
                     errors: {
                         email: ["The email or password is incorrect"]
-                    }
+                    },
+                    loading: false
                 });
-            }).finally(function () {
-                _this2.setState({ loading: false });
             });
         }
     }, {
