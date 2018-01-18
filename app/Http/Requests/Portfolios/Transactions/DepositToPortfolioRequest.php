@@ -17,7 +17,7 @@ class DepositToPortfolioRequest extends FormRequest
     public function rules()
     {
         return [
-            'in_coin_name' => 'required|exists:coins,api_name',
+            'in_coin_name' => 'required|exists:coins,name',
             'in_amount' => 'required|numeric|min:0',
         ];
     }

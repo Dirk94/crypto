@@ -22,7 +22,7 @@ class WithdrawFromPortfolioRequest extends FormRequest
     public function withValidator($validator)
     {
         $portfolio = Portfolio::find($this->route('portfolio'))->first();
-        $coin = Coin::whereApiName($this->request->get('out_coin_name'))->first();
+        $coin = Coin::whereName($this->request->get('out_coin_name'))->first();
         $amount = $this->request->get('out_amount');
 
         $portfolioCoin = PortfolioCoin::wherePortfolioId($portfolio->id)
@@ -43,7 +43,7 @@ class WithdrawFromPortfolioRequest extends FormRequest
     public function rules()
     {
         return [
-            'out_coin_name' => 'required|exists:coins,api_name',
+            'out_coin_name' => 'required|exists:coins,name',
             'out_amount' => 'required|numeric|min:0',
         ];
     }

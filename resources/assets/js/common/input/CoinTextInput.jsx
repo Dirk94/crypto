@@ -2,14 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Auth from "../auth/Auth.jsx";
 import axios from 'axios';
-import SuggestTextInput from "./SuggestTextInput";
+import SuggestTextInput from "./SuggestTextInput.jsx";
 
-class CoinTextInput extends React.Component
+export default class CoinTextInput extends React.Component
 {
     static propTypes = {
         name: PropTypes.string.isRequired,
         label: PropTypes.string.isRequired,
+        value: PropTypes.string,
         onChange: PropTypes.func,
+        errorText: PropTypes.array,
     }
 
     constructor(props)
@@ -46,10 +48,10 @@ class CoinTextInput extends React.Component
                 onSuggestionsClearRequested={this.onSuggestionsClearRequested}
                 getSuggestionValue={this.getSuggestionValue}
                 renderSuggestion={this.renderSuggestion}
-                name={'in_coin_name'}
-                value={this.props.formData.in_coin_name}
+                name={this.props.name}
+                value={this.props.value}
                 onChange={this.onChangeValue}
-                errorText={this.props.errors.in_coin_name}
+                errorText={this.props.errorText}
             />
         )
     }
@@ -57,7 +59,7 @@ class CoinTextInput extends React.Component
     onChangeValue = (event, { newValue }) => {
         this.props.onChange({
             target: {
-                name: this.prop.name,
+                name: this.props.name,
                 value: newValue
             }
         });
@@ -89,7 +91,7 @@ class CoinTextInput extends React.Component
     }
 
     getSuggestionValue = (suggestion) => {
-        return suggestion.api_name;
+        return suggestion.name;
     }
 
     renderSuggestion = (suggestion) => {

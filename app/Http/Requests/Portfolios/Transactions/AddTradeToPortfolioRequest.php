@@ -21,7 +21,7 @@ class AddTradeToPortfolioRequest extends FormRequest
     public function withValidator($validator)
     {
         $portfolio = Portfolio::find($this->route('portfolio'))->first();
-        $coin = Coin::whereApiName($this->request->get('out_coin_name'))->first();
+        $coin = Coin::whereName($this->request->get('out_coin_name'))->first();
         if (! $coin) {
             return;
         }
@@ -46,8 +46,8 @@ class AddTradeToPortfolioRequest extends FormRequest
     public function rules()
     {
         return [
-            'in_coin_name' => 'required|exists:coins,api_name',
-            'out_coin_name' => 'required|exists:coins,api_name',
+            'in_coin_name' => 'required|exists:coins,name',
+            'out_coin_name' => 'required|exists:coins,name',
             'in_amount' => 'required|numeric|min:0',
             'out_amount' => 'required|numeric|min:0',
         ];
