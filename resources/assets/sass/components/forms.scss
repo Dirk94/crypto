@@ -11,3 +11,23 @@
 		margin-bottom: 0;
 	}
 }
+
+button:hover {
+	cursor: pointer;
+}
+
+.btn-float {
+	float: left;
+	margin-right: 15px;
+
+	&:last-of-type {
+		margin-right: 0;
+		clear: both;
+	}
+}
+
+.invalid-feedback {
+	&--always-show {
+		display: block!important;
+	}
+}

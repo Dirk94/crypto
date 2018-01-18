@@ -14,7 +14,11 @@ class Kernel extends ConsoleKernel
 
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('coins:update')->everyMinute();
+        if (env('APP_ENV') === 'local') {
+            $schedule->command('coins:update')->everyFiveMinutes();
+        } else {
+            $schedule->command('coins:update')->everyMinute();
+        }
     }
 
     protected function commands()

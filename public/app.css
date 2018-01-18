@@ -8486,3 +8486,19 @@ canvas {
   color: #252525;
   padding-bottom: 0;
   margin-bottom: 0; }
+
+button:hover {
+  cursor: pointer; }
+
+.btn-float {
+  float: left;
+  margin-right: 15px; }
+  .btn-float:last-of-type {
+    margin-right: 0;
+    clear: both; }
+
+.invalid-feedback--always-show {
+  display: block !important; }
+
+.sidebar-brand:hover {
+  color: #cfd2da !important; }

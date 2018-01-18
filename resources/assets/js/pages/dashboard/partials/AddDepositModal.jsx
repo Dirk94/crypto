@@ -3,8 +3,9 @@ import Autosuggest from 'react-autosuggest';
 import axios from 'axios';
 import Auth from '../../../common/auth/Auth.jsx';
 import AddTradeForm from "../forms/AddTradeForm.jsx";
+import AddDepositForm from "../forms/AddDepositForm.jsx";
 
-export default class AddTradeModal extends React.Component
+export default class AddDepositModal extends React.Component
 {
     constructor(props)
     {
@@ -18,8 +19,6 @@ export default class AddTradeModal extends React.Component
                 transaction_type: '',
                 in_coin_name: '',
                 in_amount: '',
-                out_coin_name: '',
-                out_amount: '',
             }
         }
 
@@ -33,11 +32,7 @@ export default class AddTradeModal extends React.Component
 
         event.preventDefault();
 
-        console.log("FORM DATA");
-        console.log(this.state.formData);
-        console.log("");
-
-        axios.post('/api/portfolios/' + localStorage.getItem('defaultPortfolioId') + '/trade', this.state.formData, { headers: {
+        axios.post('/api/portfolios/' + localStorage.getItem('defaultPortfolioId') + '/deposit', this.state.formData, { headers: {
             'Authorization': Auth.getToken()
         }})
             .then((response) => {
@@ -76,22 +71,22 @@ export default class AddTradeModal extends React.Component
     {
         return (
             <div>
-                <button type="button" className="btn btn-subtle" data-toggle="modal" data-target="#addTradeModal">
-                    <span className="icon icon-plus"></span>&nbsp;
-                    Add Trade
+                <button type="button" className="btn btn-outline-primary btn-float" data-toggle="modal" data-target="#addDepositModal">
+                    <span className="icon icon-align-bottom"></span>&nbsp;
+                    Add Deposit
                 </button>
 
-                <div className="modal fade" id="addTradeModal" tabIndex="-1" role="dialog" aria-hidden="true">
+                <div className="modal fade" id="addDepositModal" tabIndex="-1" role="dialog" aria-hidden="true">
                     <div className="modal-dialog" role="document">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h5 className="modal-title" id="exampleModalLabel">Add Trade</h5>
+                                <h5 className="modal-title" id="exampleModalLabel">Add Deposit</h5>
                                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div className="modal-body">
-                                <AddTradeForm
+                                <AddDepositForm
                                     onSubmit={this.processForm}
                                     onChange={this.changeFormData}
                                     errors={this.state.errors}

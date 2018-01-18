@@ -22,9 +22,7 @@ export default class TextInput extends React.Component
         }
 
         return (
-            <div
-                className={this.props.errorText ? "form-group" : "form-group"}
-            >
+            <div className={"form-group"}>
                 <label>{this.props.label}</label>
                 <input
                     type={this.props.type ? this.props.type : "text"}

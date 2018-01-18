@@ -44,6 +44,12 @@ export default class SingleLineChart extends React.Component
                             return String.formatAsMoney(label, 0);
                         },
                         beginAtZero: false,
+                        fontColor: '#6f7890',
+                    },
+                }],
+                xAxes: [{
+                    ticks: {
+                        fontColor: '#6f7890',
                     },
                 }],
             },
@@ -71,8 +77,8 @@ export default class SingleLineChart extends React.Component
                 borderWidth: 2,
                 lineTension: 0,
 
-                pointRadius: 4,
-                pointHitRadius: 30,
+                pointRadius: 2,
+                pointHitRadius: 7,
                 pointBackgroundColor: props.color,
                 pointBorderColor: props.color,
             }],

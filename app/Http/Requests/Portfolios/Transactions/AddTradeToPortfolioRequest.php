@@ -22,8 +22,11 @@ class AddTradeToPortfolioRequest extends FormRequest
     {
         $portfolio = Portfolio::find($this->route('portfolio'))->first();
         $coin = Coin::whereApiName($this->request->get('out_coin_name'))->first();
-        $amount = $this->request->get('out_amount');
+        if (! $coin) {
+            return;
+        }
 
+        $amount = $this->request->get('out_amount');
 
         $portfolioCoin = PortfolioCoin::wherePortfolioId($portfolio->id)
             ->whereCoinId($coin->id)

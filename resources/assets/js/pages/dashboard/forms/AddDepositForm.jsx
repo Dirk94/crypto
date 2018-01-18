@@ -1,13 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Autosuggest from "react-autosuggest";
 import axios from 'axios';
 import Auth from "../../../common/auth/Auth.jsx";
 import Button from "../../../common/input/Button.jsx";
 import TextInput from "../../../common/input/TextInput.jsx";
 import SuggestTextInput from "../../../common/input/SuggestTextInput.jsx";
 
-export default class AddTradeForm extends React.Component {
+export default class AddDepositForm extends React.Component {
     static propTypes = {
         onSubmit: PropTypes.func.isRequired,
         onChange: PropTypes.func.isRequired,
@@ -29,22 +28,12 @@ export default class AddTradeForm extends React.Component {
         };
 
         this.onChangeAutoSuggestBuyCoin = this.onChangeAutoSuggestBuyCoin.bind(this);
-        this.onChangeAutoSuggestSellCoin = this.onChangeAutoSuggestSellCoin.bind(this);
     }
 
     onChangeAutoSuggestBuyCoin = (event, { newValue }) => {
         this.props.onChange({
             target: {
                 name: 'in_coin_name',
-                value: newValue
-            }
-        });
-    }
-
-    onChangeAutoSuggestSellCoin = (event, { newValue }) => {
-        this.props.onChange({
-            target: {
-                name: 'out_coin_name',
                 value: newValue
             }
         });
@@ -131,36 +120,15 @@ export default class AddTradeForm extends React.Component {
                     value={this.props.formData.in_amount}
                 />
 
-                <SuggestTextInput
-                    label={'Sell Coin Name'}
-                    suggestions={this.state.suggestions}
-                    onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-                    onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-                    getSuggestionValue={this.getSuggestionValue}
-                    renderSuggestion={this.renderSuggestion}
-                    name={'out_coin_name'}
-                    value={this.props.formData.out_coin_name}
-                    onChange={this.onChangeAutoSuggestSellCoin}
-                    errorText={this.props.errors.out_coin_name}
-                />
-
-                <TextInput
-                    label="Sell Coin Amount"
-                    name="out_amount"
-                    onChange={this.props.onChange}
-                    errorText={this.props.errors.out_amount}
-                    value={this.props.formData.out_amount}
-                />
-
                 {this.props.success && (
                     <div className="alert alert-success" role="alert">
-                        Your trade has been added<br />
+                        Your deposit has been added<br />
                         <a href="#">Add another trade</a>
                     </div>
                 )}
 
                 {!this.props.success && (
-                    <Button loading={this.props.loading} inverse={true}>Add Trade</Button>
+                    <Button loading={this.props.loading} inverse={true}>Add Deposit</Button>
                 )}
             </form>
         );

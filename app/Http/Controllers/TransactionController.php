@@ -55,7 +55,7 @@ class TransactionController extends Controller
             return response()->json(['error' => 'Something went wrong'], 422);
         }
 
-        return response()->json();
+        return response()->json($transaction);
     }
 
     public function listTransactionsOfPortfolio(PortfolioHasReadPermissionRequest $request, Portfolio $portfolio)
