@@ -1,9 +1,7 @@
 import React from 'react';
 import PortfolioBalance from "./utils/PortfolioBalance.jsx";
 import SingleLineChart from "./utils/charts/SingleLineChart.jsx";
-import axios from 'axios';
-import Auth from "../../common/auth/Auth.jsx";
-import Request from "../../common/auth/Request.jsx";
+import Request from "../../common/Request.jsx";
 import CoinData from "../../common/data/CoinData.jsx";
 import moment from 'moment';
 
@@ -68,9 +66,6 @@ export default class Overview extends React.Component
                 let data = response.data;
 
                 let newMinuteData = [];
-
-                console.log("I GOT " + data.count + " thingies");
-
                 for (let i=0; i<this.dataPoints - data.count; i++) {
                     newMinuteData.push(0);
                 }
@@ -114,7 +109,7 @@ export default class Overview extends React.Component
             })
             .catch((error) => {
                 console.log("ERROR");
-                console.log(response);
+                console.log(error);
             });
     }
 

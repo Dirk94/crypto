@@ -1,7 +1,7 @@
 import React from 'react';
 import LoginForm from './forms/LoginForm.jsx';
 import Auth from "../common/auth/Auth.jsx";
-import Request from "../common/auth/Request.jsx";
+import Request from "../common/Request.jsx";
 
 export default class LoginPage extends React.Component
 {

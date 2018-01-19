@@ -1,6 +1,6 @@
 import React from 'react';
 import RegisterForm from './forms/RegisterForm.jsx';
-import Request from "../common/auth/Request.jsx";
+import Request from "../common/Request.jsx";
 
 export default class Register extends React.Component
 {

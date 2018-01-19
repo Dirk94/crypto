@@ -26902,7 +26902,7 @@ var _Auth = __webpack_require__(13);
 
 var _Auth2 = _interopRequireDefault(_Auth);
 
-var _Request = __webpack_require__(474);
+var _Request = __webpack_require__(475);
 
 var _Request2 = _interopRequireDefault(_Request);
 
@@ -76603,15 +76603,7 @@ var _SingleLineChart = __webpack_require__(379);
 
 var _SingleLineChart2 = _interopRequireDefault(_SingleLineChart);
 
-var _axios = __webpack_require__(16);
-
-var _axios2 = _interopRequireDefault(_axios);
-
-var _Auth = __webpack_require__(13);
-
-var _Auth2 = _interopRequireDefault(_Auth);
-
-var _Request = __webpack_require__(474);
+var _Request = __webpack_require__(475);
 
 var _Request2 = _interopRequireDefault(_Request);
 
@@ -76699,9 +76691,6 @@ var Overview = function (_React$Component) {
                 var data = response.data;
 
                 var newMinuteData = [];
-
-                console.log("I GOT " + data.count + " thingies");
-
                 for (var i = 0; i < _this3.dataPoints - data.count; i++) {
                     newMinuteData.push(0);
                 }
@@ -76744,7 +76733,7 @@ var Overview = function (_React$Component) {
                 _this4.getGraphData();
             }).catch(function (error) {
                 console.log("ERROR");
-                console.log(response);
+                console.log(error);
             });
         }
     }, {
@@ -95649,7 +95638,7 @@ var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _Request = __webpack_require__(474);
+var _Request = __webpack_require__(475);
 
 var _Request2 = _interopRequireDefault(_Request);
 
@@ -97777,7 +97766,7 @@ var _AddDepositForm = __webpack_require__(463);
 
 var _AddDepositForm2 = _interopRequireDefault(_AddDepositForm);
 
-var _Request = __webpack_require__(474);
+var _Request = __webpack_require__(475);
 
 var _Request2 = _interopRequireDefault(_Request);
 
@@ -98418,7 +98407,7 @@ var _RegisterForm = __webpack_require__(470);
 
 var _RegisterForm2 = _interopRequireDefault(_RegisterForm);
 
-var _Request = __webpack_require__(474);
+var _Request = __webpack_require__(475);
 
 var _Request2 = _interopRequireDefault(_Request);
 
@@ -98657,7 +98646,7 @@ var _Auth = __webpack_require__(13);
 
 var _Auth2 = _interopRequireDefault(_Auth);
 
-var _Request = __webpack_require__(474);
+var _Request = __webpack_require__(475);
 
 var _Request2 = _interopRequireDefault(_Request);
 
@@ -98856,7 +98845,8 @@ exports.default = Login;
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 474 */
+/* 474 */,
+/* 475 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98892,16 +98882,13 @@ var Request = function () {
                 _axios2.default.get(url, { headers: {
                         'Authorization': _Auth2.default.getToken()
                     } }).then(function (response) {
-                    console.log("(GET) MIDDLE WARE RESPONSE YAY");
-                    console.log(response);
-                    console.log('');
+                    var data = response.data;
+                    if (data.new_token) {
+                        _Auth2.default.authenticateUser(data.new_token);
+                    }
 
                     resolve(response);
                 }).catch(function (error) {
-                    console.log("(GET) MIDDLE WARE ERROR YAY");
-                    console.log(error);
-                    console.log('');
-
                     reject(error);
                 });
             });
@@ -98915,16 +98902,13 @@ var Request = function () {
                 _axios2.default.post(url, data, { headers: {
                         'Authorization': _Auth2.default.getToken()
                     } }).then(function (response) {
-                    console.log("(POST) MIDDLE WARE RESPONSE YAY");
-                    console.log(response);
-                    console.log('');
+                    var data = response.data;
+                    if (data.new_token) {
+                        _Auth2.default.authenticateUser(data.new_token);
+                    }
 
                     resolve(response);
                 }).catch(function (error) {
-                    console.log("(POST) MIDDLE WARE ERROR YAY");
-                    console.log(error);
-                    console.log('');
-
                     reject(error);
                 });
             });

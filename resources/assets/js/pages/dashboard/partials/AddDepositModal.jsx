@@ -1,6 +1,6 @@
 import React from 'react';
 import AddDepositForm from "../forms/AddDepositForm.jsx";
-import Request from "../../../common/auth/Request.jsx";
+import Request from "../../../common/Request.jsx";
 
 export default class AddDepositModal extends React.Component
 {

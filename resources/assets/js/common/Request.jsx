@@ -1,5 +1,5 @@
 import axios from 'axios';
-import Auth from './Auth.jsx';
+import Auth from './auth/Auth.jsx';
 
 export default class Request {
 
@@ -9,17 +9,14 @@ export default class Request {
                 'Authorization': Auth.getToken()
             }})
                 .then((response) => {
-                    console.log("(GET) MIDDLE WARE RESPONSE YAY");
-                    console.log(response);
-                    console.log('');
+                    let data = response.data;
+                    if (data.new_token) {
+                        Auth.authenticateUser(data.new_token);
+                    }
 
                     resolve(response);
                 })
                 .catch((error) => {
-                    console.log("(GET) MIDDLE WARE ERROR YAY");
-                    console.log(error);
-                    console.log('');
-
                     reject(error);
                 });
         });
@@ -31,17 +28,14 @@ export default class Request {
                 'Authorization': Auth.getToken()
             }})
                 .then((response) => {
-                    console.log("(POST) MIDDLE WARE RESPONSE YAY");
-                    console.log(response);
-                    console.log('');
+                    let data = response.data;
+                    if (data.new_token) {
+                        Auth.authenticateUser(data.new_token);
+                    }
 
                     resolve(response);
                 })
                 .catch((error) => {
-                    console.log("(POST) MIDDLE WARE ERROR YAY");
-                    console.log(error);
-                    console.log('');
-
                     reject(error);
                 });
         });

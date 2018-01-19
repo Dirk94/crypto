@@ -1,5 +1,5 @@
 import React from 'react';
-import Request from "../../../common/auth/Request.jsx";
+import Request from "../../../common/Request.jsx";
 import AddTradeForm from "../forms/AddTradeForm.jsx";
 
 export default class AddTradeModal extends React.Component

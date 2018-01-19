@@ -1,5 +1,5 @@
 import Auth from "../auth/Auth.jsx";
-import Request from "../auth/Request.jsx";
+import Request from "../Request.jsx";
 
 /**
  * This class contains all the Coin Data that is used for the CoinData input fields.

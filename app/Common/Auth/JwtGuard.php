@@ -5,10 +5,10 @@ namespace App\Common\Auth;
 use Carbon\Carbon;
 use Firebase\JWT\JWT;
 use Firebase\JWT\SignatureInvalidException;
+use UnexpectedValueException;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\UserProvider;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 
 class JwtGuard implements Guard
@@ -73,7 +73,7 @@ class JwtGuard implements Guard
     public function user()
     {
         $jwt = $this->getJwtTokenFromRequest();
-        if (! $jwt) {
+        if ($jwt === null) {
             return null;
         }
 
@@ -148,11 +148,17 @@ class JwtGuard implements Guard
 
     private function tokenToUser(string $jwt)
     {
+        if ($jwt === null) {
+            throw new InvalidTokenException('token_invalid');
+        }
+
         try {
             $token = JWT::decode($jwt, $this->secret, ['HS256']);
         } catch(SignatureInvalidException $e) {
             // Invalid token!
             throw new InvalidTokenException('token_invalid');
+        } catch(UnexpectedValueException $e) {
+            throw new InvalidTokenException('unexpected_value');
         }
 
         if (Carbon::now()->greaterThan(Carbon::parse($token->carbon_exp))) {
