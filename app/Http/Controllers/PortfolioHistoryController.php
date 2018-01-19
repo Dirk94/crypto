@@ -21,9 +21,17 @@ class PortfolioHistoryController extends Controller
         $date = Carbon::now();
         $date->minute = floor($date->minute / 5 ) * 5;
 
+        $firstDateExists = PortfolioCoinMinuteHistory::wherePortfolioId($portfolio->id)
+            ->where('date', '=', $date->format('Y-m-d H:i:00'))
+            ->first();
+        if (! $firstDateExists) {
+            $date = $date->subMinutes(5);
+        }
+
         $dates = [];
         for ($i=0; $i<self::MINUTE_POINTS_TO_RETURN; $i++) {
-            $dates[] = $date->subMinutes(5)->format('Y-m-d H:i:00');
+            $dates[] = $date->format('Y-m-d H:i:00');
+            $date = $date->subMinutes(5);
         }
 
         $dataPoints = PortfolioCoinMinuteHistory::wherePortfolioId($portfolio->id)

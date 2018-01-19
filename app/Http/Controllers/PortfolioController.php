@@ -7,6 +7,7 @@ use App\Http\Requests\Portfolios\AddUserToPortfolioRequest;
 use App\Http\Requests\Portfolios\CreatePortfolioRequest;
 use App\Http\Requests\Portfolios\Permissions\PortfolioHasOwnerPermissionRequest;
 use App\Http\Requests\Portfolios\Permissions\PortfolioHasReadPermissionRequest;
+use App\Models\History\PortfolioCoinMinuteHistory;
 use App\Models\Portfolio;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -69,7 +70,10 @@ class PortfolioController extends Controller
 
     public function test(Portfolio $portfolio)
     {
-        $history = $portfolio->getOneMinuteAgoHistoryModel();
+        $history = PortfolioCoinMinuteHistory::wherePortfolioId($portfolio->id)
+            ->orderBy('date', 'desc')
+            ->first();
+
         return response()->json([
             'portfolio_btc' => $portfolio->btc_value,
             'portfolio_usd' => $portfolio->usd_value,
