@@ -19,7 +19,6 @@ export default class Overview extends React.Component
             minuteData.push(0);
 
             let valueInMinutes = ((this.dataPoints-1) * 5) - (i * 5);
-            console.log("DELETE IN MINUTES: " + valueInMinutes);
             let momentDate = moment().subtract(valueInMinutes, 'minutes');
             let minute = Math.floor(parseFloat(momentDate.minute() / 5)) * 5;
             momentDate.minute(minute);

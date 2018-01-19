@@ -50,7 +50,7 @@ export default class SingleLineChart extends React.Component
                 xAxes: [{
                     ticks: {
                         fontColor: 'white',
-                        maxTicksLimit: 10,
+                        maxTicksLimit: 11,
                     },
                 }],
             },

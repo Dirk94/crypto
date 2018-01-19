@@ -60443,7 +60443,6 @@ var Overview = function (_React$Component) {
             minuteData.push(0);
 
             var valueInMinutes = (_this.dataPoints - 1) * 5 - i * 5;
-            console.log("DELETE IN MINUTES: " + valueInMinutes);
             var momentDate = (0, _moment2.default)().subtract(valueInMinutes, 'minutes');
             var minute = Math.floor(parseFloat(momentDate.minute() / 5)) * 5;
             momentDate.minute(minute);
@@ -65066,7 +65065,7 @@ var SingleLineChart = function (_React$Component) {
                     xAxes: [{
                         ticks: {
                             fontColor: 'white',
-                            maxTicksLimit: 10
+                            maxTicksLimit: 11
                         }
                     }]
                 },
