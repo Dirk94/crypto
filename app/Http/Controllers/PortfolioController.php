@@ -66,4 +66,20 @@ class PortfolioController extends Controller
 
         return response()->json();
     }
+
+    public function test(Portfolio $portfolio)
+    {
+        $history = $portfolio->getOneMinuteAgoHistoryModel();
+        return response()->json([
+            'portfolio_btc' => $portfolio->btc_value,
+            'portfolio_usd' => $portfolio->usd_value,
+            'history_btc' => $history->btc_value,
+            'history_usd' => $history->usd_value,
+            '_' => '0',
+            'portfolio_updated_at' => $portfolio->updated_at->format('Y-m-d H:i:s'),
+            'history_updated_at' => $history->date
+        ]);
+
+
+    }
 }

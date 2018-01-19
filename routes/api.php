@@ -13,6 +13,8 @@ Route::group([
     Route::get('portfolios/{portfolio}', 'PortfolioController@getPortfolioOfUser')->name('api.portfolios.get');
     Route::delete('portfolios/{portfolio}', 'PortfolioController@deletePortfolioOfUser')->name('api.portfolios.delete');
 
+    Route::get('portfolios/{portfolio}/test', 'PortfolioController@test');
+
     Route::post('portfolios/{portfolio}/users/{user}', 'PortfolioController@addUserToPortfolio')->name('api.portfolios.users.add');
 
     Route::get('portfolios/{portfolio}', 'TransactionController@listTransactionsOfPortfolio')->name('api.portfolios.list');
