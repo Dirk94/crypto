@@ -98886,7 +98886,6 @@ var Request = function () {
                     } }).then(function (response) {
                     var freshToken = response.headers['x-fresh-token'];
                     if (freshToken) {
-                        console.log("Updated the token to: " + freshToken);
                         _Auth2.default.authenticateUser(freshToken);
                     }
 
@@ -98907,7 +98906,6 @@ var Request = function () {
                     } }).then(function (response) {
                     var freshToken = response.headers['x-fresh-token'];
                     if (freshToken) {
-                        console.log("Updated the token to: " + freshToken);
                         _Auth2.default.authenticateUser(freshToken);
                     }
 

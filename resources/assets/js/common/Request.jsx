@@ -11,7 +11,6 @@ export default class Request {
                 .then((response) => {
                     const freshToken = response.headers['x-fresh-token']
                     if (freshToken) {
-                        console.log("Updated the token to: " + freshToken);
                         Auth.authenticateUser(freshToken);
                     }
 
@@ -31,7 +30,6 @@ export default class Request {
                 .then((response) => {
                     const freshToken = response.headers['x-fresh-token']
                     if (freshToken) {
-                        console.log("Updated the token to: " + freshToken);
                         Auth.authenticateUser(freshToken);
                     }
 
