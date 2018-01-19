@@ -60442,14 +60442,18 @@ var Overview = function (_React$Component) {
         for (var i = 0; i < _this.dataPoints; i++) {
             minuteData.push(0);
 
-            var valueInMinutes = (_this.dataPoints - 1) * 5 - i * 5;
-            var momentDate = (0, _moment2.default)().subtract(valueInMinutes, 'minutes');
-            var minute = Math.floor(parseFloat(momentDate.minute() / 5)) * 5;
-            momentDate.minute(minute);
+            if (i == _this.dataPoints - 1) {
+                minuteLabels.push('now');
+            } else {
+                var valueInMinutes = (_this.dataPoints - 1) * 5 - i * 5;
+                var momentDate = (0, _moment2.default)().subtract(valueInMinutes, 'minutes');
+                var minute = Math.floor(parseFloat(momentDate.minute() / 5)) * 5;
+                momentDate.minute(minute);
 
-            var label = (0, _moment2.default)().to(momentDate);
-            label = momentDate.format('H:mm');
-            minuteLabels.push(label);
+                var label = (0, _moment2.default)().to(momentDate);
+                label = momentDate.format('H:mm');
+                minuteLabels.push(label);
+            }
         }
 
         _this.state = {

@@ -32,7 +32,7 @@ class UpdatePrices extends Command
             UpdatePortfolioBalance::dispatch($portfolio);
         }
 
-        PortfolioHistory::saveMinuteHistory();
+        PortfolioHistory::saveAllMinuteHistory();
         PortfolioHistory::saveHourHistory();
         PortfolioHistory::saveDayHistory();
 

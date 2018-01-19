@@ -18,14 +18,18 @@ export default class Overview extends React.Component
         for (let i=0; i<this.dataPoints; i++) {
             minuteData.push(0);
 
-            let valueInMinutes = ((this.dataPoints-1) * 5) - (i * 5);
-            let momentDate = moment().subtract(valueInMinutes, 'minutes');
-            let minute = Math.floor(parseFloat(momentDate.minute() / 5)) * 5;
-            momentDate.minute(minute);
+            if (i == this.dataPoints-1) {
+                minuteLabels.push('now');
+            } else {
+                let valueInMinutes = ((this.dataPoints - 1) * 5) - (i * 5);
+                let momentDate = moment().subtract(valueInMinutes, 'minutes');
+                let minute = Math.floor(parseFloat(momentDate.minute() / 5)) * 5;
+                momentDate.minute(minute);
 
-            let label = moment().to(momentDate);
-            label = momentDate.format('H:mm');
-            minuteLabels.push(label);
+                let label = moment().to(momentDate);
+                label = momentDate.format('H:mm');
+                minuteLabels.push(label);
+            }
         }
 
         this.state = {

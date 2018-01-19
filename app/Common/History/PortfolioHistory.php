@@ -26,21 +26,29 @@ class PortfolioHistory
         PortfolioCoinDayHistory::where('date', '<=', $dayDeleteDate)->delete();
     }
 
-    public static function saveMinuteHistory()
+    public static function saveAllMinuteHistory()
     {
         $now = Carbon::now()->format('Y-m-d H:i:00');
 
         foreach (Portfolio::all() as $portfolio) {
-            try {
-                $portfolioHistory = new PortfolioCoinMinuteHistory();
-                $portfolioHistory->portfolio_id = $portfolio->id;
-                $portfolioHistory->date = $now;
-                $portfolioHistory->usd_value = $portfolio->usd_value;
-                $portfolioHistory->btc_value = $portfolio->btc_value;
-                $portfolioHistory->save();
-            } catch(\Exception $e) {
-                print "Exception while setting portfolio minute history.\n";
-            }
+            self::saveSingleMinuteHistory($portfolio, $now);
+        }
+    }
+
+    public static function saveSingleMinuteHistory(Portfolio $portfolio, $now = null)
+    {
+        if ($now === null) {
+            $now = Carbon::now()->format('Y-m-d H:i:00');
+        }
+        try {
+            $portfolioHistory = new PortfolioCoinMinuteHistory();
+            $portfolioHistory->portfolio_id = $portfolio->id;
+            $portfolioHistory->date = $now;
+            $portfolioHistory->usd_value = $portfolio->usd_value;
+            $portfolioHistory->btc_value = $portfolio->btc_value;
+            $portfolioHistory->save();
+        } catch(\Exception $e) {
+            print "Exception while setting portfolio minute history.\n";
         }
     }
 
