@@ -22,7 +22,7 @@ class PortfolioHistoryController extends Controller
         $date->minute = floor($date->minute / 5 ) * 5;
 
         $firstDateExists = PortfolioCoinMinuteHistory::wherePortfolioId($portfolio->id)
-            ->whereDate($date->format('Y-m-d H:i:00'))
+            ->where('date', '=', $date->format('Y-m-d H:i:00'))
             ->first();
         if (! $firstDateExists) {
             $date = $date->subMinutes(5);
