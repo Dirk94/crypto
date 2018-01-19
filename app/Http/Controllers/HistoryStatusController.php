@@ -15,7 +15,7 @@ class HistoryStatusController extends Controller
     {
         $history = CoinMinuteHistory::distinct()
             ->orderBy('date', 'desc')
-            ->limit(CoinHistory::TIME_TO_KEEP_MINUTE_DATA)
+            ->limit(CoinHistory::TIME_TO_KEEP_MINUTE_DATA / 5)
             ->get(['date'])
             ->toArray();
 
@@ -24,9 +24,9 @@ class HistoryStatusController extends Controller
         $expectedHistory = [];
         $date = Carbon::now();
 
-        for ($i=0; $i<CoinHistory::TIME_TO_KEEP_MINUTE_DATA; $i++) {
+        for ($i=0; $i<CoinHistory::TIME_TO_KEEP_MINUTE_DATA / 5; $i++) {
             $expectedHistory[] = $date->format('Y-m-d H:i:00');
-            $date = $date->subMinute();
+            $date = $date->subMinutes(5);
         }
 
         $missingValues = array_diff($expectedHistory, $history);

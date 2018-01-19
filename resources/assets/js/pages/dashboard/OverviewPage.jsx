@@ -70,6 +70,8 @@ export default class Overview extends React.Component
 
                 let newMinuteData = [];
 
+                console.log("I GOT " + data.count + " thingies");
+
                 for (let i=0; i<this.dataPoints - data.count; i++) {
                     newMinuteData.push(0);
                 }

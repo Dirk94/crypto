@@ -22,7 +22,7 @@ class PortfolioHistoryController extends Controller
         $date->minute = floor($date->minute / 5 ) * 5;
 
         $firstDateExists = PortfolioCoinMinuteHistory::wherePortfolioId($portfolio->id)
-            ->where('date', '=', $date->format('Y-m-d H:i:00'))
+            ->whereDate($date->format('Y-m-d H:i:00'))
             ->first();
         if (! $firstDateExists) {
             $date = $date->subMinutes(5);
@@ -33,6 +33,9 @@ class PortfolioHistoryController extends Controller
             $dates[] = $date->format('Y-m-d H:i:00');
             $date = $date->subMinutes(5);
         }
+
+        var_dump($dates);
+        die();
 
         $dataPoints = PortfolioCoinMinuteHistory::wherePortfolioId($portfolio->id)
             ->whereIn('date', $dates)
