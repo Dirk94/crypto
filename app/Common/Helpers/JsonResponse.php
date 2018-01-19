@@ -9,13 +9,14 @@ class JsonResponse
     public static function send($data = [], $statusCode = 200)
     {
         $user = Auth::user();
+        $headers = [];
         if ($user) {
-            $data['new_token'] = Auth::guard()->userToToken($user);
+            $headers['X-Fresh-Token'] = Auth::guard()->userToToken($user);
         }
 
         return response()->json(
             $data,
             $statusCode
-        );
+        )->withHeaders($headers);
     }
 }

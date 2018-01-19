@@ -79,6 +79,8 @@ export default class CoinTextInput extends React.Component
     getSuggestions = (value) => {
         let input = value.value.trim().toLowerCase();
 
+        console.log(this.coins);
+
         return input.length === 0 ? [] : this.coins.filter(
             suggestion => {
                 return (

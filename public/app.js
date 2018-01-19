@@ -38807,6 +38807,8 @@ var CoinTextInput = function (_React$Component) {
         _this.getSuggestions = function (value) {
             var input = value.value.trim().toLowerCase();
 
+            console.log(_this.coins);
+
             return input.length === 0 ? [] : _this.coins.filter(function (suggestion) {
                 return suggestion.name.toLowerCase().slice(0, input.length) === input || suggestion.symbol.toLowerCase().slice(0, input.length) === input;
             });
@@ -98882,9 +98884,10 @@ var Request = function () {
                 _axios2.default.get(url, { headers: {
                         'Authorization': _Auth2.default.getToken()
                     } }).then(function (response) {
-                    var data = response.data;
-                    if (data.new_token) {
-                        _Auth2.default.authenticateUser(data.new_token);
+                    var freshToken = response.headers['x-fresh-token'];
+                    if (freshToken) {
+                        console.log("Updated the token to: " + freshToken);
+                        _Auth2.default.authenticateUser(freshToken);
                     }
 
                     resolve(response);
@@ -98902,9 +98905,10 @@ var Request = function () {
                 _axios2.default.post(url, data, { headers: {
                         'Authorization': _Auth2.default.getToken()
                     } }).then(function (response) {
-                    var data = response.data;
-                    if (data.new_token) {
-                        _Auth2.default.authenticateUser(data.new_token);
+                    var freshToken = response.headers['x-fresh-token'];
+                    if (freshToken) {
+                        console.log("Updated the token to: " + freshToken);
+                        _Auth2.default.authenticateUser(freshToken);
                     }
 
                     resolve(response);

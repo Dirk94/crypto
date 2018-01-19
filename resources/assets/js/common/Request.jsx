@@ -9,9 +9,10 @@ export default class Request {
                 'Authorization': Auth.getToken()
             }})
                 .then((response) => {
-                    let data = response.data;
-                    if (data.new_token) {
-                        Auth.authenticateUser(data.new_token);
+                    const freshToken = response.headers['x-fresh-token']
+                    if (freshToken) {
+                        console.log("Updated the token to: " + freshToken);
+                        Auth.authenticateUser(freshToken);
                     }
 
                     resolve(response);
@@ -28,9 +29,10 @@ export default class Request {
                 'Authorization': Auth.getToken()
             }})
                 .then((response) => {
-                    let data = response.data;
-                    if (data.new_token) {
-                        Auth.authenticateUser(data.new_token);
+                    const freshToken = response.headers['x-fresh-token']
+                    if (freshToken) {
+                        console.log("Updated the token to: " + freshToken);
+                        Auth.authenticateUser(freshToken);
                     }
 
                     resolve(response);

@@ -27,7 +27,7 @@ class SearchController extends Controller
     public function listAllCoins()
     {
         return JsonResponse::send(
-            Coin::orderBy('api_name', 'ASC')->get([
+            Coin::orderBy('usd_24h_volume', 'DESC')->get([
                 'name', 'api_name', 'symbol'
             ])
         );
