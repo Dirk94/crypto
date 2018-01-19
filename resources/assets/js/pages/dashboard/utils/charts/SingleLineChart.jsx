@@ -44,12 +44,13 @@ export default class SingleLineChart extends React.Component
                             return String.formatAsMoney(label, 0);
                         },
                         beginAtZero: false,
-                        fontColor: '#6f7890',
+                        fontColor: 'white',
                     },
                 }],
                 xAxes: [{
                     ticks: {
-                        fontColor: '#6f7890',
+                        fontColor: 'white',
+                        maxTicksLimit: 10,
                     },
                 }],
             },

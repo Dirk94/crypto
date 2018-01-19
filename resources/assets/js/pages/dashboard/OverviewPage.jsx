@@ -4,6 +4,7 @@ import SingleLineChart from "./utils/charts/SingleLineChart.jsx";
 import axios from 'axios';
 import Auth from "../../common/auth/Auth.jsx";
 import CoinData from "../../common/data/CoinData.jsx";
+import moment from 'moment';
 
 export default class Overview extends React.Component
 {
@@ -16,7 +17,16 @@ export default class Overview extends React.Component
         let minuteLabels = [];
         for (let i=0; i<this.dataPoints; i++) {
             minuteData.push(0);
-            minuteLabels.push(((50 * 5) - i*5) + 'm ago');
+
+            let valueInMinutes = ((this.dataPoints-1) * 5) - (i * 5);
+            console.log("DELETE IN MINUTES: " + valueInMinutes);
+            let momentDate = moment().subtract(valueInMinutes, 'minutes');
+            let minute = Math.floor(parseFloat(momentDate.minute() / 5)) * 5;
+            momentDate.minute(minute);
+
+            let label = moment().to(momentDate);
+            label = momentDate.format('H:mm');
+            minuteLabels.push(label);
         }
 
         this.state = {
@@ -33,7 +43,7 @@ export default class Overview extends React.Component
         this.getPortfolioData();
         this.getGraphData();
 
-        // Already load the data.
+        // Already loaded the data.
         CoinData.getCoinData();
 
         this.timer = setInterval(
