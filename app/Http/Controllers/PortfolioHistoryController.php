@@ -34,9 +34,6 @@ class PortfolioHistoryController extends Controller
             $date = $date->subMinutes(5);
         }
 
-        var_dump($dates);
-        die();
-
         $dataPoints = PortfolioCoinMinuteHistory::wherePortfolioId($portfolio->id)
             ->whereIn('date', $dates)
             ->orderBy('date', 'DESC')
