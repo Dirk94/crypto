@@ -1,7 +1,7 @@
 import React from 'react';
 import LoginForm from './forms/LoginForm.jsx';
-import axios from 'axios';
 import Auth from "../common/auth/Auth.jsx";
+import Request from "../common/auth/Request.jsx";
 
 export default class LoginPage extends React.Component
 {
@@ -29,7 +29,7 @@ export default class LoginPage extends React.Component
 
         event.preventDefault();
 
-        axios.post('/api/login', this.state.user)
+        Request.post('/api/login', this.state.user)
             .then((response) => {
                 let token = response.data.token;
                 localStorage.setItem('defaultPortfolioId', response.data.default_portfolio_id);

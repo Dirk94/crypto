@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Common\Helpers\JsonResponse;
 use App\Models\Coin;
 use Illuminate\Http\Request;
 
@@ -20,12 +21,12 @@ class SearchController extends Controller
             ->orderBy('api_name', 'ASC')
             ->get(['name', 'api_name', 'symbol']);
 
-        return response()->json($coins);
+        return JsonResponse::send($coins);
     }
 
     public function listAllCoins()
     {
-        return response()->json(
+        return JsonResponse::send(
             Coin::orderBy('api_name', 'ASC')->get([
                 'name', 'api_name', 'symbol'
             ])

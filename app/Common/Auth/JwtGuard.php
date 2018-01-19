@@ -8,6 +8,7 @@ use Firebase\JWT\SignatureInvalidException;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\UserProvider;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 
 class JwtGuard implements Guard
@@ -135,7 +136,7 @@ class JwtGuard implements Guard
         return $this->userToToken($user);
     }
 
-    private function userToToken(Authenticatable $user)
+    public function userToToken(Authenticatable $user)
     {
         $token = [
             'identifier' => $user->getAuthIdentifier(),

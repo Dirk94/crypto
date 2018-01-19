@@ -1,7 +1,5 @@
 import React from 'react';
-import Autosuggest from 'react-autosuggest';
-import axios from 'axios';
-import Auth from '../../../common/auth/Auth.jsx';
+import Request from "../../../common/auth/Request.jsx";
 import AddTradeForm from "../forms/AddTradeForm.jsx";
 
 export default class AddTradeModal extends React.Component
@@ -37,9 +35,7 @@ export default class AddTradeModal extends React.Component
         console.log(this.state.formData);
         console.log("");
 
-        axios.post('/api/portfolios/' + localStorage.getItem('defaultPortfolioId') + '/trade', this.state.formData, { headers: {
-            'Authorization': Auth.getToken()
-        }})
+        Request.post('/api/portfolios/' + localStorage.getItem('defaultPortfolioId') + '/trade', this.state.formData)
             .then((response) => {
                 console.log("success");
                 console.log(response);

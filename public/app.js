@@ -26902,9 +26902,9 @@ var _Auth = __webpack_require__(13);
 
 var _Auth2 = _interopRequireDefault(_Auth);
 
-var _axios = __webpack_require__(16);
+var _Request = __webpack_require__(474);
 
-var _axios2 = _interopRequireDefault(_axios);
+var _Request2 = _interopRequireDefault(_Request);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -26920,20 +26920,16 @@ var CoinData = function () {
     }
 
     _createClass(CoinData, null, [{
-        key: 'getCoinData',
+        key: "getCoinData",
         value: function getCoinData() {
             return new Promise(function (resolve, reject) {
                 var coins = localStorage.getItem('coindata');
 
                 if (coins !== null) {
-                    console.log("No API request");
                     return resolve(JSON.parse(coins));
                 }
 
-                console.log("API request");
-                _axios2.default.get('/api/coins', { headers: {
-                        'Authorization': _Auth2.default.getToken()
-                    } }).then(function (response) {
+                _Request2.default.get('/api/coins').then(function (response) {
                     var coins = response.data;
                     localStorage.setItem('coindata', JSON.stringify(coins));
                     return resolve(coins);
@@ -76615,6 +76611,10 @@ var _Auth = __webpack_require__(13);
 
 var _Auth2 = _interopRequireDefault(_Auth);
 
+var _Request = __webpack_require__(474);
+
+var _Request2 = _interopRequireDefault(_Request);
+
 var _CoinData = __webpack_require__(182);
 
 var _CoinData2 = _interopRequireDefault(_CoinData);
@@ -76695,9 +76695,7 @@ var Overview = function (_React$Component) {
         value: function getGraphData() {
             var _this3 = this;
 
-            _axios2.default.get('/api/portfolios/' + localStorage.getItem('defaultPortfolioId') + '/history/minutes', { headers: {
-                    'Authorization': _Auth2.default.getToken()
-                } }).then(function (response) {
+            _Request2.default.get('/api/portfolios/' + localStorage.getItem('defaultPortfolioId') + '/history/minutes').then(function (response) {
                 var data = response.data;
 
                 var newMinuteData = [];
@@ -76726,9 +76724,7 @@ var Overview = function (_React$Component) {
         value: function getPortfolioData() {
             var _this4 = this;
 
-            _axios2.default.get('/api/portfolios', { headers: {
-                    'Authorization': _Auth2.default.getToken()
-                } }).then(function (response) {
+            _Request2.default.get('/api/portfolios').then(function (response) {
                 var portfolio = response.data[0];
 
                 var valueNow = parseFloat(portfolio.usd_value);
@@ -76746,7 +76742,7 @@ var Overview = function (_React$Component) {
                 });
 
                 _this4.getGraphData();
-            }).catch(function (response) {
+            }).catch(function (error) {
                 console.log("ERROR");
                 console.log(response);
             });
@@ -95653,17 +95649,9 @@ var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactAutosuggest = __webpack_require__(40);
+var _Request = __webpack_require__(474);
 
-var _reactAutosuggest2 = _interopRequireDefault(_reactAutosuggest);
-
-var _axios = __webpack_require__(16);
-
-var _axios2 = _interopRequireDefault(_axios);
-
-var _Auth = __webpack_require__(13);
-
-var _Auth2 = _interopRequireDefault(_Auth);
+var _Request2 = _interopRequireDefault(_Request);
 
 var _AddTradeForm = __webpack_require__(302);
 
@@ -95704,7 +95692,7 @@ var AddTradeModal = function (_React$Component) {
     }
 
     _createClass(AddTradeModal, [{
-        key: 'processForm',
+        key: "processForm",
         value: function processForm(event) {
             var _this2 = this;
 
@@ -95716,9 +95704,7 @@ var AddTradeModal = function (_React$Component) {
             console.log(this.state.formData);
             console.log("");
 
-            _axios2.default.post('/api/portfolios/' + localStorage.getItem('defaultPortfolioId') + '/trade', this.state.formData, { headers: {
-                    'Authorization': _Auth2.default.getToken()
-                } }).then(function (response) {
+            _Request2.default.post('/api/portfolios/' + localStorage.getItem('defaultPortfolioId') + '/trade', this.state.formData).then(function (response) {
                 console.log("success");
                 console.log(response);
 
@@ -95738,7 +95724,7 @@ var AddTradeModal = function (_React$Component) {
             });
         }
     }, {
-        key: 'changeFormData',
+        key: "changeFormData",
         value: function changeFormData(event) {
             var field = event.target.name;
             var formData = this.state.formData;
@@ -95749,47 +95735,47 @@ var AddTradeModal = function (_React$Component) {
             });
         }
     }, {
-        key: 'render',
+        key: "render",
         value: function render() {
             return _react2.default.createElement(
-                'div',
+                "div",
                 null,
                 _react2.default.createElement(
-                    'button',
-                    { type: 'button', className: 'btn btn-outline-light btn-float', 'data-toggle': 'modal', 'data-target': '#addTradeModal' },
-                    _react2.default.createElement('span', { className: 'icon icon-plus' }),
-                    '\xA0 Add Trade'
+                    "button",
+                    { type: "button", className: "btn btn-outline-light btn-float", "data-toggle": "modal", "data-target": "#addTradeModal" },
+                    _react2.default.createElement("span", { className: "icon icon-plus" }),
+                    "\xA0 Add Trade"
                 ),
                 _react2.default.createElement(
-                    'div',
-                    { className: 'modal fade', id: 'addTradeModal', tabIndex: '-1', role: 'dialog', 'aria-hidden': 'true' },
+                    "div",
+                    { className: "modal fade", id: "addTradeModal", tabIndex: "-1", role: "dialog", "aria-hidden": "true" },
                     _react2.default.createElement(
-                        'div',
-                        { className: 'modal-dialog', role: 'document' },
+                        "div",
+                        { className: "modal-dialog", role: "document" },
                         _react2.default.createElement(
-                            'div',
-                            { className: 'modal-content' },
+                            "div",
+                            { className: "modal-content" },
                             _react2.default.createElement(
-                                'div',
-                                { className: 'modal-header' },
+                                "div",
+                                { className: "modal-header" },
                                 _react2.default.createElement(
-                                    'h5',
-                                    { className: 'modal-title', id: 'exampleModalLabel' },
-                                    'Add Trade'
+                                    "h5",
+                                    { className: "modal-title", id: "exampleModalLabel" },
+                                    "Add Trade"
                                 ),
                                 _react2.default.createElement(
-                                    'button',
-                                    { type: 'button', className: 'close', 'data-dismiss': 'modal', 'aria-label': 'Close' },
+                                    "button",
+                                    { type: "button", className: "close", "data-dismiss": "modal", "aria-label": "Close" },
                                     _react2.default.createElement(
-                                        'span',
-                                        { 'aria-hidden': 'true' },
-                                        '\xD7'
+                                        "span",
+                                        { "aria-hidden": "true" },
+                                        "\xD7"
                                     )
                                 )
                             ),
                             _react2.default.createElement(
-                                'div',
-                                { className: 'modal-body' },
+                                "div",
+                                { className: "modal-body" },
                                 _react2.default.createElement(_AddTradeForm2.default, {
                                     onSubmit: this.processForm,
                                     onChange: this.changeFormData,
@@ -97787,25 +97773,13 @@ var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactAutosuggest = __webpack_require__(40);
-
-var _reactAutosuggest2 = _interopRequireDefault(_reactAutosuggest);
-
-var _axios = __webpack_require__(16);
-
-var _axios2 = _interopRequireDefault(_axios);
-
-var _Auth = __webpack_require__(13);
-
-var _Auth2 = _interopRequireDefault(_Auth);
-
-var _AddTradeForm = __webpack_require__(302);
-
-var _AddTradeForm2 = _interopRequireDefault(_AddTradeForm);
-
 var _AddDepositForm = __webpack_require__(463);
 
 var _AddDepositForm2 = _interopRequireDefault(_AddDepositForm);
+
+var _Request = __webpack_require__(474);
+
+var _Request2 = _interopRequireDefault(_Request);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -97840,7 +97814,7 @@ var AddDepositModal = function (_React$Component) {
     }
 
     _createClass(AddDepositModal, [{
-        key: 'processForm',
+        key: "processForm",
         value: function processForm(event) {
             var _this2 = this;
 
@@ -97848,9 +97822,7 @@ var AddDepositModal = function (_React$Component) {
 
             event.preventDefault();
 
-            _axios2.default.post('/api/portfolios/' + localStorage.getItem('defaultPortfolioId') + '/deposit', this.state.formData, { headers: {
-                    'Authorization': _Auth2.default.getToken()
-                } }).then(function (response) {
+            _Request2.default.post('/api/portfolios/' + localStorage.getItem('defaultPortfolioId') + '/deposit', this.state.formData).then(function (response) {
                 console.log("success");
                 console.log(response);
 
@@ -97870,7 +97842,7 @@ var AddDepositModal = function (_React$Component) {
             });
         }
     }, {
-        key: 'changeFormData',
+        key: "changeFormData",
         value: function changeFormData(event) {
             var field = event.target.name;
             var formData = this.state.formData;
@@ -97881,47 +97853,47 @@ var AddDepositModal = function (_React$Component) {
             });
         }
     }, {
-        key: 'render',
+        key: "render",
         value: function render() {
             return _react2.default.createElement(
-                'div',
+                "div",
                 null,
                 _react2.default.createElement(
-                    'button',
-                    { type: 'button', className: 'btn btn-outline-primary btn-float', 'data-toggle': 'modal', 'data-target': '#addDepositModal' },
-                    _react2.default.createElement('span', { className: 'icon icon-align-bottom' }),
-                    '\xA0 Add Deposit'
+                    "button",
+                    { type: "button", className: "btn btn-outline-primary btn-float", "data-toggle": "modal", "data-target": "#addDepositModal" },
+                    _react2.default.createElement("span", { className: "icon icon-align-bottom" }),
+                    "\xA0 Add Deposit"
                 ),
                 _react2.default.createElement(
-                    'div',
-                    { className: 'modal fade', id: 'addDepositModal', tabIndex: '-1', role: 'dialog', 'aria-hidden': 'true' },
+                    "div",
+                    { className: "modal fade", id: "addDepositModal", tabIndex: "-1", role: "dialog", "aria-hidden": "true" },
                     _react2.default.createElement(
-                        'div',
-                        { className: 'modal-dialog', role: 'document' },
+                        "div",
+                        { className: "modal-dialog", role: "document" },
                         _react2.default.createElement(
-                            'div',
-                            { className: 'modal-content' },
+                            "div",
+                            { className: "modal-content" },
                             _react2.default.createElement(
-                                'div',
-                                { className: 'modal-header' },
+                                "div",
+                                { className: "modal-header" },
                                 _react2.default.createElement(
-                                    'h5',
-                                    { className: 'modal-title', id: 'exampleModalLabel' },
-                                    'Add Deposit'
+                                    "h5",
+                                    { className: "modal-title", id: "exampleModalLabel" },
+                                    "Add Deposit"
                                 ),
                                 _react2.default.createElement(
-                                    'button',
-                                    { type: 'button', className: 'close', 'data-dismiss': 'modal', 'aria-label': 'Close' },
+                                    "button",
+                                    { type: "button", className: "close", "data-dismiss": "modal", "aria-label": "Close" },
                                     _react2.default.createElement(
-                                        'span',
-                                        { 'aria-hidden': 'true' },
-                                        '\xD7'
+                                        "span",
+                                        { "aria-hidden": "true" },
+                                        "\xD7"
                                     )
                                 )
                             ),
                             _react2.default.createElement(
-                                'div',
-                                { className: 'modal-body' },
+                                "div",
+                                { className: "modal-body" },
                                 _react2.default.createElement(_AddDepositForm2.default, {
                                     onSubmit: this.processForm,
                                     onChange: this.changeFormData,
@@ -98446,9 +98418,9 @@ var _RegisterForm = __webpack_require__(470);
 
 var _RegisterForm2 = _interopRequireDefault(_RegisterForm);
 
-var _axios = __webpack_require__(16);
+var _Request = __webpack_require__(474);
 
-var _axios2 = _interopRequireDefault(_axios);
+var _Request2 = _interopRequireDefault(_Request);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -98491,7 +98463,7 @@ var Register = function (_React$Component) {
 
             event.preventDefault();
 
-            _axios2.default.post('/api/register', this.state.user).then(function (response) {
+            _Request2.default.post('/api/register', this.state.user).then(function (response) {
                 console.log("success");
                 console.log(response);
 
@@ -98681,13 +98653,13 @@ var _LoginForm = __webpack_require__(472);
 
 var _LoginForm2 = _interopRequireDefault(_LoginForm);
 
-var _axios = __webpack_require__(16);
-
-var _axios2 = _interopRequireDefault(_axios);
-
 var _Auth = __webpack_require__(13);
 
 var _Auth2 = _interopRequireDefault(_Auth);
+
+var _Request = __webpack_require__(474);
+
+var _Request2 = _interopRequireDefault(_Request);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -98729,7 +98701,7 @@ var LoginPage = function (_React$Component) {
 
             event.preventDefault();
 
-            _axios2.default.post('/api/login', this.state.user).then(function (response) {
+            _Request2.default.post('/api/login', this.state.user).then(function (response) {
                 var token = response.data.token;
                 localStorage.setItem('defaultPortfolioId', response.data.default_portfolio_id);
 
@@ -98882,6 +98854,87 @@ exports.default = Login;
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 474 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _axios = __webpack_require__(16);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _Auth = __webpack_require__(13);
+
+var _Auth2 = _interopRequireDefault(_Auth);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Request = function () {
+    function Request() {
+        _classCallCheck(this, Request);
+    }
+
+    _createClass(Request, null, [{
+        key: 'get',
+        value: function get(url) {
+            return new Promise(function (resolve, reject) {
+                _axios2.default.get(url, { headers: {
+                        'Authorization': _Auth2.default.getToken()
+                    } }).then(function (response) {
+                    console.log("(GET) MIDDLE WARE RESPONSE YAY");
+                    console.log(response);
+                    console.log('');
+
+                    resolve(response);
+                }).catch(function (error) {
+                    console.log("(GET) MIDDLE WARE ERROR YAY");
+                    console.log(error);
+                    console.log('');
+
+                    reject(error);
+                });
+            });
+        }
+    }, {
+        key: 'post',
+        value: function post(url) {
+            var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+            return new Promise(function (resolve, reject) {
+                _axios2.default.post(url, data, { headers: {
+                        'Authorization': _Auth2.default.getToken()
+                    } }).then(function (response) {
+                    console.log("(POST) MIDDLE WARE RESPONSE YAY");
+                    console.log(response);
+                    console.log('');
+
+                    resolve(response);
+                }).catch(function (error) {
+                    console.log("(POST) MIDDLE WARE ERROR YAY");
+                    console.log(error);
+                    console.log('');
+
+                    reject(error);
+                });
+            });
+        }
+    }]);
+
+    return Request;
+}();
+
+exports.default = Request;
 
 /***/ })
 /******/ ]);

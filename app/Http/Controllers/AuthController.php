@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Common\Helpers\JsonResponse;
 use App\Common\Helpers\Permissions;
 use App\Http\Requests\Coins\RegisterFormRequest;
 use App\Models\Portfolio;
@@ -24,7 +25,9 @@ class AuthController extends Controller
             'permissions' => Permissions::OWNER
         ]);
 
-        return response()->json(['user' => $user]);
+        return JsonResponse::send([
+            'user' => $user
+        ]);
     }
 
     public function login(Request $request)
@@ -37,7 +40,7 @@ class AuthController extends Controller
         $user = User::whereEmail($request->input('email'))->first();
         $defaultPortfolio = $user->portfolios()->first();
 
-        return response()->json([
+        return JsonResponse::send([
             'token' => $token,
             'default_portfolio_id' => $defaultPortfolio->id
         ], 200);
@@ -46,6 +49,6 @@ class AuthController extends Controller
     public function me()
     {
         $user = Auth::user();
-        return response()->json(['user' => $user]);
+        return JsonResponse::send(['user' => $user]);
     }
 }

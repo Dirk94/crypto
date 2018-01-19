@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Common\History\PortfolioHistory;
+use App\Common\Helpers\JsonResponse;
 use App\Http\Requests\Portfolios\Permissions\PortfolioHasReadPermissionRequest;
 use App\Models\History\PortfolioCoinDayHistory;
 use App\Models\History\PortfolioCoinHourHistory;
@@ -41,7 +41,7 @@ class PortfolioHistoryController extends Controller
                 'date', 'btc_value', 'usd_value'
             ]);
 
-        return response()->json([
+        return JsonResponse::send([
             'count' => $dataPoints->count(),
             'data' => $dataPoints
         ]);
@@ -63,7 +63,7 @@ class PortfolioHistoryController extends Controller
                 'date', 'btc_value', 'usd_value'
             ]);
 
-        return response()->json([
+        return JsonResponse::send([
             'count' => $dataPoints->count(),
             'data' => $dataPoints
         ]);
@@ -85,7 +85,7 @@ class PortfolioHistoryController extends Controller
                 'date', 'btc_value', 'usd_value'
             ]);
 
-        return response()->json([
+        return JsonResponse::send([
             'count' => $dataPoints->count(),
             'data' => $dataPoints
         ]);

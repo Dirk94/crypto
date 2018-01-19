@@ -3,6 +3,7 @@ import PortfolioBalance from "./utils/PortfolioBalance.jsx";
 import SingleLineChart from "./utils/charts/SingleLineChart.jsx";
 import axios from 'axios';
 import Auth from "../../common/auth/Auth.jsx";
+import Request from "../../common/auth/Request.jsx";
 import CoinData from "../../common/data/CoinData.jsx";
 import moment from 'moment';
 
@@ -62,9 +63,7 @@ export default class Overview extends React.Component
 
     getGraphData()
     {
-        axios.get('/api/portfolios/' + localStorage.getItem('defaultPortfolioId') + '/history/minutes', { headers: {
-            'Authorization': Auth.getToken()
-        }})
+        Request.get('/api/portfolios/' + localStorage.getItem('defaultPortfolioId') + '/history/minutes')
             .then((response) => {
                 let data = response.data;
 
@@ -84,19 +83,16 @@ export default class Overview extends React.Component
                 this.setState({
                     minuteData: newMinuteData
                 });
-
             })
             .catch((error) => {
                 console.log("ERROR");
                 console.log(error);
-            });
+            })
     }
 
     getPortfolioData()
     {
-        axios.get('/api/portfolios', { headers: {
-            'Authorization': Auth.getToken()
-        }})
+        Request.get('/api/portfolios')
             .then((response) => {
                 let portfolio = response.data[0];
 
@@ -116,7 +112,7 @@ export default class Overview extends React.Component
 
                 this.getGraphData();
             })
-            .catch((response) => {
+            .catch((error) => {
                 console.log("ERROR");
                 console.log(response);
             });

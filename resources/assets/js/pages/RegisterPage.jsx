@@ -1,6 +1,6 @@
 import React from 'react';
 import RegisterForm from './forms/RegisterForm.jsx';
-import axios from 'axios';
+import Request from "../common/auth/Request.jsx";
 
 export default class Register extends React.Component
 {
@@ -29,7 +29,7 @@ export default class Register extends React.Component
 
         event.preventDefault();
 
-        axios.post('/api/register', this.state.user)
+        Request.post('/api/register', this.state.user)
             .then((response) => {
                 console.log("success");
                 console.log(response);
@@ -46,7 +46,7 @@ export default class Register extends React.Component
                     errors: data.errors,
                     loading: false,
                 });
-            })
+            });
     }
 
     changeUser(event)

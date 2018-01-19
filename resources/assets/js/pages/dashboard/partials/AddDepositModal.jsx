@@ -1,9 +1,6 @@
 import React from 'react';
-import Autosuggest from 'react-autosuggest';
-import axios from 'axios';
-import Auth from '../../../common/auth/Auth.jsx';
-import AddTradeForm from "../forms/AddTradeForm.jsx";
 import AddDepositForm from "../forms/AddDepositForm.jsx";
+import Request from "../../../common/auth/Request.jsx";
 
 export default class AddDepositModal extends React.Component
 {
@@ -32,9 +29,7 @@ export default class AddDepositModal extends React.Component
 
         event.preventDefault();
 
-        axios.post('/api/portfolios/' + localStorage.getItem('defaultPortfolioId') + '/deposit', this.state.formData, { headers: {
-            'Authorization': Auth.getToken()
-        }})
+        Request.post('/api/portfolios/' + localStorage.getItem('defaultPortfolioId') + '/deposit', this.state.formData)
             .then((response) => {
                 console.log("success");
                 console.log(response);

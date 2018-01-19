@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Common\Helpers\JsonResponse;
 use App\Common\Helpers\Permissions;
 use App\Http\Requests\Portfolios\AddUserToPortfolioRequest;
 use App\Http\Requests\Portfolios\CreatePortfolioRequest;
@@ -25,14 +26,14 @@ class PortfolioController extends Controller
             'permissions' => Permissions::OWNER
         ]);
 
-        return response()->json();
+        return JsonResponse::send();
     }
 
     public function listPortfoliosOfUser()
     {
         $user = Auth::user();
 
-        return response()->json(
+        return JsonResponse::send(
             $user->portfolios
         );
     }
@@ -43,7 +44,7 @@ class PortfolioController extends Controller
             ->wherePortfolioId($portfolio->id)
             ->first();
 
-        return response()->json(
+        return JsonResponse::send(
             $portfolioWithPivot
         );
     }
@@ -52,7 +53,7 @@ class PortfolioController extends Controller
     {
         $portfolio->delete();
 
-        return response()->json();
+        return JsonResponse::send();
     }
 
     public function addUserToPortfolio(AddUserToPortfolioRequest $request, Portfolio $portfolio, User $user)
@@ -65,7 +66,7 @@ class PortfolioController extends Controller
             'permissions' => $request->get('permissions'),
         ]);
 
-        return response()->json();
+        return JsonResponse::send();
     }
 
     public function test(Portfolio $portfolio)
@@ -74,7 +75,7 @@ class PortfolioController extends Controller
             ->orderBy('date', 'desc')
             ->first();
 
-        return response()->json([
+        return JsonResponse::send([
             'portfolio_btc' => $portfolio->btc_value,
             'portfolio_usd' => $portfolio->usd_value,
             'history_btc' => $history->btc_value,

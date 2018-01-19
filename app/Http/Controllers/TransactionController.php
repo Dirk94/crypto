@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Common\Helpers\JsonResponse;
 use App\Http\Requests\Portfolios\Permissions\PortfolioHasReadPermissionRequest;
 use App\Http\Requests\Portfolios\Transactions\AddTradeToPortfolioRequest;
 use App\Http\Requests\Portfolios\Transactions\DepositToPortfolioRequest;
@@ -24,7 +25,7 @@ class TransactionController extends Controller
             return response()->json(['error' => 'Something went wrong'], 422);
         }
 
-        return response()->json();
+        return JsonResponse::send();
     }
 
     public function withdrawFromPortfolio(WithdrawFromPortfolioRequest $request, Portfolio $portfolio)
@@ -39,7 +40,7 @@ class TransactionController extends Controller
             return response()->json(['error' => 'Something went wrong'], 422);
         }
 
-        return response()->json();
+        return JsonResponse::send();
     }
 
     public function addTradeToPortfolio(AddTradeToPortfolioRequest $request, Portfolio $portfolio)
@@ -55,12 +56,12 @@ class TransactionController extends Controller
             return response()->json(['error' => 'Something went wrong'], 422);
         }
 
-        return response()->json($transaction);
+        return JsonResponse::send($transaction);
     }
 
     public function listTransactionsOfPortfolio(PortfolioHasReadPermissionRequest $request, Portfolio $portfolio)
     {
-        return response()->json(
+        return JsonResponse::send(
             $portfolio->transactions()
                 ->orderBy('created_at', 'DESC')
                 ->get()
