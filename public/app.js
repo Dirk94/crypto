@@ -82394,6 +82394,8 @@ var SingleLineChart = function (_React$Component) {
                     yPadding: 6,
                     bodyFontSize: 13,
                     multiKeyBackground: '#000',
+                    bodyFontStyle: 'bold',
+                    titleFontStyle: 'normal',
                     callbacks: {
                         title: function title(tooltipItem, data) {
                             var index = tooltipItem[0].index;

@@ -65,6 +65,8 @@ export default class SingleLineChart extends React.Component
                 yPadding: 6,
                 bodyFontSize: 13,
                 multiKeyBackground: '#000',
+                bodyFontStyle: 'bold',
+                titleFontStyle: 'normal',
                 callbacks: {
                     title: function(tooltipItem, data) {
                         let index = tooltipItem[0].index;
