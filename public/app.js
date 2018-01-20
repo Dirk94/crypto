@@ -82376,6 +82376,7 @@ var SingleLineChart = function (_React$Component) {
                         ticks: {
                             padding: 12,
                             fontSize: 13,
+                            maxTicksLimit: 8,
                             callback: function callback(label, index, labels) {
                                 return _String2.default.formatAsMoney(label, 0);
                             },

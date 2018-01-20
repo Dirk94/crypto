@@ -47,6 +47,7 @@ export default class SingleLineChart extends React.Component
                     ticks: {
                         padding: 12,
                         fontSize: 13,
+                        maxTicksLimit: 8,
                         callback: function(label, index, labels) {
                             return String.formatAsMoney(label, 0);
                         },
