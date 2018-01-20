@@ -82371,7 +82371,11 @@ var SingleLineChart = function (_React$Component) {
                 },
                 scales: {
                     yAxes: [{
+                        position: 'left',
+                        offset: true,
                         ticks: {
+                            padding: 12,
+                            fontSize: 13,
                             callback: function callback(label, index, labels) {
                                 return _String2.default.formatAsMoney(label, 0);
                             },
@@ -82381,6 +82385,8 @@ var SingleLineChart = function (_React$Component) {
                     }],
                     xAxes: [{
                         ticks: {
+                            padding: 12,
+                            fontSize: 13,
                             fontColor: 'white',
                             maxTicksLimit: 11
                         }

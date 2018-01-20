@@ -42,7 +42,11 @@ export default class SingleLineChart extends React.Component
             },
             scales: {
                 yAxes: [{
+                    position: 'left',
+                    offset: true,
                     ticks: {
+                        padding: 12,
+                        fontSize: 13,
                         callback: function(label, index, labels) {
                             return String.formatAsMoney(label, 0);
                         },
@@ -52,6 +56,8 @@ export default class SingleLineChart extends React.Component
                 }],
                 xAxes: [{
                     ticks: {
+                        padding: 12,
+                        fontSize: 13,
                         fontColor: 'white',
                         maxTicksLimit: 11,
                     },
