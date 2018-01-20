@@ -28,7 +28,7 @@ export default class Auth {
             Auth.userLogout();
             return false;
         }
-        
+
         return token !== null;
     }
 

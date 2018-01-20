@@ -14,7 +14,7 @@ class Kernel extends ConsoleKernel
 
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('coins:update')->everyFiveMinutes();
+        $schedule->command('coins:update')->cron('3,8,13,18,23,28,33,38,43,48,53,58 * * * *');
     }
 
     protected function commands()
