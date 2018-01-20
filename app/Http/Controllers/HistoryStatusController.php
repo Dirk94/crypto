@@ -23,6 +23,13 @@ class HistoryStatusController extends Controller
 
         $expectedHistory = [];
         $date = Carbon::now();
+        $date->minute = floor($date->minute / 5 ) * 5;
+
+        $firstDateExists = CoinMinuteHistory::where('date', '=', $date->format('Y-m-d H:i:00'))
+            ->first();
+        if (! $firstDateExists) {
+            $date = $date->subMinutes(5);
+        }
 
         for ($i=0; $i<CoinHistory::TIME_TO_KEEP_MINUTE_DATA / 5; $i++) {
             $expectedHistory[] = $date->format('Y-m-d H:i:00');
