@@ -1,4 +1,3 @@
-import Auth from "../auth/Auth.jsx";
 import Request from "../Request.jsx";
 
 /**

@@ -1,7 +1,7 @@
 import React from 'react';
 import PortfolioBalance from "./utils/PortfolioBalance.jsx";
+import PortfolioBalanceData from "../../common/data/PortfolioBalanceData.jsx";
 import SingleLineChart from "./utils/charts/SingleLineChart.jsx";
-import Request from "../../common/Request.jsx";
 import CoinData from "../../common/data/CoinData.jsx";
 import moment from 'moment';
 
@@ -32,17 +32,17 @@ export default class Overview extends React.Component
         this.getPortfolioData();
         this.getGraphData();
 
-        // Already loaded the data.
+        // Already load the data.
         CoinData.getCoinData();
 
-        this.timer = setInterval(
+        setInterval(
             () => this.getPortfolioData(),
-            1000 * 60 * 1 // every 5 minutes
+            1000 * 10 // every 5 minutes
         )
 
-        this.timer = setInterval(
+        setInterval(
             () => this.getGraphData(),
-            1000 * 60 * 1 // every 5 minutes
+            1000 * 10 // every 5 minutes
         )
     }
 
@@ -90,10 +90,8 @@ export default class Overview extends React.Component
 
     getGraphData()
     {
-        Request.get('/api/portfolios/' + localStorage.getItem('defaultPortfolioId') + '/history/minutes')
-            .then((response) => {
-                let data = response.data;
-
+        PortfolioBalanceData.getMinuteData()
+            .then((data) => {
                 let newMinuteData = [];
                 for (let i=0; i<this.dataPoints - data.count; i++) {
                     newMinuteData.push(0);
@@ -112,7 +110,7 @@ export default class Overview extends React.Component
             .catch((error) => {
                 console.log("ERROR");
                 console.log(error);
-            })
+            });
     }
 
     generateGraphLabels()
@@ -137,9 +135,9 @@ export default class Overview extends React.Component
 
     getPortfolioData()
     {
-        Request.get('/api/portfolios')
+        PortfolioBalanceData.getBalance()
             .then((response) => {
-                let portfolio = response.data[0];
+                let portfolio = response[0];
 
                 let valueNow = parseFloat(portfolio.usd_value);
                 let value24HAgo = parseFloat(portfolio.usd_value_1d_ago);
@@ -154,8 +152,6 @@ export default class Overview extends React.Component
                     amount: parseFloat(portfolio.usd_value),
                     percentage: percentage
                 })
-
-                this.getGraphData();
             })
             .catch((error) => {
                 console.log("ERROR");
