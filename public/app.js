@@ -82365,6 +82365,11 @@ var SingleLineChart = function (_React$Component) {
         value: function createChart(props) {
             var canvas = document.getElementById(this.id).getContext("2d");
 
+            // TODO: get max data from dataset.
+            // If greater than 10,000 format everything as 10k
+            // If greater then 1,000,000 format everything as 1M, 1.1M, 10M, 100M
+            // If greater then 1,000,000,000 format everyting as 1B, 1.1B, 10B, 100B.
+
             var options = {
                 legend: {
                     display: false
@@ -82376,7 +82381,7 @@ var SingleLineChart = function (_React$Component) {
                         ticks: {
                             padding: 12,
                             fontSize: 13,
-                            maxTicksLimit: 8,
+                            maxTicksLimit: 7,
                             callback: function callback(label, index, labels) {
                                 return _String2.default.formatAsMoney(label, 0);
                             },

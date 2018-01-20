@@ -36,6 +36,11 @@ export default class SingleLineChart extends React.Component
     {
         let canvas = document.getElementById(this.id).getContext("2d");
 
+        // TODO: get max data from dataset.
+        // If greater than 10,000 format everything as 10k
+        // If greater then 1,000,000 format everything as 1M, 1.1M, 10M, 100M
+        // If greater then 1,000,000,000 format everyting as 1B, 1.1B, 10B, 100B.
+
         let options = {
             legend: {
                 display: false,
@@ -47,7 +52,7 @@ export default class SingleLineChart extends React.Component
                     ticks: {
                         padding: 12,
                         fontSize: 13,
-                        maxTicksLimit: 8,
+                        maxTicksLimit: 7,
                         callback: function(label, index, labels) {
                             return String.formatAsMoney(label, 0);
                         },
