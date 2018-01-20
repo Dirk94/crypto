@@ -31,13 +31,6 @@ class CoinmarketcapApi implements CoinApi
             try {
                 $coin->save();
             } catch(\Exception $e) {
-                var_dump($jsonObject->percent_change_1h);
-                $inFloat = floatval($jsonObject->percent_change_1h);
-                var_dump($inFloat);
-                var_dump($coin->percentage_change_1h);
-                var_dump($coin->percentage_change_24h);
-                var_dump($coin->percentage_change_7d);
-
                 throw $e;
             }
 

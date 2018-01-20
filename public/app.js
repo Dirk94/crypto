@@ -11444,6 +11444,12 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _moment = __webpack_require__(0);
+
+var _moment2 = _interopRequireDefault(_moment);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Auth = function () {
@@ -11453,13 +11459,34 @@ var Auth = function () {
 
     _createClass(Auth, null, [{
         key: 'authenticateUser',
+        // moment js object.
+
         value: function authenticateUser(token) {
+            var tokenReceivedAt = (0, _moment2.default)().format('x');
+            localStorage.setItem('tokenReceivedAt', tokenReceivedAt);
             localStorage.setItem('token', token);
-        }
+        } // In minutes TODO: make this an env file.
+
     }, {
         key: 'isLoggedIn',
         value: function isLoggedIn() {
-            return localStorage.getItem('token') !== null;
+            var token = localStorage.getItem('token');
+            var now = (0, _moment2.default)();
+            var tokenReceivedAtTimestamp = localStorage.getItem('tokenReceivedAt');
+
+            if (tokenReceivedAtTimestamp === null) {
+                return false;
+            }
+
+            var tokenReceivedAtMoment = (0, _moment2.default)(tokenReceivedAtTimestamp, 'x');
+            var diffInMinutes = now.diff(tokenReceivedAtMoment) / 1000 / 60;
+
+            if (diffInMinutes >= Auth.JWT_EXPIRES_AFTER) {
+                Auth.userLogout();
+                return false;
+            }
+
+            return token !== null;
         }
     }, {
         key: 'userLogout',
@@ -11476,6 +11503,7 @@ var Auth = function () {
     return Auth;
 }();
 
+Auth.JWT_EXPIRES_AFTER = 420;
 exports.default = Auth;
 
 /***/ }),
