@@ -76663,23 +76663,10 @@ var Overview = function (_React$Component) {
 
         _this.dataPoints = 50;
         var minuteData = [];
-        var minuteLabels = [];
         for (var i = 0; i < _this.dataPoints; i++) {
-            minuteData.push(0);
-
-            if (i == _this.dataPoints - 1) {
-                minuteLabels.push('now');
-            } else {
-                var valueInMinutes = (_this.dataPoints - 1) * 5 - i * 5;
-                var momentDate = (0, _moment2.default)().subtract(valueInMinutes, 'minutes');
-                var minute = Math.floor(parseFloat(momentDate.minute() / 5)) * 5;
-                momentDate.minute(minute);
-
-                var label = (0, _moment2.default)().to(momentDate);
-                label = momentDate.format('H:mm');
-                minuteLabels.push(label);
-            }
+            minuteData[i] = 0;
         }
+        var minuteLabels = _this.generateGraphLabels();
 
         _this.state = {
             amount: -1,
@@ -76711,60 +76698,6 @@ var Overview = function (_React$Component) {
                 return _this2.getGraphData();
             }, 1000 * 60 * 1 // every 5 minutes
             );
-        }
-    }, {
-        key: "getGraphData",
-        value: function getGraphData() {
-            var _this3 = this;
-
-            _Request2.default.get('/api/portfolios/' + localStorage.getItem('defaultPortfolioId') + '/history/minutes').then(function (response) {
-                var data = response.data;
-
-                var newMinuteData = [];
-                for (var i = 0; i < _this3.dataPoints - data.count; i++) {
-                    newMinuteData.push(0);
-                }
-
-                for (var _i = data.count - 1; _i >= 0; _i--) {
-                    var graphItem = data.data[_i];
-                    newMinuteData.push(parseFloat(graphItem.usd_value));
-                }
-
-                _this3.setState({
-                    minuteData: newMinuteData
-                });
-            }).catch(function (error) {
-                console.log("ERROR");
-                console.log(error);
-            });
-        }
-    }, {
-        key: "getPortfolioData",
-        value: function getPortfolioData() {
-            var _this4 = this;
-
-            _Request2.default.get('/api/portfolios').then(function (response) {
-                var portfolio = response.data[0];
-
-                var valueNow = parseFloat(portfolio.usd_value);
-                var value24HAgo = parseFloat(portfolio.usd_value_1d_ago);
-
-                var percentage = (valueNow - value24HAgo) / value24HAgo * 100;
-                if (value24HAgo === 0) {
-                    percentage = 0;
-                }
-
-                _this4.setState({
-                    portfolioId: portfolio.id,
-                    amount: parseFloat(portfolio.usd_value),
-                    percentage: percentage
-                });
-
-                _this4.getGraphData();
-            }).catch(function (error) {
-                console.log("ERROR");
-                console.log(error);
-            });
         }
     }, {
         key: "render",
@@ -76828,6 +76761,81 @@ var Overview = function (_React$Component) {
                 ),
                 _react2.default.createElement("hr", { className: "mt-5" })
             );
+        }
+    }, {
+        key: "getGraphData",
+        value: function getGraphData() {
+            var _this3 = this;
+
+            _Request2.default.get('/api/portfolios/' + localStorage.getItem('defaultPortfolioId') + '/history/minutes').then(function (response) {
+                var data = response.data;
+
+                var newMinuteData = [];
+                for (var i = 0; i < _this3.dataPoints - data.count; i++) {
+                    newMinuteData.push(0);
+                }
+
+                for (var _i = data.count - 1; _i >= 0; _i--) {
+                    var graphItem = data.data[_i];
+                    newMinuteData.push(parseFloat(graphItem.usd_value));
+                }
+
+                _this3.setState({
+                    minuteData: newMinuteData,
+                    minuteLabels: _this3.generateGraphLabels()
+                });
+            }).catch(function (error) {
+                console.log("ERROR");
+                console.log(error);
+            });
+        }
+    }, {
+        key: "generateGraphLabels",
+        value: function generateGraphLabels() {
+            var minuteLabels = [];
+            for (var i = 0; i < this.dataPoints; i++) {
+                if (i == this.dataPoints - 1) {
+                    minuteLabels.push('now');
+                } else {
+                    var valueInMinutes = (this.dataPoints - 1) * 5 - i * 5;
+                    var momentDate = (0, _moment2.default)().subtract(valueInMinutes, 'minutes');
+                    var minute = Math.floor(parseFloat(momentDate.minute() / 5)) * 5;
+                    momentDate.minute(minute);
+
+                    var label = (0, _moment2.default)().to(momentDate);
+                    label = momentDate.format('H:mm');
+                    minuteLabels.push(label);
+                }
+            }
+            return minuteLabels;
+        }
+    }, {
+        key: "getPortfolioData",
+        value: function getPortfolioData() {
+            var _this4 = this;
+
+            _Request2.default.get('/api/portfolios').then(function (response) {
+                var portfolio = response.data[0];
+
+                var valueNow = parseFloat(portfolio.usd_value);
+                var value24HAgo = parseFloat(portfolio.usd_value_1d_ago);
+
+                var percentage = (valueNow - value24HAgo) / value24HAgo * 100;
+                if (value24HAgo === 0) {
+                    percentage = 0;
+                }
+
+                _this4.setState({
+                    portfolioId: portfolio.id,
+                    amount: parseFloat(portfolio.usd_value),
+                    percentage: percentage
+                });
+
+                _this4.getGraphData();
+            }).catch(function (error) {
+                console.log("ERROR");
+                console.log(error);
+            });
         }
     }]);
 

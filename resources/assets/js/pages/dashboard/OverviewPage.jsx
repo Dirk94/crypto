@@ -13,23 +13,10 @@ export default class Overview extends React.Component
 
         this.dataPoints = 50;
         let minuteData = [];
-        let minuteLabels = [];
         for (let i=0; i<this.dataPoints; i++) {
-            minuteData.push(0);
-
-            if (i == this.dataPoints-1) {
-                minuteLabels.push('now');
-            } else {
-                let valueInMinutes = ((this.dataPoints - 1) * 5) - (i * 5);
-                let momentDate = moment().subtract(valueInMinutes, 'minutes');
-                let minute = Math.floor(parseFloat(momentDate.minute() / 5)) * 5;
-                momentDate.minute(minute);
-
-                let label = moment().to(momentDate);
-                label = momentDate.format('H:mm');
-                minuteLabels.push(label);
-            }
+            minuteData[i] = 0;
         }
+        let minuteLabels = this.generateGraphLabels();
 
         this.state = {
             amount: -1,
@@ -57,60 +44,6 @@ export default class Overview extends React.Component
             () => this.getGraphData(),
             1000 * 60 * 1 // every 5 minutes
         )
-    }
-
-    getGraphData()
-    {
-        Request.get('/api/portfolios/' + localStorage.getItem('defaultPortfolioId') + '/history/minutes')
-            .then((response) => {
-                let data = response.data;
-
-                let newMinuteData = [];
-                for (let i=0; i<this.dataPoints - data.count; i++) {
-                    newMinuteData.push(0);
-                }
-
-                for (let i=data.count-1; i>=0; i--) {
-                    let graphItem = data.data[i];
-                    newMinuteData.push(parseFloat(graphItem.usd_value));
-                }
-
-                this.setState({
-                    minuteData: newMinuteData
-                });
-            })
-            .catch((error) => {
-                console.log("ERROR");
-                console.log(error);
-            })
-    }
-
-    getPortfolioData()
-    {
-        Request.get('/api/portfolios')
-            .then((response) => {
-                let portfolio = response.data[0];
-
-                let valueNow = parseFloat(portfolio.usd_value);
-                let value24HAgo = parseFloat(portfolio.usd_value_1d_ago);
-
-                let percentage = (valueNow - value24HAgo) / value24HAgo * 100;
-                if (value24HAgo === 0) {
-                    percentage = 0;
-                }
-
-                this.setState({
-                    portfolioId: portfolio.id,
-                    amount: parseFloat(portfolio.usd_value),
-                    percentage: percentage
-                })
-
-                this.getGraphData();
-            })
-            .catch((error) => {
-                console.log("ERROR");
-                console.log(error);
-            });
     }
 
     render()
@@ -153,5 +86,80 @@ export default class Overview extends React.Component
                 <hr className="mt-5" />
             </div>
         );
+    }
+
+    getGraphData()
+    {
+        Request.get('/api/portfolios/' + localStorage.getItem('defaultPortfolioId') + '/history/minutes')
+            .then((response) => {
+                let data = response.data;
+
+                let newMinuteData = [];
+                for (let i=0; i<this.dataPoints - data.count; i++) {
+                    newMinuteData.push(0);
+                }
+
+                for (let i=data.count-1; i>=0; i--) {
+                    let graphItem = data.data[i];
+                    newMinuteData.push(parseFloat(graphItem.usd_value));
+                }
+
+                this.setState({
+                    minuteData: newMinuteData,
+                    minuteLabels: this.generateGraphLabels()
+                });
+            })
+            .catch((error) => {
+                console.log("ERROR");
+                console.log(error);
+            })
+    }
+
+    generateGraphLabels()
+    {
+        let minuteLabels = [];
+        for (let i=0; i<this.dataPoints; i++) {
+            if (i == this.dataPoints-1) {
+                minuteLabels.push('now');
+            } else {
+                let valueInMinutes = ((this.dataPoints - 1) * 5) - (i * 5);
+                let momentDate = moment().subtract(valueInMinutes, 'minutes');
+                let minute = Math.floor(parseFloat(momentDate.minute() / 5)) * 5;
+                momentDate.minute(minute);
+
+                let label = moment().to(momentDate);
+                label = momentDate.format('H:mm');
+                minuteLabels.push(label);
+            }
+        }
+        return minuteLabels;
+    }
+
+    getPortfolioData()
+    {
+        Request.get('/api/portfolios')
+            .then((response) => {
+                let portfolio = response.data[0];
+
+                let valueNow = parseFloat(portfolio.usd_value);
+                let value24HAgo = parseFloat(portfolio.usd_value_1d_ago);
+
+                let percentage = (valueNow - value24HAgo) / value24HAgo * 100;
+                if (value24HAgo === 0) {
+                    percentage = 0;
+                }
+
+                this.setState({
+                    portfolioId: portfolio.id,
+                    amount: parseFloat(portfolio.usd_value),
+                    percentage: percentage
+                })
+
+                this.getGraphData();
+            })
+            .catch((error) => {
+                console.log("ERROR");
+                console.log(error);
+            });
     }
 }
