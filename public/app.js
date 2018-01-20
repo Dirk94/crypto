@@ -82337,6 +82337,8 @@ var SingleLineChart = function (_React$Component) {
 
         var _this = _possibleConstructorReturn(this, (SingleLineChart.__proto__ || Object.getPrototypeOf(SingleLineChart)).call(this));
 
+        _chart2.default.defaults.global.defaultFontColor = 'red';
+        _chart2.default.defaults.global.defaultFontFamily = '"Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif';
         _this.id = "id-" + Math.random().toString(36).substring(7);
         return _this;
     }
@@ -82385,16 +82387,36 @@ var SingleLineChart = function (_React$Component) {
                     }]
                 },
                 tooltips: {
-                    displayColors: false,
+                    mode: 'index',
+                    intersect: false,
+                    displayColors: true,
+                    xPadding: 12,
+                    yPadding: 6,
+                    bodyFontSize: 13,
+                    multiKeyBackground: '#000',
                     callbacks: {
+                        title: function title(tooltipItem, data) {
+                            var index = tooltipItem[0].index;
+                            var labelValue = data.labels[index];
+                            if (labelValue === "now") {
+                                return "Now";
+                            }
+                            return "Today at " + labelValue;
+                        },
                         label: function label(tooltipItem, data) {
                             var index = tooltipItem.index;
                             var dataValue = data.datasets[0].data[index];
 
-                            return _String2.default.formatAsMoney(dataValue);
+                            return " " + _String2.default.formatAsMoney(dataValue);
                         }
                     }
-                }
+
+                },
+                hover: {
+                    mode: 'index',
+                    intersect: false
+                },
+                layout: {}
             };
 
             var data = {
@@ -82409,7 +82431,7 @@ var SingleLineChart = function (_React$Component) {
                     lineTension: 0,
 
                     pointRadius: 2,
-                    pointHitRadius: 7,
+                    pointHitRadius: 1000,
                     pointBackgroundColor: props.color,
                     pointBorderColor: props.color
                 }]

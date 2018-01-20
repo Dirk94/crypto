@@ -8,6 +8,8 @@ export default class SingleLineChart extends React.Component
     {
         super();
 
+        Chart.defaults.global.defaultFontColor = 'red';
+        Chart.defaults.global.defaultFontFamily = '"Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif';
         this.id = "id-" + Math.random().toString(36).substring(7);
     }
 
@@ -56,16 +58,38 @@ export default class SingleLineChart extends React.Component
                 }],
             },
             tooltips: {
-                displayColors: false,
+                mode: 'index',
+                intersect: false,
+                displayColors: true,
+                xPadding: 12,
+                yPadding: 6,
+                bodyFontSize: 13,
+                multiKeyBackground: '#000',
                 callbacks: {
+                    title: function(tooltipItem, data) {
+                        let index = tooltipItem[0].index;
+                        let labelValue = data.labels[index];
+                        if (labelValue === "now") {
+                            return "Now";
+                        }
+                        return "Today at " + labelValue;
+                    },
                     label: function(tooltipItem, data) {
                         let index = tooltipItem.index;
                         let dataValue = data.datasets[0].data[index];
 
-                        return String.formatAsMoney(dataValue);
+                        return " " + String.formatAsMoney(dataValue);
                     },
                 },
+
             },
+            hover: {
+                mode: 'index',
+                intersect: false,
+            },
+            layout: {
+
+            }
         };
 
         let data = {
@@ -80,7 +104,7 @@ export default class SingleLineChart extends React.Component
                 lineTension: 0,
 
                 pointRadius: 2,
-                pointHitRadius: 7,
+                pointHitRadius: 1000,
                 pointBackgroundColor: props.color,
                 pointBorderColor: props.color,
             }],

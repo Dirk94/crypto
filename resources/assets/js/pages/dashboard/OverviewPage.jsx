@@ -130,7 +130,7 @@ export default class Overview extends React.Component
                 minuteLabels.push(label);
             }
         }
-        
+
         return minuteLabels;
     }
 
