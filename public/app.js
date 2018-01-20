@@ -76631,12 +76631,12 @@ var Overview = function (_React$Component) {
 
             setInterval(function () {
                 return _this2.getPortfolioData();
-            }, 1000 * 10 // every 5 minutes
+            }, 1000 * 30 // every 30 seconds
             );
 
             setInterval(function () {
                 return _this2.getGraphData();
-            }, 1000 * 10 // every 5 minutes
+            }, 1000 * 30 // every 30 seconds
             );
         }
     }, {
@@ -76745,6 +76745,7 @@ var Overview = function (_React$Component) {
                     minuteLabels.push(label);
                 }
             }
+
             return minuteLabels;
         }
     }, {
@@ -82349,6 +82350,7 @@ var SingleLineChart = function (_React$Component) {
         key: 'componentWillReceiveProps',
         value: function componentWillReceiveProps(nextProps) {
             this.chart.data.datasets[0].data = nextProps.data;
+            this.chart.data.labels = nextProps.labels;
             this.chart.update();
         }
     }, {

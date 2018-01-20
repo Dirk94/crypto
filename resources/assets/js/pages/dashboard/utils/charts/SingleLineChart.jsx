@@ -21,6 +21,7 @@ export default class SingleLineChart extends React.Component
     componentWillReceiveProps(nextProps)
     {
         this.chart.data.datasets[0].data = nextProps.data;
+        this.chart.data.labels = nextProps.labels;
         this.chart.update();
     }
 
