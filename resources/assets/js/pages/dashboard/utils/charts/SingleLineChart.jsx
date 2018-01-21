@@ -64,7 +64,8 @@ export default class SingleLineChart extends React.Component
         this.chartDesktop.data.datasets[0].data = nextProps.data;
         this.chartDesktop.data.labels = nextProps.labels;
 
-        this.chartDesktop.options.scales.yAxes[0].ticks.suggestedMin = this.getYAxisMinValue(minValue, maxValue);
+        let newMin = this.getYAxisMinValue(minValue, maxValue);
+        this.chartDesktop.options.scales.yAxes[0].ticks.suggestedMin = newMin;
         this.chartDesktop.options.scales.yAxes[0].ticks.suggestedMax = this.getYAxisMaxValue(minValue, maxValue);
 
         this.chartDesktop.update();
@@ -112,7 +113,8 @@ export default class SingleLineChart extends React.Component
                         padding: 12,
                         fontSize: 13,
                         maxTicksLimit: 7,
-                        min: 0,
+                        suggestedMin: 0,
+                        suggestedMax: 100,
                         callback: function(label, index, labels) {
                             if (_this.maxIdentifier === 'k') {
                                 if (label === 0) { return 0; }
@@ -138,8 +140,6 @@ export default class SingleLineChart extends React.Component
                         fontSize: 13,
                         fontColor: 'white',
                         autoSkip: false,
-                        suggestedMin: 0,
-                        suggestedMax: 100,
                         callback: (dataLabel, index, dataLabels) => {
                             if (dataLabel === 'now') {
                                 return dataLabel;
