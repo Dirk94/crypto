@@ -29,12 +29,10 @@ export default class SingleLineChart extends React.Component
         this.canvasWidth = document.getElementById(this.id).width;
 
         if (this.canvasWidth < 1200) {
-            console.log("Setting the new small value!");
             this.chartDesktop.options.scales.yAxes[0].ticks.maxTicksLimit = 4;
             this.chartDesktop.data.datasets[0].pointRadius = 0;
             this.chartDesktop.update();
         } else {
-            console.log("Setting the new large value!");
             this.chartDesktop.options.scales.yAxes[0].ticks.maxTicksLimit = 7;
             this.chartDesktop.data.datasets[0].pointRadius = 2;
             this.chartDesktop.update();
