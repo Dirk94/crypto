@@ -82508,7 +82508,7 @@ var SingleLineChart = function (_React$Component) {
                 return 0;
             }
 
-            return min - min * 0.5;
+            return min - min * 0.05;
         }
     }, {
         key: 'getYAxisMaxValue',
@@ -82517,7 +82517,7 @@ var SingleLineChart = function (_React$Component) {
                 return 100;
             }
 
-            return max + max * 0.5;
+            return max + max * 0.05;
         }
     }, {
         key: 'componentDidMount',
