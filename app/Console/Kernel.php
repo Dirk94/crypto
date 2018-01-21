@@ -14,7 +14,7 @@ class Kernel extends ConsoleKernel
 
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('coins:update')->cron('3,8,13,18,23,28,33,38,43,48,53,58 * * * *');
+        $schedule->command('coins:update')->cron('1,6,11,16,21,26,31,36,41,46,51,56 * * * *');
     }
 
     protected function commands()
