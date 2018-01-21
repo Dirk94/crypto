@@ -36,14 +36,11 @@ export default class Overview extends React.Component
         CoinData.getCoinData();
 
         setInterval(
-            () => this.getPortfolioData(),
-            1000 * 10 // every 30 seconds
-        )
-
-        setInterval(
-            () => this.getGraphData(),
-            1000 * 10 // every 30 seconds
-        )
+            () => {
+                this.getPortfolioData()
+                this.getGraphData()
+            }, 1000 * 10 // every 10 seconds
+        );
     }
 
     render()

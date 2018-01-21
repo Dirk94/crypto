@@ -33,7 +33,7 @@ export default class Auth {
     }
 
     static userLogout() {
-        localStorage.removeItem('token');
+        localStorage.clear();
     }
 
     static getToken() {

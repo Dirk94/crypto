@@ -11606,7 +11606,7 @@ var Auth = function () {
     }, {
         key: 'userLogout',
         value: function userLogout() {
-            localStorage.removeItem('token');
+            localStorage.clear();
         }
     }, {
         key: 'getToken',
@@ -76630,13 +76630,9 @@ var Overview = function (_React$Component) {
             _CoinData2.default.getCoinData();
 
             setInterval(function () {
-                return _this2.getPortfolioData();
-            }, 1000 * 10 // every 30 seconds
-            );
-
-            setInterval(function () {
-                return _this2.getGraphData();
-            }, 1000 * 10 // every 30 seconds
+                _this2.getPortfolioData();
+                _this2.getGraphData();
+            }, 1000 * 10 // every 10 seconds
             );
         }
     }, {
