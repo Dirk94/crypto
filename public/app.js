@@ -82394,8 +82394,8 @@ var SingleLineChart = function (_React$Component) {
             this.chartDesktop.data.datasets[0].data = nextProps.data;
             this.chartDesktop.data.labels = nextProps.labels;
 
-            this.chartDesktop.options.scales.yAxes[0].ticks.min = this.getYAxisMinValue(minValue, maxValue);
-            this.chartDesktop.options.scales.yAxes[0].ticks.max = this.getYAxisMaxValue(minValue, maxValue);
+            this.chartDesktop.options.scales.yAxes[0].ticks.suggestedMin = this.getYAxisMinValue(minValue, maxValue);
+            this.chartDesktop.options.scales.yAxes[0].ticks.suggestedMax = this.getYAxisMaxValue(minValue, maxValue);
 
             this.chartDesktop.update();
             this.responsiveUpdateOfChart();
@@ -82476,8 +82476,8 @@ var SingleLineChart = function (_React$Component) {
                             fontSize: 13,
                             fontColor: 'white',
                             autoSkip: false,
-                            min: 0,
-                            max: 100,
+                            suggestedMin: 0,
+                            suggestedMax: 100,
                             callback: function callback(dataLabel, index, dataLabels) {
                                 if (dataLabel === 'now') {
                                     return dataLabel;
