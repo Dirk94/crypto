@@ -243,3 +243,8 @@ $container-max-widths: (
 		xl: 1100px
 );
 @include _assert-ascending($container-max-widths, "$container-max-widths");
+
+$breakpoint-xl: 1200;
+$breakpoint-lg: 992;
+$breakpoint-md: 768;
+$breakpoint-sm: 576;

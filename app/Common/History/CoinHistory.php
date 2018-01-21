@@ -28,7 +28,9 @@ class CoinHistory
 
     public static function saveMinuteHistory()
     {
-        $now = Carbon::now()->format('Y-m-d H:i:00');
+        $carbonNow = Carbon::now();
+        $carbonNow->minute = floor($carbonNow->minute / 5) * 5;
+        $now = $carbonNow->format('Y-m-d H:i:00');
 
         foreach (Coin::all() as $coin) {
             try {

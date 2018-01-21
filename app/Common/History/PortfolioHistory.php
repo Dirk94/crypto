@@ -28,17 +28,23 @@ class PortfolioHistory
 
     public static function saveAllMinuteHistory()
     {
-        $now = Carbon::now()->format('Y-m-d H:i:00');
+        $carbonNow = Carbon::now();
+        $carbonNow->minute = floor($carbonNow->minute / 5) * 5;
+        $now = $carbonNow->format('Y-m-d H:i:00');
 
         foreach (Portfolio::all() as $portfolio) {
             self::saveSingleMinuteHistory($portfolio, $now);
         }
     }
 
-    public static function saveSingleMinuteHistory(Portfolio $portfolio, $now = null)
+    public static function saveSingleMinuteHistory(Portfolio $portfolio, $now = null, $override = false)
     {
+        // TODO if override is true: remove old value (if it exists) and set new value.
+        //
         if ($now === null) {
-            $now = Carbon::now()->format('Y-m-d H:i:00');
+            $carbonNow = Carbon::now();
+            $carbonNow->minute = floor($carbonNow->minute / 5) * 5;
+            $now = $carbonNow->format('Y-m-d H:i:00');
         }
         try {
             $portfolioHistory = new PortfolioCoinMinuteHistory();
