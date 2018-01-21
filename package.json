@@ -5,8 +5,7 @@
     "license": "MIT",
     "scripts": {
         "watch": "npx webpack",
-        "production": "npx webpack",
-        "dev": "npx webpack"
+        "build": "webpack"
     },
     "dependencies": {
         "axios": "^0.17.1",
