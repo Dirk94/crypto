@@ -57,7 +57,9 @@ export default class SingleLineChart extends React.Component
         let maxValue = this.getMaxValueFromData(nextProps);
         let minValue = this.getMinValueFromData(nextProps);
         this.maxIdentifier = '';
-        if (maxValue >= 10000 && maxValue < 1000000) {
+        if (maxValue >= 1000 && maxValue < 100000) {
+            this.maxIdentifier = 'kd';
+        } else if (maxValue >= 100000 && maxValue < 1000000) {
             this.maxIdentifier = 'k';
         } else if (maxValue >= 1000000 && maxValue <= 1000000000) {
             this.maxIdentifier = 'm';
@@ -124,17 +126,21 @@ export default class SingleLineChart extends React.Component
                         suggestedMin: 0,
                         suggestedMax: 100,
                         callback: function(label, index, labels) {
+                            if (_this.maxIdentifier === 'kd') {
+                                if (label === 0) { return 0; }
+                                return (label / 1000) + "K";
+                            }
                             if (_this.maxIdentifier === 'k') {
                                 if (label === 0) { return 0; }
-                                return parseInt(Math.round(label / 1000)) + "K";
+                                return (label / 1000) + "K";
                             }
                             if (_this.maxIdentifier === 'm') {
                                 if (label === 0) { return 0; }
-                                return parseInt(Math.round(label / 1000000)) + "M";
+                                return (label / 1000000) + "M";
                             }
                             if (_this.maxIdentifier === 'b') {
                                 if (label === 0) { return 0; }
-                                return parseInt(Math.round(label / 1000000000)) + "B";
+                                return (label / 1000000000) + "B";
                             }
                             return String.formatAsMoney(label, 0);
                         },
@@ -149,11 +155,8 @@ export default class SingleLineChart extends React.Component
                         fontColor: 'white',
                         autoSkip: false,
                         callback: (dataLabel, index, dataLabels) => {
-                            if (dataLabel === 'now') {
-                                return dataLabel;
-                            }
-                            if (
-                                dataLabel.indexOf(':00') !== -1 ||
+                            if (dataLabel === 'now') { return dataLabel; }
+                            if (dataLabel.indexOf(':00') !== -1 ||
                                 (this.canvasWidth >= 1200 && dataLabel.indexOf(':30') !== -1)
                             ) {
                                 if (dataLabels.length - index >= 4) {

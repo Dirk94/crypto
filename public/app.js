@@ -82483,7 +82483,9 @@ var SingleLineChart = function (_React$Component) {
             var maxValue = this.getMaxValueFromData(nextProps);
             var minValue = this.getMinValueFromData(nextProps);
             this.maxIdentifier = '';
-            if (maxValue >= 10000 && maxValue < 1000000) {
+            if (maxValue >= 1000 && maxValue < 100000) {
+                this.maxIdentifier = 'kd';
+            } else if (maxValue >= 100000 && maxValue < 1000000) {
                 this.maxIdentifier = 'k';
             } else if (maxValue >= 1000000 && maxValue <= 1000000000) {
                 this.maxIdentifier = 'm';
@@ -82552,23 +82554,29 @@ var SingleLineChart = function (_React$Component) {
                             suggestedMin: 0,
                             suggestedMax: 100,
                             callback: function callback(label, index, labels) {
+                                if (_this.maxIdentifier === 'kd') {
+                                    if (label === 0) {
+                                        return 0;
+                                    }
+                                    return label / 1000 + "K";
+                                }
                                 if (_this.maxIdentifier === 'k') {
                                     if (label === 0) {
                                         return 0;
                                     }
-                                    return parseInt(Math.round(label / 1000)) + "K";
+                                    return label / 1000 + "K";
                                 }
                                 if (_this.maxIdentifier === 'm') {
                                     if (label === 0) {
                                         return 0;
                                     }
-                                    return parseInt(Math.round(label / 1000000)) + "M";
+                                    return label / 1000000 + "M";
                                 }
                                 if (_this.maxIdentifier === 'b') {
                                     if (label === 0) {
                                         return 0;
                                     }
-                                    return parseInt(Math.round(label / 1000000000)) + "B";
+                                    return label / 1000000000 + "B";
                                 }
                                 return _String2.default.formatAsMoney(label, 0);
                             },
