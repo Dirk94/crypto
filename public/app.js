@@ -82346,8 +82346,8 @@ var SingleLineChart = function (_React$Component) {
         $(window).resize(function () {
             clearTimeout(resizeId);
             resizeId = setTimeout(function () {
-                var canvasWidth = document.getElementById(_this2.id).width;
-                _this2.responsiveUpdateOfChart(canvasWidth);
+                _this2.canvasWidth = document.getElementById(_this2.id).width;
+                _this2.responsiveUpdateOfChart();
             }, 100);
         });
         return _this2;
@@ -82355,8 +82355,10 @@ var SingleLineChart = function (_React$Component) {
 
     _createClass(SingleLineChart, [{
         key: 'responsiveUpdateOfChart',
-        value: function responsiveUpdateOfChart(canvasWidth) {
-            if (canvasWidth < 1200) {
+        value: function responsiveUpdateOfChart() {
+            this.canvasWidth = document.getElementById(this.id).width;
+
+            if (this.canvasWidth < 1200) {
                 console.log("Setting the new small value!");
                 this.chartDesktop.options.scales.yAxes[0].ticks.maxTicksLimit = 4;
                 this.chartDesktop.data.datasets[0].pointRadius = 0;
@@ -82392,19 +82394,25 @@ var SingleLineChart = function (_React$Component) {
 
             this.chartDesktop.data.datasets[0].data = nextProps.data;
             this.chartDesktop.data.labels = nextProps.labels;
+            if (maxValue < 100) {
+                this.chartDesktop.options.scales.yAxes[0].ticks.min = 0;
+            } else {
+                this.chartDesktop.options.scales.yAxes[0].ticks.min = null;
+            }
             this.chartDesktop.update();
+            this.responsiveUpdateOfChart();
         }
     }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
             this.createChart(this.props);
-
-            var canvasWidth = document.getElementById(this.id).width;
-            this.responsiveUpdateOfChart(canvasWidth);
+            this.responsiveUpdateOfChart();
         }
     }, {
         key: 'createChart',
         value: function createChart(props) {
+            var _this3 = this;
+
             var _this = this;
             var canvas = document.getElementById(this.id).getContext("2d");
 
@@ -82419,8 +82427,8 @@ var SingleLineChart = function (_React$Component) {
                         ticks: {
                             padding: 12,
                             fontSize: 13,
-                            min: 0,
                             maxTicksLimit: 7,
+                            min: 0,
                             callback: function callback(label, index, labels) {
                                 if (_this.maxIdentifier === 'k') {
                                     if (label === 0) {
@@ -82451,7 +82459,19 @@ var SingleLineChart = function (_React$Component) {
                             padding: 12,
                             fontSize: 13,
                             fontColor: 'white',
-                            maxTicksLimit: 6
+                            autoSkip: false,
+                            callback: function callback(dataLabel, index, dataLabels) {
+                                if (dataLabel === 'now') {
+                                    return dataLabel;
+                                }
+                                if (dataLabel.indexOf(':00') !== -1 || _this3.canvasWidth >= 1200 && dataLabel.indexOf(':30') !== -1) {
+                                    if (dataLabels.length - index >= 4) {
+                                        return dataLabel;
+                                    }
+                                }
+
+                                return null;
+                            }
                         }
                     }]
                 },

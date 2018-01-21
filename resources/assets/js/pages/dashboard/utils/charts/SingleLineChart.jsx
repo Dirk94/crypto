@@ -17,16 +17,18 @@ export default class SingleLineChart extends React.Component
         $(window).resize(() => {
             clearTimeout(resizeId);
             resizeId = setTimeout(() => {
-                var canvasWidth = document.getElementById(this.id).width;
-                this.responsiveUpdateOfChart(canvasWidth);
+                this.canvasWidth = document.getElementById(this.id).width;
+                this.responsiveUpdateOfChart();
 
             }, 100);
         });
     }
 
-    responsiveUpdateOfChart(canvasWidth)
+    responsiveUpdateOfChart()
     {
-        if (canvasWidth < 1200) {
+        this.canvasWidth = document.getElementById(this.id).width;
+
+        if (this.canvasWidth < 1200) {
             console.log("Setting the new small value!");
             this.chartDesktop.options.scales.yAxes[0].ticks.maxTicksLimit = 4;
             this.chartDesktop.data.datasets[0].pointRadius = 0;
@@ -62,15 +64,19 @@ export default class SingleLineChart extends React.Component
 
         this.chartDesktop.data.datasets[0].data = nextProps.data;
         this.chartDesktop.data.labels = nextProps.labels;
+        if (maxValue < 100) {
+            this.chartDesktop.options.scales.yAxes[0].ticks.min = 0;
+        } else {
+            this.chartDesktop.options.scales.yAxes[0].ticks.min = null;
+        }
         this.chartDesktop.update();
+        this.responsiveUpdateOfChart();
     }
 
     componentDidMount()
     {
         this.createChart(this.props);
-
-        var canvasWidth = document.getElementById(this.id).width;
-        this.responsiveUpdateOfChart(canvasWidth);
+        this.responsiveUpdateOfChart();
     }
 
     createChart(props)
@@ -89,8 +95,8 @@ export default class SingleLineChart extends React.Component
                     ticks: {
                         padding: 12,
                         fontSize: 13,
-                        min: 0,
                         maxTicksLimit: 7,
+                        min: 0,
                         callback: function(label, index, labels) {
                             if (_this.maxIdentifier === 'k') {
                                 if (label === 0) { return 0; }
@@ -115,7 +121,22 @@ export default class SingleLineChart extends React.Component
                         padding: 12,
                         fontSize: 13,
                         fontColor: 'white',
-                        maxTicksLimit: 6,
+                        autoSkip: false,
+                        callback: (dataLabel, index, dataLabels) => {
+                            if (dataLabel === 'now') {
+                                return dataLabel;
+                            }
+                            if (
+                                dataLabel.indexOf(':00') !== -1 ||
+                                (this.canvasWidth >= 1200 && dataLabel.indexOf(':30') !== -1)
+                            ) {
+                                if (dataLabels.length - index >= 4) {
+                                    return dataLabel;
+                                }
+                            }
+
+                            return null;
+                        }
                     },
                 }],
             },
