@@ -82455,7 +82455,7 @@ var SingleLineChart = function (_React$Component) {
             this.canvasWidth = document.getElementById(this.id).width;
 
             if (this.canvasWidth < 1200) {
-                this.chartDesktop.options.scales.yAxes[0].ticks.maxTicksLimit = 4;
+                this.chartDesktop.options.scales.yAxes[0].ticks.maxTicksLimit = 2;
                 this.chartDesktop.data.datasets[0].pointRadius = 0;
                 this.chartDesktop.update();
             } else {
