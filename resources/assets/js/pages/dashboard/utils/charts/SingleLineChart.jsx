@@ -78,7 +78,7 @@ export default class SingleLineChart extends React.Component
             return 0;
         }
 
-        return min - (min * 0.25);
+        return min - (min * 0.15);
     }
 
     getYAxisMaxValue(min, max)
@@ -87,7 +87,7 @@ export default class SingleLineChart extends React.Component
             return 100;
         }
 
-        return max + (max * 0.25);
+        return max + (max * 0.15);
     }
 
     componentDidMount()
