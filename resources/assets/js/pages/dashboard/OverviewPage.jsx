@@ -37,12 +37,12 @@ export default class Overview extends React.Component
 
         setInterval(
             () => this.getPortfolioData(),
-            1000 * 30 // every 30 seconds
+            1000 * 10 // every 30 seconds
         )
 
         setInterval(
             () => this.getGraphData(),
-            1000 * 30 // every 30 seconds
+            1000 * 10 // every 30 seconds
         )
     }
 

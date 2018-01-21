@@ -76631,12 +76631,12 @@ var Overview = function (_React$Component) {
 
             setInterval(function () {
                 return _this2.getPortfolioData();
-            }, 1000 * 30 // every 30 seconds
+            }, 1000 * 10 // every 30 seconds
             );
 
             setInterval(function () {
                 return _this2.getGraphData();
-            }, 1000 * 30 // every 30 seconds
+            }, 1000 * 10 // every 30 seconds
             );
         }
     }, {
