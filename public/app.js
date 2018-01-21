@@ -82456,10 +82456,14 @@ var SingleLineChart = function (_React$Component) {
 
             if (this.canvasWidth < 1200) {
                 this.chartDesktop.options.scales.yAxes[0].ticks.maxTicksLimit = 2;
+                this.chartDesktop.options.scales.yAxes[0].ticks.padding = 4;
+                this.chartDesktop.options.scales.xAxes[0].ticks.padding = 0;
                 this.chartDesktop.data.datasets[0].pointRadius = 0;
                 this.chartDesktop.update();
             } else {
                 this.chartDesktop.options.scales.yAxes[0].ticks.maxTicksLimit = 7;
+                this.chartDesktop.options.scales.yAxes[0].ticks.padding = 12;
+                this.chartDesktop.options.scales.xAxes[0].ticks.padding = 12;
                 this.chartDesktop.data.datasets[0].pointRadius = 2;
                 this.chartDesktop.update();
             }
