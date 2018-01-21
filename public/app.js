@@ -82383,6 +82383,7 @@ var SingleLineChart = function (_React$Component) {
         key: 'componentWillReceiveProps',
         value: function componentWillReceiveProps(nextProps) {
             var maxValue = this.getMaxValueFromData(nextProps);
+            var minValue = this.getMinValueFromData(nextProps);
             this.maxIdentifier = '';
             if (maxValue >= 10000 && maxValue < 1000000) {
                 this.maxIdentifier = 'k';
@@ -82394,13 +82395,30 @@ var SingleLineChart = function (_React$Component) {
 
             this.chartDesktop.data.datasets[0].data = nextProps.data;
             this.chartDesktop.data.labels = nextProps.labels;
-            if (maxValue < 100) {
-                this.chartDesktop.options.scales.yAxes[0].ticks.min = 0;
-            } else {
-                this.chartDesktop.options.scales.yAxes[0].ticks.min = null;
-            }
+
+            this.chartDesktop.options.scales.yAxes[0].ticks.min = this.getYAxisMinValue(minValue, maxValue);
+            this.chartDesktop.options.scales.yAxes[0].ticks.max = this.getYAxisMaxValue(minValue, maxValue);
+
             this.chartDesktop.update();
             this.responsiveUpdateOfChart();
+        }
+    }, {
+        key: 'getYAxisMinValue',
+        value: function getYAxisMinValue(min, max) {
+            if (min < 100) {
+                return 0;
+            }
+
+            return min - min * 0.25;
+        }
+    }, {
+        key: 'getYAxisMaxValue',
+        value: function getYAxisMaxValue(min, max) {
+            if (max < 100) {
+                return 100;
+            }
+
+            return max + max * 0.25;
         }
     }, {
         key: 'componentDidMount',
@@ -82434,19 +82452,19 @@ var SingleLineChart = function (_React$Component) {
                                     if (label === 0) {
                                         return 0;
                                     }
-                                    return label / 1000 + "K";
+                                    return parseInt(Math.round(label / 1000)) + "K";
                                 }
                                 if (_this.maxIdentifier === 'm') {
                                     if (label === 0) {
                                         return 0;
                                     }
-                                    return label / 1000000 + "M";
+                                    return parseInt(Math.round(label / 1000000)) + "M";
                                 }
                                 if (_this.maxIdentifier === 'b') {
                                     if (label === 0) {
                                         return 0;
                                     }
-                                    return label / 1000000000 + "B";
+                                    return parseInt(Math.round(label / 1000000000)) + "B";
                                 }
                                 return _String2.default.formatAsMoney(label, 0);
                             },
@@ -82460,6 +82478,8 @@ var SingleLineChart = function (_React$Component) {
                             fontSize: 13,
                             fontColor: 'white',
                             autoSkip: false,
+                            min: 0,
+                            max: 100,
                             callback: function callback(dataLabel, index, dataLabels) {
                                 if (dataLabel === 'now') {
                                     return dataLabel;
@@ -82544,6 +82564,17 @@ var SingleLineChart = function (_React$Component) {
                 }
             }
             return maxValue;
+        }
+    }, {
+        key: 'getMinValueFromData',
+        value: function getMinValueFromData(props) {
+            var minValue = Infinity;
+            for (var i = 0; i < props.data.length; i++) {
+                if (props.data[i] < minValue) {
+                    minValue = props.data[i];
+                }
+            }
+            return minValue;
         }
     }]);
 
