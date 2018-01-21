@@ -65,8 +65,12 @@ export default class SingleLineChart extends React.Component
         this.chartDesktop.data.labels = nextProps.labels;
 
         let newMin = this.getYAxisMinValue(minValue, maxValue);
+        console.log("Suggested Min: " + newMin);
         this.chartDesktop.options.scales.yAxes[0].ticks.suggestedMin = newMin;
-        this.chartDesktop.options.scales.yAxes[0].ticks.suggestedMax = this.getYAxisMaxValue(minValue, maxValue);
+
+        let newMax = this.getYAxisMaxValue(minValue, maxValue);
+        console.log("Suggested Max: " + newMax);
+        this.chartDesktop.options.scales.yAxes[0].ticks.suggestedMax = newMax;
 
         this.chartDesktop.update();
         this.responsiveUpdateOfChart();
