@@ -21,7 +21,7 @@ export default class HourLineChart extends React.Component
 
     tickXLabelCallback(dataLabel, index, dataLabels, canvasWidth) {
         if (canvasWidth < 1200) {
-            if (index % 10 === 0) {
+            if (index % 16 === 0) {
                 return dataLabel;
             }
         } else {

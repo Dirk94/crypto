@@ -99589,7 +99589,7 @@ var HourLineChart = function (_React$Component) {
         key: 'tickXLabelCallback',
         value: function tickXLabelCallback(dataLabel, index, dataLabels, canvasWidth) {
             if (canvasWidth < 1200) {
-                if (index % 10 === 0) {
+                if (index % 16 === 0) {
                     return dataLabel;
                 }
             } else {
