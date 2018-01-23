@@ -8490,6 +8490,9 @@ canvas {
 button:hover {
   cursor: pointer; }
 
+.no-box-shadow {
+  box-shadow: none !important; }
+
 .btn-float {
   float: left;
   margin-right: 15px; }
@@ -8499,3 +8502,9 @@ button:hover {
 
 .sidebar-brand:hover {
   color: #cfd2da !important; }
+
+.chart-selector-container {
+  float: right;
+  min-width: 230px; }
+  .chart-selector-container .chart-selector {
+    padding-bottom: 8px; }

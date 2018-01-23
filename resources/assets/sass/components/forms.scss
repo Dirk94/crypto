@@ -16,6 +16,10 @@ button:hover {
 	cursor: pointer;
 }
 
+.no-box-shadow {
+	box-shadow: none!important;
+}
+
 .btn-float {
 	float: left;
 	margin-right: 15px;

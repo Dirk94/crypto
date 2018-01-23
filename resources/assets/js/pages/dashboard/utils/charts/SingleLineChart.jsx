@@ -1,15 +1,22 @@
 import React from 'react';
 import Chart from 'chart.js';
+import PropTypes from 'prop-types';
 import String from "../../../../common/String.jsx";
 
 export default class SingleLineChart extends React.Component
 {
+    static propTypes = {
+        hidden: PropTypes.bool.isRequired,
+        labels: PropTypes.array.isRequired,
+        data:   PropTypes.array.isRequired,
+        color:  PropTypes.string,
+        tickXLabelCallback: PropTypes.func.isRequired,
+        tooltipTitleCallback: PropTypes.func.isRequired,
+    }
+
     constructor()
     {
         super();
-
-        Chart.defaults.global.defaultFontColor = 'white';
-        Chart.defaults.global.defaultFontFamily = '"Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif';
 
         this.id = "id-" + Math.random().toString(36).substring(7);
 
@@ -17,9 +24,12 @@ export default class SingleLineChart extends React.Component
         $(window).resize(() => {
             clearTimeout(resizeId);
             resizeId = setTimeout(() => {
-                this.canvasWidth = document.getElementById(this.id).width;
-                this.responsiveUpdateOfChart();
+                const canvas = document.getElementById(this.id);
+                if (canvas) {
+                    this.canvasWidth = canvas.width;
+                }
 
+                this.responsiveUpdateOfChart();
             }, 100);
         });
     }
@@ -47,7 +57,7 @@ export default class SingleLineChart extends React.Component
     {
         return (
             <div>
-                <canvas id={this.id} />
+                <canvas id={this.id} style={this.props.hidden ? {display: 'none'} : {display: 'block'}}/>
             </div>
         );
     }
@@ -86,7 +96,7 @@ export default class SingleLineChart extends React.Component
             return 0;
         }
 
-        return min - (min * 0.05);
+        return min - (min * 0.02);
     }
 
     getYAxisMaxValue(min, max)
@@ -95,7 +105,7 @@ export default class SingleLineChart extends React.Component
             return 100;
         }
 
-        return max + (max * 0.05);
+        return max + (max * 0.02);
     }
 
     componentDidMount()
@@ -153,16 +163,7 @@ export default class SingleLineChart extends React.Component
                         fontColor: 'white',
                         autoSkip: false,
                         callback: (dataLabel, index, dataLabels) => {
-                            if (dataLabel === 'now') { return dataLabel; }
-                            if (dataLabel.indexOf(':00') !== -1 ||
-                                (this.canvasWidth >= 1200 && dataLabel.indexOf(':30') !== -1)
-                            ) {
-                                if (dataLabels.length - index >= 4) {
-                                    return dataLabel;
-                                }
-                            }
-
-                            return null;
+                            return this.props.tickXLabelCallback(dataLabel, index, dataLabels, this.canvasWidth);
                         }
                     },
                 }],
@@ -178,13 +179,8 @@ export default class SingleLineChart extends React.Component
                 bodyFontStyle: 'bold',
                 titleFontStyle: 'normal',
                 callbacks: {
-                    title: function(tooltipItem, data) {
-                        let index = tooltipItem[0].index;
-                        let labelValue = data.labels[index];
-                        if (labelValue === "now") {
-                            return "Now";
-                        }
-                        return "Today at " + labelValue;
+                    title: (tooltipItem, data) => {
+                        return this.props.tooltipTitleCallback(tooltipItem, data);
                     },
                     label: function(tooltipItem, data) {
                         let index = tooltipItem.index;
@@ -207,7 +203,7 @@ export default class SingleLineChart extends React.Component
         let data = {
             labels: props.labels,
             datasets: [{
-                label: props.datasetLabel,
+                label: '',
                 data: props.data,
                 borderColor: props.color,
                 fill: true,
