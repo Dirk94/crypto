@@ -81478,7 +81478,7 @@ var PortfolioBalanceData = function () {
                     return resolve(parsedData);
                 }
 
-                _Request2.default.get('/api/portfolios/' + localStorage.getItem('defaultPortfolioId') + '/history/minutes').then(function (response) {
+                _Request2.default.get('/api/portfolios/' + localStorage.getItem('defaultPortfolioId') + '/history/hours').then(function (response) {
                     localStorage.setItem(PortfolioBalanceData.KEY_HOUR_DATA, JSON.stringify(response.data));
                     localStorage.setItem(PortfolioBalanceData.KEY_HOUR_DATA_TIMESTAMP, (0, _moment2.default)().format('x'));
 
@@ -81504,7 +81504,7 @@ var PortfolioBalanceData = function () {
                     return resolve(parsedData);
                 }
 
-                _Request2.default.get('/api/portfolios/' + localStorage.getItem('defaultPortfolioId') + '/history/minutes').then(function (response) {
+                _Request2.default.get('/api/portfolios/' + localStorage.getItem('defaultPortfolioId') + '/history/days').then(function (response) {
                     localStorage.setItem(PortfolioBalanceData.KEY_DAY_DATA, JSON.stringify(response.data));
                     localStorage.setItem(PortfolioBalanceData.KEY_DAY_DATA_TIMESTAMP, (0, _moment2.default)().format('x'));
 

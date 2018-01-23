@@ -58,7 +58,7 @@ export default class PortfolioBalanceData {
                 return resolve(parsedData);
             }
 
-            Request.get('/api/portfolios/' + localStorage.getItem('defaultPortfolioId') + '/history/minutes')
+            Request.get('/api/portfolios/' + localStorage.getItem('defaultPortfolioId') + '/history/hours')
                 .then((response) => {
                     localStorage.setItem(PortfolioBalanceData.KEY_HOUR_DATA, JSON.stringify(response.data));
                     localStorage.setItem(PortfolioBalanceData.KEY_HOUR_DATA_TIMESTAMP, moment().format('x'));
@@ -85,7 +85,7 @@ export default class PortfolioBalanceData {
                 return resolve(parsedData);
             }
 
-            Request.get('/api/portfolios/' + localStorage.getItem('defaultPortfolioId') + '/history/minutes')
+            Request.get('/api/portfolios/' + localStorage.getItem('defaultPortfolioId') + '/history/days')
                 .then((response) => {
                     localStorage.setItem(PortfolioBalanceData.KEY_DAY_DATA, JSON.stringify(response.data));
                     localStorage.setItem(PortfolioBalanceData.KEY_DAY_DATA_TIMESTAMP, moment().format('x'));
