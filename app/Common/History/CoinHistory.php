@@ -47,14 +47,26 @@ class CoinHistory
     public static function saveHourHistory()
     {
         $now = Carbon::now()->format('Y-m-d H:00:00');
+        $previousHour = Carbon::now()->subHour()->format('Y-m-d H:00:00');
 
         foreach (Coin::all() as $coin) {
+            $minuteHistoryCoins = CoinMinuteHistory::whereCoinId($coin->id)
+                ->where('date', '>', $previousHour)
+                ->where('date', '<=', $now)
+                ->get();
+
+            $results = self::getLowHighAndAverages($minuteHistoryCoins, $coin);
+
             try {
                 $historyCoin = new CoinHourHistory();
                 $historyCoin->date = $now;
                 $historyCoin = self::setPropertiesOfHistoryCoin($historyCoin, $coin);
-                $historyCoin->save();
 
+                foreach($results as $key => $value) {
+                    $historyCoin->{$key} = $value;
+                }
+
+                $historyCoin->save();
             } catch (\Exception $e) {
                 print "Exception while setting coin hour history.\n";
             }
@@ -64,12 +76,26 @@ class CoinHistory
     public static function saveDayHistory()
     {
         $now = Carbon::now()->format('Y-m-d');
+        $nowWithHour = Carbon::now()->format('Y-m-d 00:00:00');
+        $yesterday = Carbon::now()->subDay()->format('Y-m-d 00:00:00');
 
         foreach (Coin::all() as $coin) {
+            $minuteHistoryCoins = CoinMinuteHistory::whereCoinId($coin->id)
+                ->where('date', '>=', $yesterday)
+                ->where('date', '<', $nowWithHour)
+                ->get();
+
+            $results = self::getLowHighAndAverages($minuteHistoryCoins, $coin);
+
             try {
                 $historyCoin = new CoinDayHistory();
                 $historyCoin->date = $now;
                 $historyCoin = self::setPropertiesOfHistoryCoin($historyCoin, $coin);
+
+                foreach($results as $key => $value) {
+                    $historyCoin->{$key} = $value;
+                }
+
                 $historyCoin->save();
             } catch(\Exception $e) {
                 print "Exception while setting coin day history.\n";
@@ -85,5 +111,59 @@ class CoinHistory
         $historyCoin->usd_value = $coin->usd_value;
 
         return $historyCoin;
+    }
+
+    private static function getLowHighAndAverages($historyCoins, $coin) {
+        $usdHigh = 0;
+        $usdLow  = 1000000000;
+        $usdAverage = 0;
+
+        $btcHigh = 0;
+        $btcLow  = 1000000000;
+        $btcAverage = 0;
+
+        $n = 0;
+        foreach($historyCoins as $historyCoin) {
+            if ($historyCoin->btc_value > $btcHigh) {
+                $btcHigh = $historyCoin->btc_value;
+            }
+            if ($historyCoin->btc_value < $btcLow) {
+                $btcLow = $historyCoin->btc_value;
+            }
+            if ($historyCoin->usd_value > $usdHigh) {
+                $usdHigh = $historyCoin->usd_value;
+            }
+            if ($historyCoin->usd_value < $usdLow) {
+                $usdLow = $historyCoin->usd_value;
+            }
+
+            $usdAverage += $historyCoin->usd_value;
+            $btcAverage += $historyCoin->btc_value;
+
+            $n++;
+        }
+
+        if ($n == 0) {
+            $usdHigh = $coin->usd_value;
+            $usdLow = $coin->usd_value;
+            $usdAverage = $coin->usd_value;
+
+            $btcHigh = $coin->btc_value;
+            $btcLow = $coin->btc_value;
+            $btcAverage = $coin->btc_value;
+        } else {
+            $usdAverage /= $n;
+            $btcAverage /= $n;
+        }
+
+        return [
+            'btc_value' => $btcAverage,
+            'btc_value_low' => $btcLow,
+            'btc_value_high' => $btcHigh,
+
+            'usd_value' => $usdAverage,
+            'usd_value_low' => $usdLow,
+            'usd_value_high' => $usdHigh,
+        ];
     }
 }
