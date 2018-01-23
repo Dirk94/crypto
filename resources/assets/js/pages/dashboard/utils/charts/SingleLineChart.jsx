@@ -57,7 +57,7 @@ export default class SingleLineChart extends React.Component
     {
         return (
             <div>
-                <canvas id={this.id} style={this.props.hidden ? {display: 'none'} : {display: 'block'}}/>
+                <canvas id={this.id} style={this.props.hidden ? {display: 'none'} : {display: 'block'}} />
             </div>
         );
     }
@@ -65,7 +65,6 @@ export default class SingleLineChart extends React.Component
     componentWillReceiveProps(nextProps)
     {
         let maxValue = this.getMaxValueFromData(nextProps);
-        let minValue = this.getMinValueFromData(nextProps);
         this.maxIdentifier = '';
         if (maxValue >= 1000 && maxValue < 100000) {
             this.maxIdentifier = 'kd';
@@ -93,15 +92,14 @@ export default class SingleLineChart extends React.Component
 
         let suggestedMin, suggestedMax;
         if (this.canvasWidth < 1200) {
-            suggestedMin = min;
-            suggestedMax = max;
+            this.chartDesktop.options.scales.yAxes[0].ticks.suggestedMin = null;
+            this.chartDesktop.options.scales.yAxes[0].ticks.suggestedMin = null;
         } else {
             suggestedMin = min + (min * 0.02);
             suggestedMax = max - (max * 0.02);
+            this.chartDesktop.options.scales.yAxes[0].ticks.suggestedMin = suggestedMin;
+            this.chartDesktop.options.scales.yAxes[0].ticks.suggestedMin = suggestedMax;
         }
-
-        this.chartDesktop.options.scales.yAxes[0].ticks.suggestedMin = suggestedMin;
-        this.chartDesktop.options.scales.yAxes[0].ticks.suggestedMin = suggestedMax;
     }
 
     componentDidMount()

@@ -82795,7 +82795,6 @@ var SingleLineChart = function (_React$Component) {
         key: 'componentWillReceiveProps',
         value: function componentWillReceiveProps(nextProps) {
             var maxValue = this.getMaxValueFromData(nextProps);
-            var minValue = this.getMinValueFromData(nextProps);
             this.maxIdentifier = '';
             if (maxValue >= 1000 && maxValue < 100000) {
                 this.maxIdentifier = 'kd';
@@ -82824,15 +82823,14 @@ var SingleLineChart = function (_React$Component) {
             var suggestedMin = void 0,
                 suggestedMax = void 0;
             if (this.canvasWidth < 1200) {
-                suggestedMin = min;
-                suggestedMax = max;
+                this.chartDesktop.options.scales.yAxes[0].ticks.suggestedMin = null;
+                this.chartDesktop.options.scales.yAxes[0].ticks.suggestedMin = null;
             } else {
                 suggestedMin = min + min * 0.02;
                 suggestedMax = max - max * 0.02;
+                this.chartDesktop.options.scales.yAxes[0].ticks.suggestedMin = suggestedMin;
+                this.chartDesktop.options.scales.yAxes[0].ticks.suggestedMin = suggestedMax;
             }
-
-            this.chartDesktop.options.scales.yAxes[0].ticks.suggestedMin = suggestedMin;
-            this.chartDesktop.options.scales.yAxes[0].ticks.suggestedMin = suggestedMax;
         }
     }, {
         key: 'componentDidMount',
@@ -99590,7 +99588,8 @@ var HourLineChart = function (_React$Component) {
         value: function tickXLabelCallback(dataLabel, index, dataLabels, canvasWidth) {
             if (canvasWidth < 1200) {
                 if (index % 16 === 0) {
-                    return dataLabel;
+                    var momentDate = (0, _moment2.default)(dataLabel, 'DD-MM[  ]H:00');
+                    return momentDate.format('DD-MM');
                 }
             } else {
                 if (index % 7 === 0) {
