@@ -80,32 +80,28 @@ export default class SingleLineChart extends React.Component
         this.chartDesktop.data.datasets[0].data = nextProps.data;
         this.chartDesktop.data.labels = nextProps.labels;
 
-        let newMin = this.getYAxisMinValue(minValue, maxValue);
-        this.chartDesktop.options.scales.yAxes[0].ticks.suggestedMin = newMin;
-
-        let newMax = this.getYAxisMaxValue(minValue, maxValue);
-        this.chartDesktop.options.scales.yAxes[0].ticks.suggestedMax = newMax;
+        this.setYAxisMinAndMaxValues(nextProps);
 
         this.chartDesktop.update();
         this.responsiveUpdateOfChart();
     }
 
-    getYAxisMinValue(min, max)
+    setYAxisMinAndMaxValues(props)
     {
-        if (min < 100) {
-            return 0;
+        const min = this.getMinValueFromData(props);
+        const max = this.getMaxValueFromData(props);
+
+        let suggestedMin, suggestedMax;
+        if (this.canvasWidth < 1200) {
+            suggestedMin = min;
+            suggestedMax = max;
+        } else {
+            suggestedMin = min + (min * 0.02);
+            suggestedMax = max - (max * 0.02);
         }
 
-        return min - (min * 0.02);
-    }
-
-    getYAxisMaxValue(min, max)
-    {
-        if (max < 100) {
-            return 100;
-        }
-
-        return max + (max * 0.02);
+        this.chartDesktop.options.scales.yAxes[0].ticks.suggestedMin = suggestedMin;
+        this.chartDesktop.options.scales.yAxes[0].ticks.suggestedMin = suggestedMax;
     }
 
     componentDidMount()

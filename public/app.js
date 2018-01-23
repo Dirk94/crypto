@@ -82810,32 +82810,29 @@ var SingleLineChart = function (_React$Component) {
             this.chartDesktop.data.datasets[0].data = nextProps.data;
             this.chartDesktop.data.labels = nextProps.labels;
 
-            var newMin = this.getYAxisMinValue(minValue, maxValue);
-            this.chartDesktop.options.scales.yAxes[0].ticks.suggestedMin = newMin;
-
-            var newMax = this.getYAxisMaxValue(minValue, maxValue);
-            this.chartDesktop.options.scales.yAxes[0].ticks.suggestedMax = newMax;
+            this.setYAxisMinAndMaxValues(nextProps);
 
             this.chartDesktop.update();
             this.responsiveUpdateOfChart();
         }
     }, {
-        key: 'getYAxisMinValue',
-        value: function getYAxisMinValue(min, max) {
-            if (min < 100) {
-                return 0;
+        key: 'setYAxisMinAndMaxValues',
+        value: function setYAxisMinAndMaxValues(props) {
+            var min = this.getMinValueFromData(props);
+            var max = this.getMaxValueFromData(props);
+
+            var suggestedMin = void 0,
+                suggestedMax = void 0;
+            if (this.canvasWidth < 1200) {
+                suggestedMin = min;
+                suggestedMax = max;
+            } else {
+                suggestedMin = min + min * 0.02;
+                suggestedMax = max - max * 0.02;
             }
 
-            return min - min * 0.02;
-        }
-    }, {
-        key: 'getYAxisMaxValue',
-        value: function getYAxisMaxValue(min, max) {
-            if (max < 100) {
-                return 100;
-            }
-
-            return max + max * 0.02;
+            this.chartDesktop.options.scales.yAxes[0].ticks.suggestedMin = suggestedMin;
+            this.chartDesktop.options.scales.yAxes[0].ticks.suggestedMin = suggestedMax;
         }
     }, {
         key: 'componentDidMount',
