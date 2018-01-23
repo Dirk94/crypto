@@ -39,22 +39,31 @@ class PortfolioHistory
 
     public static function saveSingleMinuteHistory(Portfolio $portfolio, $now = null, $override = false)
     {
-        // TODO if override is true: remove old value (if it exists) and set new value.
-        //
         if ($now === null) {
             $carbonNow = Carbon::now();
             $carbonNow->minute = floor($carbonNow->minute / 5) * 5;
             $now = $carbonNow->format('Y-m-d H:i:00');
         }
-        try {
+
+        if ($override) {
+            $portfolioHistory = PortfolioCoinMinuteHistory::wherePortfolioId($portfolio->id)
+                ->where('date', '=', $now)
+                ->first();
+            if (!$portfolioHistory) {
+                $portfolioHistory = new PortfolioCoinMinuteHistory();
+            }
+        } else {
             $portfolioHistory = new PortfolioCoinMinuteHistory();
+        }
+
+        try {
             $portfolioHistory->portfolio_id = $portfolio->id;
             $portfolioHistory->date = $now;
             $portfolioHistory->usd_value = $portfolio->usd_value;
             $portfolioHistory->btc_value = $portfolio->btc_value;
             $portfolioHistory->save();
         } catch(\Exception $e) {
-            print "Exception while setting portfolio minute history.\n";
+            print "Exception while setting portfolio minute history (override is true).\n";
         }
     }
 

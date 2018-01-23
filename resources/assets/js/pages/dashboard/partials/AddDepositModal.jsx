@@ -1,6 +1,7 @@
 import React from 'react';
 import AddDepositForm from "../forms/AddDepositForm.jsx";
 import Request from "../../../common/Request.jsx";
+import PortfolioBalanceData from "../../../common/data/PortfolioBalanceData.jsx";
 
 export default class AddDepositModal extends React.Component
 {
@@ -31,8 +32,8 @@ export default class AddDepositModal extends React.Component
 
         Request.post('/api/portfolios/' + localStorage.getItem('defaultPortfolioId') + '/deposit', this.state.formData)
             .then((response) => {
-                console.log("success");
-                console.log(response);
+                // Force a data reload from server since we just updated the data.
+                PortfolioBalanceData.flushCache();
 
                 this.setState({
                     success: true

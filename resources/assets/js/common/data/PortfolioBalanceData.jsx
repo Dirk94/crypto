@@ -126,4 +126,11 @@ export default class PortfolioBalanceData {
                 })
         });
     }
+
+    static flushCache() {
+        localStorage.removeItem(PortfolioBalanceData.KEY_MINUTE_DATA);
+        localStorage.removeItem(PortfolioBalanceData.KEY_HOUR_DATA);
+        localStorage.removeItem(PortfolioBalanceData.KEY_DAY_DATA);
+        localStorage.removeItem(PortfolioBalanceData.KEY_BALANCE);
+    }
 }

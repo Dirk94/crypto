@@ -35,7 +35,8 @@ class UpdatePortfolioBalance implements ShouldQueue
 
         PortfolioHistory::saveSingleMinuteHistory(
             $this->portfolio,
-            $date->format('Y-m-d H:i:00')
+            $date->format('Y-m-d H:i:00'),
+            true // Set override to true, because we want to update the newest history value with the new deposit value.
         );
     }
 }

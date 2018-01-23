@@ -1,6 +1,7 @@
 import React from 'react';
 import Request from "../../../common/Request.jsx";
 import AddTradeForm from "../forms/AddTradeForm.jsx";
+import PortfolioBalanceData from "../../../common/data/PortfolioBalanceData.jsx";
 
 export default class AddTradeModal extends React.Component
 {
@@ -37,8 +38,8 @@ export default class AddTradeModal extends React.Component
 
         Request.post('/api/portfolios/' + localStorage.getItem('defaultPortfolioId') + '/trade', this.state.formData)
             .then((response) => {
-                console.log("success");
-                console.log(response);
+                // Force a data reload from server since we just updated the data.
+                PortfolioBalanceData.flushCache();
 
                 this.setState({
                     success: true
