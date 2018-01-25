@@ -78280,7 +78280,7 @@ var Overview = function (_React$Component) {
                 if (i == count - 1) {
                     hourLabels.push('Now');
                 } else {
-                    var valueInHours = count - i;
+                    var valueInHours = count - 2 - i;
                     var momentDate = (0, _moment2.default)().subtract(valueInHours, 'hours');
 
                     hourLabels.push(momentDate.format('DD-MM[  ]H:00'));
