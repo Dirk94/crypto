@@ -279,7 +279,7 @@ export default class Overview extends React.Component
             if (i == count-1) {
                 hourLabels.push('Now');
             } else {
-                let valueInHours = (count - 1) - i;
+                let valueInHours = (count) - i;
                 let momentDate = moment().subtract(valueInHours, 'hours');
 
                 hourLabels.push(momentDate.format('DD-MM[  ]H:00'));
