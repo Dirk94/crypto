@@ -11574,14 +11574,13 @@ var Auth = function () {
 
     _createClass(Auth, null, [{
         key: 'authenticateUser',
-        // moment js object.
+        // In minutes TODO: make this an env file.
 
         value: function authenticateUser(token) {
             var tokenReceivedAt = (0, _moment2.default)().format('x');
             localStorage.setItem('tokenReceivedAt', tokenReceivedAt);
             localStorage.setItem('token', token);
-        } // In minutes TODO: make this an env file.
-
+        }
     }, {
         key: 'isLoggedIn',
         value: function isLoggedIn() {
@@ -13837,11 +13836,7 @@ var SingleLineChart = function (_React$Component) {
         $(window).resize(function () {
             clearTimeout(resizeId);
             resizeId = setTimeout(function () {
-                var canvas = document.getElementById(_this2.id);
-                if (canvas) {
-                    _this2.canvasWidth = canvas.width;
-                }
-
+                _this2.canvasWidth = document.getElementById(_this2.id).width;
                 _this2.responsiveUpdateOfChart();
             }, 100);
         });
@@ -13873,12 +13868,23 @@ var SingleLineChart = function (_React$Component) {
             return _react2.default.createElement(
                 'div',
                 null,
-                _react2.default.createElement('canvas', { id: this.id, style: this.props.hidden ? { display: 'none' } : { display: 'block' } })
+                _react2.default.createElement('canvas', { id: this.id })
             );
         }
     }, {
         key: 'componentWillReceiveProps',
         value: function componentWillReceiveProps(nextProps) {
+            var _this3 = this;
+
+            var chartLabels = [];
+            for (var i = 0; i < nextProps.labels.length; i++) {
+                chartLabels.push(this.props.tickXLabelCallback(nextProps.labels[i], i, nextProps.labels, this.canvasWidth));
+            }
+
+            console.log("Labels");
+            console.log(chartLabels);
+            console.log();
+
             var maxValue = this.getMaxValueFromData(nextProps);
             this.maxIdentifier = '';
             if (maxValue >= 1000 && maxValue < 100000) {
@@ -13896,8 +13902,12 @@ var SingleLineChart = function (_React$Component) {
 
             this.setYAxisMinAndMaxValues(nextProps);
 
-            this.chartDesktop.update();
             this.responsiveUpdateOfChart();
+            this.chartDesktop.update();
+
+            setTimeout(function () {
+                _this3.chartDesktop.update();
+            }, 1);
         }
     }, {
         key: 'setYAxisMinAndMaxValues',
@@ -13926,7 +13936,7 @@ var SingleLineChart = function (_React$Component) {
     }, {
         key: 'createChart',
         value: function createChart(props) {
-            var _this3 = this;
+            var _this4 = this;
 
             var _this = this;
             var canvas = document.getElementById(this.id).getContext("2d");
@@ -13981,10 +13991,10 @@ var SingleLineChart = function (_React$Component) {
                             padding: 12,
                             fontSize: 13,
                             fontColor: 'white',
-                            autoSkip: false,
-                            callback: function callback(dataLabel, index, dataLabels) {
-                                return _this3.props.tickXLabelCallback(dataLabel, index, dataLabels, _this3.canvasWidth);
-                            }
+                            autoSkip: false
+                            //callback: (dataLabel, index, dataLabels) => {
+                            //    return this.props.tickXLabelCallback(dataLabel, index, dataLabels, this.canvasWidth);
+                            //}
                         }
                     }]
                 },
@@ -14000,7 +14010,7 @@ var SingleLineChart = function (_React$Component) {
                     titleFontStyle: 'normal',
                     callbacks: {
                         title: function title(tooltipItem, data) {
-                            return _this3.props.tooltipTitleCallback(tooltipItem, data);
+                            return _this4.props.tooltipTitleCallback(tooltipItem, data);
                         },
                         label: function label(tooltipItem, data) {
                             var index = tooltipItem.index;
@@ -14070,7 +14080,6 @@ var SingleLineChart = function (_React$Component) {
 }(_react2.default.Component);
 
 SingleLineChart.propTypes = {
-    hidden: _propTypes2.default.bool.isRequired,
     labels: _propTypes2.default.array.isRequired,
     data: _propTypes2.default.array.isRequired,
     color: _propTypes2.default.string,
@@ -77119,10 +77128,6 @@ var _PortfolioBalanceData = __webpack_require__(39);
 
 var _PortfolioBalanceData2 = _interopRequireDefault(_PortfolioBalanceData);
 
-var _MinuteLineChart = __webpack_require__(400);
-
-var _MinuteLineChart2 = _interopRequireDefault(_MinuteLineChart);
-
 var _CoinData = __webpack_require__(305);
 
 var _CoinData2 = _interopRequireDefault(_CoinData);
@@ -77131,13 +77136,9 @@ var _moment = __webpack_require__(0);
 
 var _moment2 = _interopRequireDefault(_moment);
 
-var _HourLineChart = __webpack_require__(448);
+var _SingleLineChart = __webpack_require__(42);
 
-var _HourLineChart2 = _interopRequireDefault(_HourLineChart);
-
-var _DayLineChart = __webpack_require__(449);
-
-var _DayLineChart2 = _interopRequireDefault(_DayLineChart);
+var _SingleLineChart2 = _interopRequireDefault(_SingleLineChart);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -77154,6 +77155,17 @@ var Overview = function (_React$Component) {
         _classCallCheck(this, Overview);
 
         var _this = _possibleConstructorReturn(this, (Overview.__proto__ || Object.getPrototypeOf(Overview)).call(this));
+
+        _this.clickedMinutes = _this.clickedMinutes.bind(_this);
+        _this.clickedHours = _this.clickedHours.bind(_this);
+        _this.clickedDays = _this.clickedDays.bind(_this);
+
+        _this.minuteTooltipTitleCallback = _this.minuteTooltipTitleCallback.bind(_this);
+        _this.minuteTickXLabelCallback = _this.minuteTickXLabelCallback.bind(_this);
+        _this.hourTooltipTitleCallback = _this.hourTooltipTitleCallback.bind(_this);
+        _this.hourTickXLabelCallback = _this.hourTickXLabelCallback.bind(_this);
+        _this.dayTooltipTitleCallback = _this.dayTooltipTitleCallback.bind(_this);
+        _this.dayTickXLabelCallback = _this.dayTickXLabelCallback.bind(_this);
 
         _this.dataPoints = 50;
         var minuteData = [];
@@ -77181,31 +77193,18 @@ var Overview = function (_React$Component) {
             dayData: dayData,
             dayLabels: dayLabels,
 
+            currentData: minuteData,
+            currentLabels: minuteLabels,
+
+            tickCallback: _this.minuteTickXLabelCallback,
+            tooltipCallback: _this.minuteTooltipTitleCallback,
+
             selectedLabel: 'minutes'
         };
-
-        _this.clickedMinutes = _this.clickedMinutes.bind(_this);
-        _this.clickedHours = _this.clickedHours.bind(_this);
-        _this.clickedDays = _this.clickedDays.bind(_this);
         return _this;
     }
 
     _createClass(Overview, [{
-        key: "clickedMinutes",
-        value: function clickedMinutes() {
-            this.setState({ selectedLabel: 'minutes' });
-        }
-    }, {
-        key: "clickedHours",
-        value: function clickedHours() {
-            this.setState({ selectedLabel: 'hours' });
-        }
-    }, {
-        key: "clickedDays",
-        value: function clickedDays() {
-            this.setState({ selectedLabel: 'days' });
-        }
-    }, {
         key: "componentDidMount",
         value: function componentDidMount() {
             var _this2 = this;
@@ -77309,23 +77308,12 @@ var Overview = function (_React$Component) {
                                 )
                             )
                         ),
-                        _react2.default.createElement(_MinuteLineChart2.default, {
-                            labels: this.state.minuteLabels,
-                            data: this.state.minuteData,
-                            color: "rgba(40, 165, 213, 1)",
-                            hidden: this.state.selectedLabel !== 'minutes'
-                        }),
-                        _react2.default.createElement(_HourLineChart2.default, {
-                            labels: this.state.hourLabels,
-                            data: this.state.hourData,
-                            color: "rgba(40, 165, 213, 1)",
-                            hidden: this.state.selectedLabel !== 'hours'
-                        }),
-                        _react2.default.createElement(_DayLineChart2.default, {
-                            labels: this.state.dayLabels,
-                            data: this.state.dayData,
-                            color: "rgba(40, 165, 213, 1)",
-                            hidden: this.state.selectedLabel !== 'days'
+                        _react2.default.createElement(_SingleLineChart2.default, {
+                            labels: this.state.currentLabels,
+                            data: this.state.currentData,
+                            tickXLabelCallback: this.state.tickCallback,
+                            tooltipTitleCallback: this.state.tooltipCallback,
+                            color: "rgba(40, 165, 213, 1)"
                         })
                     )
                 ),
@@ -77457,6 +77445,87 @@ var Overview = function (_React$Component) {
             return dayLabels;
         }
     }, {
+        key: "minuteTickXLabelCallback",
+        value: function minuteTickXLabelCallback(dataLabel, index, dataLabels, canvasWidth) {
+            if (dataLabel === 'now') {
+                return dataLabel;
+            }
+
+            var isWholeHour = dataLabel.indexOf(':00') !== -1;
+            var isHalfHour = canvasWidth >= 1200 && dataLabel.indexOf(':30') !== -1;
+            var isEnoughToTheLeft = dataLabels.length - index >= 4;
+
+            if ((isWholeHour || isHalfHour) && isEnoughToTheLeft) {
+                return dataLabel;
+            }
+
+            return null;
+        }
+    }, {
+        key: "minuteTooltipTitleCallback",
+        value: function minuteTooltipTitleCallback(tooltipItem, data) {
+            var index = tooltipItem[0].index;
+            var labelValue = data.labels[index];
+            if (labelValue === "now") {
+                return "Now";
+            }
+            return "Today at " + labelValue;
+        }
+    }, {
+        key: "hourTickXLabelCallback",
+        value: function hourTickXLabelCallback(dataLabel, index, dataLabels, canvasWidth) {
+            if (canvasWidth < 1200) {
+                if (index % 16 === 0) {
+                    var momentDate = (0, _moment2.default)(dataLabel, 'DD-MM[  ]H:00');
+                    return momentDate.format('DD-MM');
+                }
+            } else {
+                if (index % 7 === 0) {
+                    return dataLabel;
+                }
+            }
+
+            return null;
+        }
+    }, {
+        key: "hourTooltipTitleCallback",
+        value: function hourTooltipTitleCallback(tooltipItem, data) {
+            var index = tooltipItem[0].index;
+            var labelValue = data.labels[index];
+
+            var momentDate = (0, _moment2.default)(labelValue, 'DD-MM[  ]H:00');
+            var diffInDays = (0, _moment2.default)().diff(momentDate, 'days');
+            if (diffInDays === 0) {
+                return momentDate.format('[Today  ]H:00');
+            }
+            if (diffInDays === 1) {
+                return momentDate.format('[Yesterday  ]H:00');
+            }
+            return labelValue;
+        }
+    }, {
+        key: "dayTickXLabelCallback",
+        value: function dayTickXLabelCallback(dataLabel, index, dataLabels, canvasWidth) {
+            if (canvasWidth < 1200) {
+                if (index % 10 === 0) {
+                    return dataLabel;
+                }
+            } else {
+                if (index % 7 === 0) {
+                    return dataLabel;
+                }
+            }
+
+            return null;
+        }
+    }, {
+        key: "dayTooltipTitleCallback",
+        value: function dayTooltipTitleCallback(tooltipItem, data) {
+            var index = tooltipItem[0].index;
+            var labelValue = data.labels[index];
+            return labelValue;
+        }
+    }, {
         key: "getPortfolioData",
         value: function getPortfolioData() {
             var _this4 = this;
@@ -77480,6 +77549,42 @@ var Overview = function (_React$Component) {
             }).catch(function (error) {
                 console.log("ERROR");
                 console.log(error);
+            });
+        }
+    }, {
+        key: "clickedMinutes",
+        value: function clickedMinutes() {
+            console.log("Clicked Minutes");
+            this.setState({
+                selectedLabel: 'minutes',
+                tooltipCallback: this.minuteTooltipTitleCallback,
+                tickCallback: this.minuteTickXLabelCallback,
+                currentData: this.state.minuteData,
+                currentLabels: this.state.minuteLabels
+            });
+        }
+    }, {
+        key: "clickedHours",
+        value: function clickedHours() {
+            console.log("Clicked Hours");
+            this.setState({
+                selectedLabel: 'hours',
+                tooltipCallback: this.hourTooltipTitleCallback,
+                tickCallback: this.hourTickXLabelCallback,
+                currentData: this.state.hourData,
+                currentLabels: this.state.hourLabels
+            });
+        }
+    }, {
+        key: "clickedDays",
+        value: function clickedDays() {
+            console.log("Clicked Days");
+            this.setState({
+                selectedLabel: 'days',
+                tooltipCallback: this.dayTooltipTitleCallback,
+                tickCallback: this.dayTickXLabelCallback,
+                currentData: this.state.dayData,
+                currentLabels: this.state.dayLabels
             });
         }
     }]);
@@ -83004,104 +83109,7 @@ module.exports = webpackContext;
 webpackContext.id = 399;
 
 /***/ }),
-/* 400 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(2);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _propTypes = __webpack_require__(3);
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _SingleLineChart = __webpack_require__(42);
-
-var _SingleLineChart2 = _interopRequireDefault(_SingleLineChart);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var MinuteLineChart = function (_React$Component) {
-    _inherits(MinuteLineChart, _React$Component);
-
-    function MinuteLineChart(props) {
-        _classCallCheck(this, MinuteLineChart);
-
-        var _this = _possibleConstructorReturn(this, (MinuteLineChart.__proto__ || Object.getPrototypeOf(MinuteLineChart)).call(this, props));
-
-        _this.tickXLabelCallback = _this.tickXLabelCallback.bind(_this);
-        _this.tooltipTitleCallback = _this.tooltipTitleCallback.bind(_this);
-        return _this;
-    }
-
-    _createClass(MinuteLineChart, [{
-        key: 'tickXLabelCallback',
-        value: function tickXLabelCallback(dataLabel, index, dataLabels, canvasWidth) {
-            if (dataLabel === 'now') {
-                return dataLabel;
-            }
-
-            var isWholeHour = dataLabel.indexOf(':00') !== -1;
-            var isHalfHour = canvasWidth >= 1200 && dataLabel.indexOf(':30') !== -1;
-            var isEnoughToTheLeft = dataLabels.length - index >= 4;
-
-            if ((isWholeHour || isHalfHour) && isEnoughToTheLeft) {
-                return dataLabel;
-            }
-
-            return null;
-        }
-    }, {
-        key: 'tooltipTitleCallback',
-        value: function tooltipTitleCallback(tooltipItem, data) {
-            var index = tooltipItem[0].index;
-            var labelValue = data.labels[index];
-            if (labelValue === "now") {
-                return "Now";
-            }
-            return "Today at " + labelValue;
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            return _react2.default.createElement(_SingleLineChart2.default, {
-                hidden: this.props.hidden,
-                labels: this.props.labels,
-                data: this.props.data,
-                color: this.props.color,
-                tickXLabelCallback: this.tickXLabelCallback,
-                tooltipTitleCallback: this.tooltipTitleCallback
-            });
-        }
-    }]);
-
-    return MinuteLineChart;
-}(_react2.default.Component);
-
-MinuteLineChart.propTypes = {
-    hidden: _propTypes2.default.bool.isRequired,
-    labels: _propTypes2.default.array.isRequired,
-    data: _propTypes2.default.array.isRequired,
-    color: _propTypes2.default.string
-};
-exports.default = MinuteLineChart;
-
-/***/ }),
+/* 400 */,
 /* 401 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -96042,210 +96050,8 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 448 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(2);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _propTypes = __webpack_require__(3);
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _SingleLineChart = __webpack_require__(42);
-
-var _SingleLineChart2 = _interopRequireDefault(_SingleLineChart);
-
-var _moment = __webpack_require__(0);
-
-var _moment2 = _interopRequireDefault(_moment);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var HourLineChart = function (_React$Component) {
-    _inherits(HourLineChart, _React$Component);
-
-    function HourLineChart(props) {
-        _classCallCheck(this, HourLineChart);
-
-        var _this = _possibleConstructorReturn(this, (HourLineChart.__proto__ || Object.getPrototypeOf(HourLineChart)).call(this, props));
-
-        _this.tickXLabelCallback = _this.tickXLabelCallback.bind(_this);
-        _this.tooltipTitleCallback = _this.tooltipTitleCallback.bind(_this);
-        return _this;
-    }
-
-    _createClass(HourLineChart, [{
-        key: 'tickXLabelCallback',
-        value: function tickXLabelCallback(dataLabel, index, dataLabels, canvasWidth) {
-            if (canvasWidth < 1200) {
-                if (index % 16 === 0) {
-                    var momentDate = (0, _moment2.default)(dataLabel, 'DD-MM[  ]H:00');
-                    return momentDate.format('DD-MM');
-                }
-            } else {
-                if (index % 7 === 0) {
-                    return dataLabel;
-                }
-            }
-
-            return null;
-        }
-    }, {
-        key: 'tooltipTitleCallback',
-        value: function tooltipTitleCallback(tooltipItem, data) {
-            var index = tooltipItem[0].index;
-            var labelValue = data.labels[index];
-
-            var momentDate = (0, _moment2.default)(labelValue, 'DD-MM[  ]H:00');
-            var diffInDays = (0, _moment2.default)().diff(momentDate, 'days');
-            if (diffInDays === 0) {
-                return momentDate.format('[Today  ]H:00');
-            }
-            if (diffInDays === 1) {
-                return momentDate.format('[Yesterday  ]H:00');
-            }
-            return labelValue;
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            return _react2.default.createElement(_SingleLineChart2.default, {
-                hidden: this.props.hidden,
-                labels: this.props.labels,
-                data: this.props.data,
-                color: this.props.color,
-                tickXLabelCallback: this.tickXLabelCallback,
-                tooltipTitleCallback: this.tooltipTitleCallback
-            });
-        }
-    }]);
-
-    return HourLineChart;
-}(_react2.default.Component);
-
-HourLineChart.propTypes = {
-    hidden: _propTypes2.default.bool.isRequired,
-    labels: _propTypes2.default.array.isRequired,
-    data: _propTypes2.default.array.isRequired,
-    color: _propTypes2.default.string
-};
-exports.default = HourLineChart;
-
-/***/ }),
-/* 449 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(2);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _propTypes = __webpack_require__(3);
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _SingleLineChart = __webpack_require__(42);
-
-var _SingleLineChart2 = _interopRequireDefault(_SingleLineChart);
-
-var _moment = __webpack_require__(0);
-
-var _moment2 = _interopRequireDefault(_moment);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var DayLineChart = function (_React$Component) {
-    _inherits(DayLineChart, _React$Component);
-
-    function DayLineChart(props) {
-        _classCallCheck(this, DayLineChart);
-
-        var _this = _possibleConstructorReturn(this, (DayLineChart.__proto__ || Object.getPrototypeOf(DayLineChart)).call(this, props));
-
-        _this.tickXLabelCallback = _this.tickXLabelCallback.bind(_this);
-        _this.tooltipTitleCallback = _this.tooltipTitleCallback.bind(_this);
-        return _this;
-    }
-
-    _createClass(DayLineChart, [{
-        key: 'tickXLabelCallback',
-        value: function tickXLabelCallback(dataLabel, index, dataLabels, canvasWidth) {
-            if (canvasWidth < 1200) {
-                if (index % 10 === 0) {
-                    return dataLabel;
-                }
-            } else {
-                if (index % 7 === 0) {
-                    return dataLabel;
-                }
-            }
-
-            return null;
-        }
-    }, {
-        key: 'tooltipTitleCallback',
-        value: function tooltipTitleCallback(tooltipItem, data) {
-            var index = tooltipItem[0].index;
-            var labelValue = data.labels[index];
-            return labelValue;
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            return _react2.default.createElement(_SingleLineChart2.default, {
-                hidden: this.props.hidden,
-                labels: this.props.labels,
-                data: this.props.data,
-                color: this.props.color,
-                tickXLabelCallback: this.tickXLabelCallback,
-                tooltipTitleCallback: this.tooltipTitleCallback
-            });
-        }
-    }]);
-
-    return DayLineChart;
-}(_react2.default.Component);
-
-DayLineChart.propTypes = {
-    hidden: _propTypes2.default.bool.isRequired,
-    labels: _propTypes2.default.array.isRequired,
-    data: _propTypes2.default.array.isRequired,
-    color: _propTypes2.default.string
-};
-exports.default = DayLineChart;
-
-/***/ }),
+/* 448 */,
+/* 449 */,
 /* 450 */
 /***/ (function(module, exports, __webpack_require__) {
 

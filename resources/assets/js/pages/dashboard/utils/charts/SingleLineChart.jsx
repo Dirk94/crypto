@@ -6,7 +6,6 @@ import String from "../../../../common/String.jsx";
 export default class SingleLineChart extends React.Component
 {
     static propTypes = {
-        hidden: PropTypes.bool.isRequired,
         labels: PropTypes.array.isRequired,
         data:   PropTypes.array.isRequired,
         color:  PropTypes.string,
@@ -24,11 +23,7 @@ export default class SingleLineChart extends React.Component
         $(window).resize(() => {
             clearTimeout(resizeId);
             resizeId = setTimeout(() => {
-                const canvas = document.getElementById(this.id);
-                if (canvas) {
-                    this.canvasWidth = canvas.width;
-                }
-
+                this.canvasWidth = document.getElementById(this.id).width;
                 this.responsiveUpdateOfChart();
             }, 100);
         });
@@ -57,13 +52,23 @@ export default class SingleLineChart extends React.Component
     {
         return (
             <div>
-                <canvas id={this.id} style={this.props.hidden ? {display: 'none'} : {display: 'block'}} />
+                <canvas id={this.id} />
             </div>
         );
     }
 
     componentWillReceiveProps(nextProps)
     {
+        const chartLabels = [];
+        for (let i=0; i<nextProps.labels.length; i++) {
+            chartLabels.push(this.props.tickXLabelCallback(nextProps.labels[i], i, nextProps.labels, this.canvasWidth));
+        }
+
+        console.log("Labels");
+        console.log(chartLabels);
+        console.log();
+
+
         let maxValue = this.getMaxValueFromData(nextProps);
         this.maxIdentifier = '';
         if (maxValue >= 1000 && maxValue < 100000) {
@@ -81,8 +86,10 @@ export default class SingleLineChart extends React.Component
 
         this.setYAxisMinAndMaxValues(nextProps);
 
-        this.chartDesktop.update();
         this.responsiveUpdateOfChart();
+        this.chartDesktop.update();
+
+        setTimeout(() => { this.chartDesktop.update(); }, 1);
     }
 
     setYAxisMinAndMaxValues(props)
@@ -156,9 +163,9 @@ export default class SingleLineChart extends React.Component
                         fontSize: 13,
                         fontColor: 'white',
                         autoSkip: false,
-                        callback: (dataLabel, index, dataLabels) => {
-                            return this.props.tickXLabelCallback(dataLabel, index, dataLabels, this.canvasWidth);
-                        }
+                        //callback: (dataLabel, index, dataLabels) => {
+                        //    return this.props.tickXLabelCallback(dataLabel, index, dataLabels, this.canvasWidth);
+                        //}
                     },
                 }],
             },

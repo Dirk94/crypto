@@ -4,8 +4,6 @@ export default class Auth {
 
     static JWT_EXPIRES_AFTER = 420; // In minutes TODO: make this an env file.
 
-    static tokenReceivedAt; // moment js object.
-
     static authenticateUser(token) {
         const tokenReceivedAt = moment().format('x');
         localStorage.setItem('tokenReceivedAt', tokenReceivedAt);

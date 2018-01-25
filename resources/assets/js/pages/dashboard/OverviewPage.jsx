@@ -1,17 +1,26 @@
 import React from 'react';
 import PortfolioBalance from "./utils/PortfolioBalance.jsx";
 import PortfolioBalanceData from "../../common/data/PortfolioBalanceData.jsx";
-import MinuteLineChart from "./utils/charts/MinuteLineChart.jsx";
 import CoinData from "../../common/data/CoinData.jsx";
 import moment from 'moment';
-import HourLineChart from "./utils/charts/HourLineChart.jsx";
-import DayLineChart from "./utils/charts/DayLineChart.jsx";
+import SingleLineChart from "./utils/charts/SingleLineChart.jsx";
 
 export default class Overview extends React.Component
 {
     constructor()
     {
         super();
+
+        this.clickedMinutes = this.clickedMinutes.bind(this);
+        this.clickedHours   = this.clickedHours.bind(this);
+        this.clickedDays    = this.clickedDays.bind(this);
+
+        this.minuteTooltipTitleCallback = this.minuteTooltipTitleCallback.bind(this);
+        this.minuteTickXLabelCallback   = this.minuteTickXLabelCallback.bind(this);
+        this.hourTooltipTitleCallback   = this.hourTooltipTitleCallback.bind(this);
+        this.hourTickXLabelCallback     = this.hourTickXLabelCallback.bind(this);
+        this.dayTooltipTitleCallback    = this.dayTooltipTitleCallback.bind(this);
+        this.dayTickXLabelCallback      = this.dayTickXLabelCallback.bind(this);
 
         this.dataPoints = 50;
         let minuteData = [];
@@ -39,27 +48,14 @@ export default class Overview extends React.Component
             dayData: dayData,
             dayLabels: dayLabels,
 
+            currentData: minuteData,
+            currentLabels: minuteLabels,
+
+            tickCallback: this.minuteTickXLabelCallback,
+            tooltipCallback: this.minuteTooltipTitleCallback,
+
             selectedLabel: 'minutes',
         }
-
-        this.clickedMinutes = this.clickedMinutes.bind(this);
-        this.clickedHours   = this.clickedHours.bind(this);
-        this.clickedDays    = this.clickedDays.bind(this);
-    }
-
-    clickedMinutes()
-    {
-        this.setState({selectedLabel: 'minutes'});
-    }
-
-    clickedHours()
-    {
-        this.setState({selectedLabel: 'hours'});
-    }
-
-    clickedDays()
-    {
-        this.setState({selectedLabel: 'days'});
     }
 
     componentDidMount()
@@ -134,25 +130,12 @@ export default class Overview extends React.Component
                             </div>
                         </div>
 
-                        <MinuteLineChart
-                            labels={this.state.minuteLabels}
-                            data={this.state.minuteData}
-                            color="rgba(40, 165, 213, 1)"
-                            hidden={this.state.selectedLabel !== 'minutes'}
-                        />
-
-                        <HourLineChart
-                            labels={this.state.hourLabels}
-                            data={this.state.hourData}
-                            color="rgba(40, 165, 213, 1)"
-                            hidden={this.state.selectedLabel !== 'hours'}
-                        />
-
-                        <DayLineChart
-                            labels={this.state.dayLabels}
-                            data={this.state.dayData}
-                            color="rgba(40, 165, 213, 1)"
-                            hidden={this.state.selectedLabel !== 'days'}
+                        <SingleLineChart
+                            labels={this.state.currentLabels}
+                            data={this.state.currentData}
+                            tickXLabelCallback={this.state.tickCallback}
+                            tooltipTitleCallback={this.state.tooltipCallback}
+                            color={"rgba(40, 165, 213, 1)"}
                         />
 
                     </div>
@@ -291,6 +274,80 @@ export default class Overview extends React.Component
         return dayLabels;
     }
 
+    minuteTickXLabelCallback(dataLabel, index, dataLabels, canvasWidth) {
+        if (dataLabel === 'now') {
+            return dataLabel;
+        }
+
+        const isWholeHour = dataLabel.indexOf(':00') !== -1;
+        const isHalfHour = (canvasWidth >= 1200 && dataLabel.indexOf(':30') !== -1)
+        const isEnoughToTheLeft = dataLabels.length - index >= 4;
+
+        if ((isWholeHour || isHalfHour) && isEnoughToTheLeft) {
+            return dataLabel;
+        }
+
+        return null;
+    }
+
+    minuteTooltipTitleCallback(tooltipItem, data) {
+        let index = tooltipItem[0].index;
+        let labelValue = data.labels[index];
+        if (labelValue === "now") {
+            return "Now";
+        }
+        return "Today at " + labelValue;
+    }
+
+    hourTickXLabelCallback(dataLabel, index, dataLabels, canvasWidth) {
+        if (canvasWidth < 1200) {
+            if (index % 16 === 0) {
+                let momentDate = moment(dataLabel, 'DD-MM[  ]H:00');
+                return momentDate.format('DD-MM');
+            }
+        } else {
+            if (index % 7 === 0) {
+                return dataLabel;
+            }
+        }
+
+        return null;
+    }
+
+    hourTooltipTitleCallback(tooltipItem, data) {
+        let index = tooltipItem[0].index;
+        let labelValue = data.labels[index];
+
+        let momentDate = moment(labelValue, 'DD-MM[  ]H:00');
+        const diffInDays = moment().diff(momentDate, 'days')
+        if (diffInDays === 0) {
+            return momentDate.format('[Today  ]H:00');
+        }
+        if (diffInDays === 1) {
+            return momentDate.format('[Yesterday  ]H:00');
+        }
+        return labelValue;
+    }
+
+    dayTickXLabelCallback(dataLabel, index, dataLabels, canvasWidth) {
+        if (canvasWidth < 1200) {
+            if (index % 10 === 0) {
+                return dataLabel;
+            }
+        } else {
+            if (index % 7 === 0) {
+                return dataLabel;
+            }
+        }
+
+        return null;
+    }
+
+    dayTooltipTitleCallback(tooltipItem, data) {
+        let index = tooltipItem[0].index;
+        let labelValue = data.labels[index];
+        return labelValue;
+    }
 
     getPortfolioData()
     {
@@ -316,5 +373,41 @@ export default class Overview extends React.Component
                 console.log("ERROR");
                 console.log(error);
             });
+    }
+
+    clickedMinutes()
+    {
+        console.log("Clicked Minutes");
+        this.setState({
+            selectedLabel: 'minutes',
+            tooltipCallback: this.minuteTooltipTitleCallback,
+            tickCallback: this.minuteTickXLabelCallback,
+            currentData: this.state.minuteData,
+            currentLabels: this.state.minuteLabels,
+        });
+    }
+
+    clickedHours()
+    {
+        console.log("Clicked Hours");
+        this.setState({
+            selectedLabel: 'hours',
+            tooltipCallback: this.hourTooltipTitleCallback,
+            tickCallback: this.hourTickXLabelCallback,
+            currentData: this.state.hourData,
+            currentLabels: this.state.hourLabels,
+        });
+    }
+
+    clickedDays()
+    {
+        console.log("Clicked Days");
+        this.setState({
+            selectedLabel: 'days',
+            tooltipCallback: this.dayTooltipTitleCallback,
+            tickCallback: this.dayTickXLabelCallback,
+            currentData: this.state.dayData,
+            currentLabels: this.state.dayLabels,
+        });
     }
 }
