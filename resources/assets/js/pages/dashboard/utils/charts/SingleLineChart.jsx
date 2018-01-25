@@ -1,6 +1,7 @@
 import React from 'react';
 import Chart from 'chart.js';
 import PropTypes from 'prop-types';
+import { Line } from 'react-chartjs-2';
 import String from "../../../../common/String.jsx";
 
 export default class SingleLineChart extends React.Component
@@ -13,20 +14,29 @@ export default class SingleLineChart extends React.Component
         tooltipTitleCallback: PropTypes.func.isRequired,
     }
 
-    constructor()
+    constructor(props)
     {
-        super();
+        super(props);
 
-        this.id = "id-" + Math.random().toString(36).substring(7);
+        let maxValue = this.getMaxValueFromData(props);
+        this.maxIdentifier = '';
+        if (maxValue >= 1000 && maxValue < 100000) {
+            this.maxIdentifier = 'kd';
+        } else if (maxValue >= 100000 && maxValue < 1000000) {
+            this.maxIdentifier = 'k';
+        } else if (maxValue >= 1000000 && maxValue <= 1000000000) {
+            this.maxIdentifier = 'm';
+        } else if (maxValue >= 1000000000) {
+            this.maxIdentifier = 'b';
+        }
 
-        var resizeId;
-        $(window).resize(() => {
-            clearTimeout(resizeId);
-            resizeId = setTimeout(() => {
-                this.canvasWidth = document.getElementById(this.id).width;
-                this.responsiveUpdateOfChart();
-            }, 100);
-        });
+        const options = this.getOptionsFromProps(props);
+        const data = this.getDataFromProps(props);
+
+        this.state = {
+            data: data,
+            options: options,
+        };
     }
 
     responsiveUpdateOfChart()
@@ -51,24 +61,16 @@ export default class SingleLineChart extends React.Component
     render()
     {
         return (
-            <div>
-                <canvas id={this.id} />
-            </div>
+            <Line
+                data={this.state.data}
+                options={this.state.options}
+            />
         );
     }
 
     componentWillReceiveProps(nextProps)
     {
-        const chartLabels = [];
-        for (let i=0; i<nextProps.labels.length; i++) {
-            chartLabels.push(this.props.tickXLabelCallback(nextProps.labels[i], i, nextProps.labels, this.canvasWidth));
-        }
-
-        console.log("Labels");
-        console.log(chartLabels);
-        console.log();
-
-
+        let minValue = this.getMinValueFromData(nextProps);
         let maxValue = this.getMaxValueFromData(nextProps);
         this.maxIdentifier = '';
         if (maxValue >= 1000 && maxValue < 100000) {
@@ -81,15 +83,13 @@ export default class SingleLineChart extends React.Component
             this.maxIdentifier = 'b';
         }
 
-        this.chartDesktop.data.datasets[0].data = nextProps.data;
-        this.chartDesktop.data.labels = nextProps.labels;
+        const options = this.getOptionsFromProps(nextProps);
+        const data = this.getDataFromProps(nextProps);
 
-        this.setYAxisMinAndMaxValues(nextProps);
-
-        this.responsiveUpdateOfChart();
-        this.chartDesktop.update();
-
-        setTimeout(() => { this.chartDesktop.update(); }, 1);
+        this.setState({
+            options: options,
+            data: data
+        });
     }
 
     setYAxisMinAndMaxValues(props)
@@ -111,119 +111,6 @@ export default class SingleLineChart extends React.Component
 
     componentDidMount()
     {
-        this.createChart(this.props);
-        this.responsiveUpdateOfChart();
-    }
-
-    createChart(props)
-    {
-        var _this = this;
-        let canvas = document.getElementById(this.id).getContext("2d");
-
-        let options = {
-            legend: {
-                display: false,
-            },
-            scales: {
-                yAxes: [{
-                    position: 'left',
-                    offset: true,
-                    ticks: {
-                        padding: 12,
-                        fontSize: 13,
-                        maxTicksLimit: 7,
-                        suggestedMin: 0,
-                        suggestedMax: 100,
-                        callback: function(label, index, labels) {
-                            if (_this.maxIdentifier === 'kd') {
-                                if (label === 0) { return 0; }
-                                return (label / 1000) + "K";
-                            }
-                            if (_this.maxIdentifier === 'k') {
-                                if (label === 0) { return 0; }
-                                return (label / 1000) + "K";
-                            }
-                            if (_this.maxIdentifier === 'm') {
-                                if (label === 0) { return 0; }
-                                return (label / 1000000) + "M";
-                            }
-                            if (_this.maxIdentifier === 'b') {
-                                if (label === 0) { return 0; }
-                                return (label / 1000000000) + "B";
-                            }
-                            return String.formatAsMoney(label, 0);
-                        },
-                        beginAtZero: false,
-                        fontColor: 'white',
-                    },
-                }],
-                xAxes: [{
-                    ticks: {
-                        padding: 12,
-                        fontSize: 13,
-                        fontColor: 'white',
-                        autoSkip: false,
-                        //callback: (dataLabel, index, dataLabels) => {
-                        //    return this.props.tickXLabelCallback(dataLabel, index, dataLabels, this.canvasWidth);
-                        //}
-                    },
-                }],
-            },
-            tooltips: {
-                mode: 'index',
-                intersect: false,
-                displayColors: true,
-                xPadding: 12,
-                yPadding: 6,
-                bodyFontSize: 13,
-                multiKeyBackground: '#000',
-                bodyFontStyle: 'bold',
-                titleFontStyle: 'normal',
-                callbacks: {
-                    title: (tooltipItem, data) => {
-                        return this.props.tooltipTitleCallback(tooltipItem, data);
-                    },
-                    label: function(tooltipItem, data) {
-                        let index = tooltipItem.index;
-                        let dataValue = data.datasets[0].data[index];
-
-                        return " " + String.formatAsMoney(dataValue);
-                    },
-                },
-
-            },
-            hover: {
-                mode: 'index',
-                intersect: false,
-            },
-            layout: {
-
-            }
-        };
-
-        let data = {
-            labels: props.labels,
-            datasets: [{
-                label: '',
-                data: props.data,
-                borderColor: props.color,
-                fill: true,
-
-                borderWidth: 2,
-                lineTension: 0,
-
-                pointRadius: 2,
-                pointHitRadius: 1000,
-                pointBackgroundColor: props.color,
-                pointBorderColor: props.color,
-            }],
-        };
-
-        this.chartDesktop = new Chart(canvas, {
-            type: 'line',
-            options: options,
-            data: data,
-        });
     }
 
     getMaxValueFromData(props)
@@ -246,5 +133,114 @@ export default class SingleLineChart extends React.Component
             }
         }
         return minValue;
+    }
+
+    getOptionsFromProps(props)
+    {
+        return {
+            legend: {
+                display: false,
+            },
+            scales: {
+                yAxes: [{
+                    position: 'left',
+                    offset: true,
+                    ticks: {
+                        padding: 12,
+                        fontSize: 13,
+                        maxTicksLimit: 7,
+                        suggestedMax: 100,
+                        callback: (label, index, labels) => {
+                            if (this.maxIdentifier === 'kd') {
+                                if (label === 0) { return 0; }
+                                return (label / 1000) + "K";
+                            }
+                            if (this.maxIdentifier === 'k') {
+                                if (label === 0) { return 0; }
+                                return (label / 1000) + "K";
+                            }
+                            if (this.maxIdentifier === 'm') {
+                                if (label === 0) { return 0; }
+                                return (label / 1000000) + "M";
+                            }
+                            if (this.maxIdentifier === 'b') {
+                                if (label === 0) { return 0; }
+                                return (label / 1000000000) + "B";
+                            }
+                            return String.formatAsMoney(label, 0);
+                        },
+                        beginAtZero: false,
+                        fontColor: 'white',
+                    },
+                }],
+                xAxes: [{
+                    ticks: {
+                        padding: 12,
+                        fontSize: 13,
+                        fontColor: 'white',
+                        autoSkip: true,
+                        maxTicksLimit: 10,
+                        //callback: (dataLabel, index, dataLabels) => {
+                        //    return this.props.tickXLabelCallback(dataLabel, index, dataLabels, 1400);
+                        //}
+                    },
+                }],
+            },
+            tooltips: {
+                mode: 'index',
+                intersect: false,
+                displayColors: true,
+                xPadding: 12,
+                yPadding: 6,
+                bodyFontSize: 13,
+                multiKeyBackground: '#000',
+                bodyFontStyle: 'bold',
+                titleFontStyle: 'normal',
+                callbacks: {
+                    title: (tooltipItem, data) => {
+                        return props.tooltipTitleCallback(tooltipItem, data);
+                    },
+                    label: function(tooltipItem, data) {
+                        let index = tooltipItem.index;
+                        let dataValue = data.datasets[0].data[index];
+
+                        return " " + String.formatAsMoney(dataValue);
+                    },
+                },
+
+            },
+            hover: {
+                mode: 'index',
+                intersect: false,
+            },
+            layout: {
+
+            }
+        };
+    }
+
+    getDataFromProps(props)
+    {
+        return {
+            labels: props.labels,
+            datasets: [{
+                label: '',
+                data: props.data,
+                fill: true,
+
+                borderWidth: 2,
+                lineTension: 0,
+
+                pointRadius: 0,
+                pointHitRadius: 1000,
+
+                borderColor: props.color,
+                backgroundColor: 'rgba(0,0,0,0.1)',
+                pointBorderColor: props.color,
+                pointBackgroundColor: props.color,
+                pointHoverBackgroundColor: props.color,
+                pointHoverBorderColor: props.color,
+            }],
+        };
     }
 }

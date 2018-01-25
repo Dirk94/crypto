@@ -31,9 +31,9 @@ export default class Overview extends React.Component
             hourData[i] = 0;
             dayData[i] = 0;
         }
-        let minuteLabels = this.generateGraphMinuteLabels();
-        let hourLabels = this.generateGraphHourLabels();
-        let dayLabels = this.generateGraphDayLabels();
+        let minuteLabels = this.generateGraphMinuteLabels(50);
+        let hourLabels = this.generateGraphHourLabels(50);
+        let dayLabels = this.generateGraphDayLabels(50);
 
         this.state = {
             amount: -1,
@@ -151,8 +151,10 @@ export default class Overview extends React.Component
         PortfolioBalanceData.getMinuteData()
             .then((data) => {
                 let newMinuteData = [];
-                for (let i=0; i<this.dataPoints - data.count; i++) {
-                    newMinuteData.push(0);
+                if (data.count < 10) {
+                    for (let i = 0; i < 10 - data.count; i++) {
+                        newMinuteData.push(0);
+                    }
                 }
 
                 for (let i=data.count-1; i>=0; i--) {
@@ -160,10 +162,19 @@ export default class Overview extends React.Component
                     newMinuteData.push(parseFloat(graphItem.usd_value));
                 }
 
+                const newLabels = this.generateGraphMinuteLabels(newMinuteData.length);
+
                 this.setState({
                     minuteData: newMinuteData,
-                    minuteLabels: this.generateGraphMinuteLabels()
+                    minuteLabels: newLabels
                 });
+
+                if (this.state.selectedLabel == 'minutes') {
+                    this.setState({
+                        currentData: this.state.minuteData,
+                        currentLabels: this.state.minuteLabels,
+                    });
+                }
             })
             .catch((error) => {
                 console.log("ERROR");
@@ -173,8 +184,10 @@ export default class Overview extends React.Component
         PortfolioBalanceData.getHourData()
             .then((data) => {
                 let newHourData = [];
-                for (let i=0; i<this.dataPoints - data.count; i++) {
-                    newHourData.push(0);
+                if (data.count < 5) {
+                    for (let i = 0; i < 5 - data.count; i++) {
+                        newHourData.push(0);
+                    }
                 }
 
                 for (let i=data.count-1; i>=0; i--) {
@@ -182,10 +195,19 @@ export default class Overview extends React.Component
                     newHourData.push(parseFloat(graphItem.usd_value));
                 }
 
+                const newLabels = this.generateGraphHourLabels(newHourData.length);
+
                 this.setState({
                     hourData: newHourData,
-                    hourLabels: this.generateGraphHourLabels()
+                    hourLabels: newLabels
                 });
+
+                if (this.state.selectedLabel == 'hours') {
+                    this.setState({
+                        currentData: this.state.hourData,
+                        currentLabels: this.state.hourLabels,
+                    });
+                }
             })
             .catch((error) => {
                 console.log("ERROR");
@@ -195,8 +217,10 @@ export default class Overview extends React.Component
         PortfolioBalanceData.getDayData()
             .then((data) => {
                 let newDayData = [];
-                for (let i=0; i<this.dataPoints - data.count; i++) {
-                    newDayData.push(0);
+                if (data.count < 3) {
+                    for (let i = 0; i < 3 - data.count; i++) {
+                        newDayData.push(0);
+                    }
                 }
 
                 for (let i=data.count-1; i>=0; i--) {
@@ -204,10 +228,19 @@ export default class Overview extends React.Component
                     newDayData.push(parseFloat(graphItem.usd_value));
                 }
 
+                const newLabels = this.generateGraphDayLabels(newDayData.length);
+
                 this.setState({
                     dayData: newDayData,
-                    dayLabels: this.generateGraphDayLabels()
+                    dayLabels: newLabels,
                 });
+
+                if (this.state.selectedLabel == 'days') {
+                    this.setState({
+                        currentData: this.state.dayData,
+                        currentLabels: this.state.dayLabels,
+                    });
+                }
             })
             .catch((error) => {
                 console.log("ERROR");
@@ -215,14 +248,14 @@ export default class Overview extends React.Component
             });
     }
 
-    generateGraphMinuteLabels()
+    generateGraphMinuteLabels(count)
     {
         let minuteLabels = [];
-        for (let i=0; i<this.dataPoints; i++) {
-            if (i == this.dataPoints-1) {
+        for (let i=0; i<count; i++) {
+            if (i == count-1) {
                 minuteLabels.push('now');
             } else {
-                let valueInMinutes = ((this.dataPoints - 1) * 5) - (i * 5);
+                let valueInMinutes = ((count - 1) * 5) - (i * 5);
                 let momentDate = moment().subtract(valueInMinutes, 'minutes');
                 let minute = Math.floor(parseFloat(momentDate.minute() / 5)) * 5;
                 momentDate.minute(minute);
@@ -235,14 +268,14 @@ export default class Overview extends React.Component
         return minuteLabels;
     }
 
-    generateGraphHourLabels()
+    generateGraphHourLabels(count)
     {
         let hourLabels = [];
-        for (let i=0; i<this.dataPoints; i++) {
-            if (i == this.dataPoints-1) {
+        for (let i=0; i<count; i++) {
+            if (i == count-1) {
                 hourLabels.push(moment().format('DD-MM[  ]H:00'));
             } else {
-                let valueInHours = (this.dataPoints - 1) - i;
+                let valueInHours = (count - 1) - i;
                 let momentDate = moment().subtract(valueInHours, 'hours');
 
                 const diffInDays = moment().diff(momentDate, 'days')
@@ -254,16 +287,16 @@ export default class Overview extends React.Component
         return hourLabels;
     }
 
-    generateGraphDayLabels()
+    generateGraphDayLabels(count)
     {
         let dayLabels = [];
-        for (let i=0; i<this.dataPoints; i++) {
-            if (i == this.dataPoints-1) {
+        for (let i=0; i<count; i++) {
+            if (i == count-1) {
                 dayLabels.push("Today");
-            } else if (i == this.dataPoints-2) {
+            } else if (i == count-2) {
                 dayLabels.push("Yesterday");
             } else {
-                let valueInDays = (this.dataPoints - 1) - i;
+                let valueInDays = (count - 1) - i;
                 let momentDate = moment().subtract(valueInDays, 'days');
 
                 let label = momentDate.format('DD MMM')
@@ -306,7 +339,7 @@ export default class Overview extends React.Component
                 return momentDate.format('DD-MM');
             }
         } else {
-            if (index % 7 === 0) {
+            if (index % 12 === 0) {
                 return dataLabel;
             }
         }
@@ -330,14 +363,13 @@ export default class Overview extends React.Component
     }
 
     dayTickXLabelCallback(dataLabel, index, dataLabels, canvasWidth) {
-        if (canvasWidth < 1200) {
-            if (index % 10 === 0) {
-                return dataLabel;
-            }
-        } else {
-            if (index % 7 === 0) {
-                return dataLabel;
-            }
+        let num = 7;
+        if (dataLabels.length < 10) { num = 2; }
+        if (dataLabel === 'Today') {
+            return dataLabel;
+        }
+        if (index % num === 0) {
+            return dataLabel;
         }
 
         return null;
@@ -377,7 +409,6 @@ export default class Overview extends React.Component
 
     clickedMinutes()
     {
-        console.log("Clicked Minutes");
         this.setState({
             selectedLabel: 'minutes',
             tooltipCallback: this.minuteTooltipTitleCallback,
@@ -389,7 +420,6 @@ export default class Overview extends React.Component
 
     clickedHours()
     {
-        console.log("Clicked Hours");
         this.setState({
             selectedLabel: 'hours',
             tooltipCallback: this.hourTooltipTitleCallback,
@@ -401,7 +431,6 @@ export default class Overview extends React.Component
 
     clickedDays()
     {
-        console.log("Clicked Days");
         this.setState({
             selectedLabel: 'days',
             tooltipCallback: this.dayTooltipTitleCallback,
