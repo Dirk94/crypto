@@ -78199,6 +78199,8 @@ var Overview = function (_React$Component) {
                     newHourData.push(parseFloat(graphItem.usd_value));
                 }
 
+                newHourData.push(_this3.state.amount);
+
                 var newLabels = _this3.generateGraphHourLabels(newHourData.length);
 
                 _this3.setState({
@@ -78229,6 +78231,8 @@ var Overview = function (_React$Component) {
                     var graphItem = data.data[_i3];
                     newDayData.push(parseFloat(graphItem.usd_value));
                 }
+
+                newDayData.push(_this3.state.amount);
 
                 var newLabels = _this3.generateGraphDayLabels(newDayData.length);
 
@@ -78274,12 +78278,10 @@ var Overview = function (_React$Component) {
             var hourLabels = [];
             for (var i = 0; i < count; i++) {
                 if (i == count - 1) {
-                    hourLabels.push((0, _moment2.default)().format('DD-MM[  ]H:00'));
+                    hourLabels.push('Now');
                 } else {
                     var valueInHours = count - 1 - i;
                     var momentDate = (0, _moment2.default)().subtract(valueInHours, 'hours');
-
-                    var diffInDays = (0, _moment2.default)().diff(momentDate, 'days');
 
                     hourLabels.push(momentDate.format('DD-MM[  ]H:00'));
                 }

@@ -195,6 +195,8 @@ export default class Overview extends React.Component
                     newHourData.push(parseFloat(graphItem.usd_value));
                 }
 
+                newHourData.push(this.state.amount);
+
                 const newLabels = this.generateGraphHourLabels(newHourData.length);
 
                 this.setState({
@@ -227,6 +229,8 @@ export default class Overview extends React.Component
                     let graphItem = data.data[i];
                     newDayData.push(parseFloat(graphItem.usd_value));
                 }
+
+                newDayData.push(this.state.amount);
 
                 const newLabels = this.generateGraphDayLabels(newDayData.length);
 
@@ -273,12 +277,10 @@ export default class Overview extends React.Component
         let hourLabels = [];
         for (let i=0; i<count; i++) {
             if (i == count-1) {
-                hourLabels.push(moment().format('DD-MM[  ]H:00'));
+                hourLabels.push('Now');
             } else {
                 let valueInHours = (count - 1) - i;
                 let momentDate = moment().subtract(valueInHours, 'hours');
-
-                const diffInDays = moment().diff(momentDate, 'days')
 
                 hourLabels.push(momentDate.format('DD-MM[  ]H:00'));
             }
