@@ -401,10 +401,6 @@ export default class Overview extends React.Component
                 let value24hAgo = parseFloat(portfolio.usd_value_1d_ago);
                 let value7dAgo  = parseFloat(portfolio.usd_value_7d_ago);
 
-                console.log("1h: " + value1hAgo);
-                console.log("24h: " + value24hAgo);
-                console.log("7d: " + value7dAgo);
-
                 let percentage1h = (valueNow - value1hAgo) / value1hAgo * 100;
                 if (value1hAgo === 0) { percentage1h = 0; }
                 let percentage24h = (valueNow - value24hAgo) / value24hAgo * 100;
