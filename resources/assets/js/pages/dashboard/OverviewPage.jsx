@@ -353,12 +353,16 @@ export default class Overview extends React.Component
         let index = tooltipItem[0].index;
         let labelValue = data.labels[index];
 
+        var reference = moment();
+        var TODAY = reference.clone().startOf('day');
+        var YESTERDAY = reference.clone().subtract(1, 'days').startOf('day');
+
         let momentDate = moment(labelValue, 'DD-MM[  ]H:00');
         const diffInDays = moment().diff(momentDate, 'days')
-        if (diffInDays === 0) {
+        if (TODAY.isSame(momentDate, 'd')) {
             return momentDate.format('[Today  ]H:00');
         }
-        if (diffInDays === 1) {
+        if (YESTERDAY.isSame(momentDate, 'd')) {
             return momentDate.format('[Yesterday  ]H:00');
         }
         return labelValue;

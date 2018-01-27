@@ -78358,12 +78358,16 @@ var Overview = function (_React$Component) {
             var index = tooltipItem[0].index;
             var labelValue = data.labels[index];
 
+            var reference = (0, _moment2.default)();
+            var TODAY = reference.clone().startOf('day');
+            var YESTERDAY = reference.clone().subtract(1, 'days').startOf('day');
+
             var momentDate = (0, _moment2.default)(labelValue, 'DD-MM[  ]H:00');
             var diffInDays = (0, _moment2.default)().diff(momentDate, 'days');
-            if (diffInDays === 0) {
+            if (TODAY.isSame(momentDate, 'd')) {
                 return momentDate.format('[Today  ]H:00');
             }
-            if (diffInDays === 1) {
+            if (YESTERDAY.isSame(momentDate, 'd')) {
                 return momentDate.format('[Yesterday  ]H:00');
             }
             return labelValue;
