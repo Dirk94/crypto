@@ -1,0 +1,15 @@
+nav.sidebar-nav--dashboard {
+	.sidebar-header {
+		padding-top: 16px;
+		padding-bottom: 18px!important;
+	}
+
+	ul.nav-pills {
+		border-top: 1px solid #434857;
+		padding-top: 1rem;
+	}
+
+	@media screen and (max-width: 768px) {
+		display: none!important;
+	}
+}

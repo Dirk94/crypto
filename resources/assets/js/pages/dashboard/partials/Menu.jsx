@@ -6,14 +6,14 @@ export default class Menu extends React.Component
     render()
     {
         return (
-            <nav className="sidebar-nav">
+            <nav className="sidebar-nav sidebar-nav--dashboard">
                 <div className="sidebar-header">
                     <button className="nav-toggler nav-toggler-md sidebar-toggler" type="button" data-toggle="collapse" data-target="#nav-toggleable-md">
                         <span className="sr-only">Toggle nav</span>
                     </button>
                     <Link className="sidebar-brand img-responsive" to='/dashboard'>
-                        <span className="icon icon-rocket sidebar-brand-icon"></span>
-                        <span className="sidebar-brand-text">CoinBubble.io</span>
+                        <span className="icon icon-twitter sidebar-brand-icon"></span>
+                        <span className="sidebar-brand-text"><span style={{color: '#1997c6'}}>My</span>CryptoBird</span>
                     </Link>
                 </div>
 
@@ -35,7 +35,6 @@ export default class Menu extends React.Component
                             <NavLink activeClassName="active" className="nav-link" to='/dashboard/logout'>Logout</NavLink>
                         </li>
                     </ul>
-                    <hr className="visible-xs mt-3" />
                 </div>
             </nav>
         );

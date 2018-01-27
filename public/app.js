@@ -77845,7 +77845,7 @@ var Menu = function (_React$Component) {
         value: function render() {
             return _react2.default.createElement(
                 "nav",
-                { className: "sidebar-nav" },
+                { className: "sidebar-nav sidebar-nav--dashboard" },
                 _react2.default.createElement(
                     "div",
                     { className: "sidebar-header" },
@@ -77861,11 +77861,16 @@ var Menu = function (_React$Component) {
                     _react2.default.createElement(
                         _reactRouterDom.Link,
                         { className: "sidebar-brand img-responsive", to: "/dashboard" },
-                        _react2.default.createElement("span", { className: "icon icon-rocket sidebar-brand-icon" }),
+                        _react2.default.createElement("span", { className: "icon icon-twitter sidebar-brand-icon" }),
                         _react2.default.createElement(
                             "span",
                             { className: "sidebar-brand-text" },
-                            "CoinBubble.io"
+                            _react2.default.createElement(
+                                "span",
+                                { style: { color: '#1997c6' } },
+                                "My"
+                            ),
+                            "CryptoBird"
                         )
                     )
                 ),
@@ -77921,8 +77926,7 @@ var Menu = function (_React$Component) {
                                 "Logout"
                             )
                         )
-                    ),
-                    _react2.default.createElement("hr", { className: "visible-xs mt-3" })
+                    )
                 )
             );
         }
