@@ -8404,6 +8404,10 @@ canvas {
 .front-container {
   padding-top: 50px; }
 
+.statcard-desc {
+  display: block;
+  margin-bottom: 10px; }
+
 .statcard-number--h3 {
   font-size: 1.75rem;
   font-weight: 300;
@@ -8422,11 +8426,16 @@ canvas {
   font-size: 10px;
   color: #828a9f;
   position: relative;
-  top: 3px; }
+  top: -6px; }
 
 .statcard-number .delta-indicator {
   position: relative;
-  top: 8px; }
+  top: 0px; }
+
+.statcard-number__percentages__percentage {
+  display: inline-block;
+  padding-left: 10px;
+  padding-right: 10px; }
 
 .animated {
   animation-duration: 1s;

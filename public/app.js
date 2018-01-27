@@ -78012,7 +78012,9 @@ var Overview = function (_React$Component) {
 
         _this.state = {
             amount: -1,
-            percentage: 0,
+            percentage1h: 0,
+            percentage24h: 0,
+            percentage7d: 0,
 
             minuteData: minuteData,
             minuteLabels: minuteLabels,
@@ -78084,7 +78086,9 @@ var Overview = function (_React$Component) {
                         { className: "col-12" },
                         _react2.default.createElement(_PortfolioBalance2.default, {
                             amount: this.state.amount,
-                            percentage: this.state.percentage
+                            percentage1h: this.state.percentage1h,
+                            percentage24h: this.state.percentage24h,
+                            percentage7d: this.state.percentage7d
                         })
                     )
                 ),
@@ -78363,7 +78367,6 @@ var Overview = function (_React$Component) {
             var YESTERDAY = reference.clone().subtract(1, 'days').startOf('day');
 
             var momentDate = (0, _moment2.default)(labelValue, 'DD-MM[  ]H:00');
-            var diffInDays = (0, _moment2.default)().diff(momentDate, 'days');
             if (TODAY.isSame(momentDate, 'd')) {
                 return momentDate.format('[Today  ]H:00');
             }
@@ -78404,17 +78407,33 @@ var Overview = function (_React$Component) {
                 var portfolio = response[0];
 
                 var valueNow = parseFloat(portfolio.usd_value);
-                var value24HAgo = parseFloat(portfolio.usd_value_1d_ago);
+                var value1hAgo = parseFloat(portfolio.usd_value_1h_ago);
+                var value24hAgo = parseFloat(portfolio.usd_value_1d_ago);
+                var value7dAgo = parseFloat(portfolio.usd_value_7d_ago);
 
-                var percentage = (valueNow - value24HAgo) / value24HAgo * 100;
-                if (value24HAgo === 0) {
-                    percentage = 0;
+                console.log("1h: " + value1hAgo);
+                console.log("24h: " + value24hAgo);
+                console.log("7d: " + value7dAgo);
+
+                var percentage1h = (valueNow - value1hAgo) / value1hAgo * 100;
+                if (value1hAgo === 0) {
+                    percentage1h = 0;
+                }
+                var percentage24h = (valueNow - value24hAgo) / value24hAgo * 100;
+                if (value24hAgo === 0) {
+                    percentage24h = 0;
+                }
+                var percentage7d = (valueNow - value7dAgo) / value7dAgo * 100;
+                if (value7dAgo === 0) {
+                    percentage7d = 0;
                 }
 
                 _this4.setState({
                     portfolioId: portfolio.id,
                     amount: parseFloat(portfolio.usd_value),
-                    percentage: percentage
+                    percentage1h: percentage1h,
+                    percentage24h: percentage24h,
+                    percentage7d: percentage7d
                 });
             }).catch(function (error) {
                 console.log("ERROR");
@@ -78521,9 +78540,14 @@ var PortfolioBalance = function (_React$Component) {
         value: function componentWillReceiveProps(nextProps) {
             var _this2 = this;
 
-            this.setState({
-                extraClassName: 'animated bounce'
-            });
+            if (nextProps.amount != this.props.amount) {
+                console.log(nextProps.amount);
+                console.log(this.props.amount);
+                console.log("");
+                this.setState({
+                    extraClassName: 'animated bounce'
+                });
+            }
 
             setTimeout(function () {
                 _this2.setState({ extraClassName: '' });
@@ -78536,6 +78560,11 @@ var PortfolioBalance = function (_React$Component) {
                 'div',
                 { className: 'statcard p-3' },
                 _react2.default.createElement(
+                    'span',
+                    { className: "statcard-desc " + this.state.extraClassName },
+                    'Portfolio Value'
+                ),
+                _react2.default.createElement(
                     'div',
                     { className: 'statcard-number statcard-number--h3' },
                     this.props.amount !== -1 ? _react2.default.createElement(
@@ -78546,33 +78575,53 @@ var PortfolioBalance = function (_React$Component) {
                             { className: "statcard-number__amount " + this.state.extraClassName },
                             _String2.default.formatAsMoney(this.props.amount)
                         ),
-                        this.props.percentage >= 0 ? _react2.default.createElement(
+                        _react2.default.createElement(
                             'div',
-                            { className: "statcard-number__right " + this.state.extraClassName },
+                            { className: "statcard-number__percentages" },
                             _react2.default.createElement(
-                                'small',
-                                { className: 'delta-indicator delta-positive' },
-                                _String2.default.numberFormat(this.props.percentage, 2),
-                                '%'
+                                'div',
+                                { className: "statcard-number__percentages__percentage " + this.state.extraClassName },
+                                _react2.default.createElement(
+                                    'small',
+                                    { className: "delta-indicator " + (this.props.percentage1h >= 0 ? "delta-positive" : "delta-negative") },
+                                    _String2.default.numberFormat(this.props.percentage1h, 2),
+                                    '%'
+                                ),
+                                _react2.default.createElement(
+                                    'div',
+                                    { className: 'statcard-number__change' },
+                                    '1h change'
+                                )
                             ),
                             _react2.default.createElement(
                                 'div',
-                                { className: 'statcard-number__change' },
-                                '24h change'
-                            )
-                        ) : _react2.default.createElement(
-                            'div',
-                            { className: "statcard-number__right " + this.state.extraClassName },
-                            _react2.default.createElement(
-                                'small',
-                                { className: 'delta-indicator delta-negative' },
-                                _String2.default.numberFormat(this.props.percentage, 2),
-                                '%'
+                                { className: "statcard-number__percentages__percentage " + this.state.extraClassName },
+                                _react2.default.createElement(
+                                    'small',
+                                    { className: "delta-indicator " + (this.props.percentage24h >= 0 ? "delta-positive" : "delta-negative") },
+                                    _String2.default.numberFormat(this.props.percentage24h, 2),
+                                    '%'
+                                ),
+                                _react2.default.createElement(
+                                    'div',
+                                    { className: 'statcard-number__change' },
+                                    '24h change'
+                                )
                             ),
                             _react2.default.createElement(
                                 'div',
-                                { className: 'statcard-number__change' },
-                                '24h change'
+                                { className: "statcard-number__percentages__percentage " + this.state.extraClassName },
+                                _react2.default.createElement(
+                                    'small',
+                                    { className: "delta-indicator " + (this.props.percentage7d >= 0 ? "delta-positive" : "delta-negative") },
+                                    _String2.default.numberFormat(this.props.percentage7d, 2),
+                                    '%'
+                                ),
+                                _react2.default.createElement(
+                                    'div',
+                                    { className: 'statcard-number__change' },
+                                    '7d change'
+                                )
                             )
                         )
                     ) : _react2.default.createElement(
@@ -78580,11 +78629,6 @@ var PortfolioBalance = function (_React$Component) {
                         null,
                         _react2.default.createElement(_Loader2.default, { loading: true })
                     )
-                ),
-                _react2.default.createElement(
-                    'span',
-                    { className: 'statcard-desc' },
-                    'Portfolio Value'
                 )
             );
         }
@@ -78595,7 +78639,9 @@ var PortfolioBalance = function (_React$Component) {
 
 PortfolioBalance.propTypes = {
     amount: _propTypes2.default.number,
-    percentage: _propTypes2.default.number
+    percentage1h: _propTypes2.default.number,
+    percentage24h: _propTypes2.default.number,
+    percentage7d: _propTypes2.default.number
 };
 exports.default = PortfolioBalance;
 

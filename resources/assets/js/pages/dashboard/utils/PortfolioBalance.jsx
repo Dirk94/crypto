@@ -8,7 +8,9 @@ export default class PortfolioBalance extends React.Component
 {
     static propTypes = {
         amount: PropTypes.number,
-        percentage: PropTypes.number
+        percentage1h: PropTypes.number,
+        percentage24h: PropTypes.number,
+        percentage7d: PropTypes.number
     }
 
     constructor(props)
@@ -21,9 +23,14 @@ export default class PortfolioBalance extends React.Component
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({
-            extraClassName: 'animated bounce'
-        });
+        if (nextProps.amount != this.props.amount) {
+            console.log(nextProps.amount);
+            console.log(this.props.amount);
+            console.log("");
+            this.setState({
+                extraClassName: 'animated bounce'
+            });
+        }
 
         setTimeout(() => {
             this.setState({extraClassName: ''});
@@ -33,33 +40,46 @@ export default class PortfolioBalance extends React.Component
     render() {
         return (
             <div className="statcard p-3">
+                <span className={"statcard-desc " + this.state.extraClassName}>Portfolio Value</span>
+
                 <div className="statcard-number statcard-number--h3">
-                    
                     {(this.props.amount !== -1) ? (
                         <div>
                             <div className={"statcard-number__amount " + this.state.extraClassName}>
                                 {String.formatAsMoney(this.props.amount)}
                             </div>
-
-                            {this.props.percentage >= 0 ? (
-                                <div className={"statcard-number__right " + this.state.extraClassName}>
-                                    <small className="delta-indicator delta-positive">
-                                        {String.numberFormat(this.props.percentage, 2)}%
+                            <div className={"statcard-number__percentages"}>
+                                <div className={"statcard-number__percentages__percentage " + this.state.extraClassName}>
+                                    <small className={
+                                        "delta-indicator " + (this.props.percentage1h >= 0 ? "delta-positive" : "delta-negative")
+                                    }>
+                                        {String.numberFormat(this.props.percentage1h, 2)}%
+                                    </small>
+                                    <div className="statcard-number__change">
+                                        1h change
+                                    </div>
+                                </div>
+                                <div className={"statcard-number__percentages__percentage " + this.state.extraClassName}>
+                                    <small className={
+                                        "delta-indicator " + (this.props.percentage24h >= 0 ? "delta-positive" : "delta-negative")
+                                    }>
+                                        {String.numberFormat(this.props.percentage24h, 2)}%
                                     </small>
                                     <div className="statcard-number__change">
                                         24h change
                                     </div>
                                 </div>
-                            ) : (
-                                <div className={"statcard-number__right " + this.state.extraClassName}>
-                                    <small className="delta-indicator delta-negative">
-                                        {String.numberFormat(this.props.percentage, 2)}%
+                                <div className={"statcard-number__percentages__percentage " + this.state.extraClassName}>
+                                    <small className={
+                                        "delta-indicator " + (this.props.percentage7d >= 0 ? "delta-positive" : "delta-negative")
+                                    }>
+                                        {String.numberFormat(this.props.percentage7d, 2)}%
                                     </small>
                                     <div className="statcard-number__change">
-                                        24h change
+                                        7d change
                                     </div>
                                 </div>
-                            )}
+                            </div>
                         </div> 
                     ) : (
                         <div>
@@ -67,7 +87,7 @@ export default class PortfolioBalance extends React.Component
                         </div>
                     ) }
                 </div>
-                <span className="statcard-desc">Portfolio Value</span>
+
             </div>
         );
     }

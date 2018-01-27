@@ -37,7 +37,9 @@ export default class Overview extends React.Component
 
         this.state = {
             amount: -1,
-            percentage: 0,
+            percentage1h: 0,
+            percentage24h: 0,
+            percentage7d: 0,
 
             minuteData: minuteData,
             minuteLabels: minuteLabels,
@@ -91,7 +93,9 @@ export default class Overview extends React.Component
                     <div className="col-12">
                         <PortfolioBalance
                             amount={this.state.amount}
-                            percentage={this.state.percentage}
+                            percentage1h={this.state.percentage1h}
+                            percentage24h={this.state.percentage24h}
+                            percentage7d={this.state.percentage7d}
                         />
                     </div>
                 </div>
@@ -358,7 +362,6 @@ export default class Overview extends React.Component
         var YESTERDAY = reference.clone().subtract(1, 'days').startOf('day');
 
         let momentDate = moment(labelValue, 'DD-MM[  ]H:00');
-        const diffInDays = moment().diff(momentDate, 'days')
         if (TODAY.isSame(momentDate, 'd')) {
             return momentDate.format('[Today  ]H:00');
         }
@@ -393,18 +396,28 @@ export default class Overview extends React.Component
             .then((response) => {
                 let portfolio = response[0];
 
-                let valueNow = parseFloat(portfolio.usd_value);
-                let value24HAgo = parseFloat(portfolio.usd_value_1d_ago);
+                let valueNow    = parseFloat(portfolio.usd_value);
+                let value1hAgo  = parseFloat(portfolio.usd_value_1h_ago);
+                let value24hAgo = parseFloat(portfolio.usd_value_1d_ago);
+                let value7dAgo  = parseFloat(portfolio.usd_value_7d_ago);
 
-                let percentage = (valueNow - value24HAgo) / value24HAgo * 100;
-                if (value24HAgo === 0) {
-                    percentage = 0;
-                }
+                console.log("1h: " + value1hAgo);
+                console.log("24h: " + value24hAgo);
+                console.log("7d: " + value7dAgo);
+
+                let percentage1h = (valueNow - value1hAgo) / value1hAgo * 100;
+                if (value1hAgo === 0) { percentage1h = 0; }
+                let percentage24h = (valueNow - value24hAgo) / value24hAgo * 100;
+                if (value24hAgo === 0) { percentage24h = 0; }
+                let percentage7d = (valueNow - value7dAgo) / value7dAgo * 100;
+                if (value7dAgo === 0) { percentage7d = 0; }
 
                 this.setState({
                     portfolioId: portfolio.id,
                     amount: parseFloat(portfolio.usd_value),
-                    percentage: percentage
+                    percentage1h:  percentage1h,
+                    percentage24h: percentage24h,
+                    percentage7d:  percentage7d
                 })
             })
             .catch((error) => {
