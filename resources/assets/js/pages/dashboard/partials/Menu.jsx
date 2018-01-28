@@ -12,7 +12,7 @@ export default class Menu extends React.Component
                         <span className="sr-only">Toggle nav</span>
                     </button>
                     <Link className="sidebar-brand img-responsive" to='/dashboard'>
-                        <span className="icon icon-twitter sidebar-brand-icon"></span>
+                        <img className="sidebar-brand-icon" src="/images/bird-icon.svg"></img>
                         <span className="sidebar-brand-text"><span style={{color: '#1997c6'}}>My</span>CryptoBird</span>
                     </Link>
                 </div>

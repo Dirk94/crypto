@@ -8512,6 +8512,16 @@ button:hover {
 .sidebar-brand:hover {
   color: #cfd2da !important; }
 
+.sidebar-brand-icon {
+  height: 35px !important;
+  position: relative;
+  top: -7px; }
+
+.sidebar-brand-text {
+  left: 9px !important;
+  top: 3px !important;
+  font-size: 1.37rem; }
+
 .chart-selector-container {
   float: right;
   min-width: 230px; }
@@ -8519,8 +8529,8 @@ button:hover {
     padding-bottom: 8px; }
 
 nav.sidebar-nav--dashboard .sidebar-header {
-  padding-top: 16px;
-  padding-bottom: 18px !important; }
+  padding-top: 24px;
+  padding-bottom: 22px !important; }
 
 nav.sidebar-nav--dashboard ul.nav-pills {
   border-top: 1px solid #434857;

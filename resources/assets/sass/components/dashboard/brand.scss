@@ -1,3 +1,18 @@
-.sidebar-brand:hover {
-	color: #cfd2da!important;
+.sidebar-brand {
+
+	&:hover {
+		color: #cfd2da!important;
+	}
+
+	&-icon {
+		height: 35px !important;
+		position: relative;
+		top: -7px;
+	}
+}
+
+.sidebar-brand-text {
+	left: 9px!important;
+	top: 3px!important;
+	font-size: 1.37rem;
 }

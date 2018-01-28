@@ -77861,7 +77861,7 @@ var Menu = function (_React$Component) {
                     _react2.default.createElement(
                         _reactRouterDom.Link,
                         { className: "sidebar-brand img-responsive", to: "/dashboard" },
-                        _react2.default.createElement("span", { className: "icon icon-twitter sidebar-brand-icon" }),
+                        _react2.default.createElement("img", { className: "sidebar-brand-icon", src: "/images/bird-icon.svg" }),
                         _react2.default.createElement(
                             "span",
                             { className: "sidebar-brand-text" },
