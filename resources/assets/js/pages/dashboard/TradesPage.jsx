@@ -20,6 +20,7 @@ export default class Trades extends React.Component
 
                 <AddDepositModal />
                 <AddTradeModal />
+                <div style={{clear: 'both'}} />
 
                 <TradesTable />
             </div>

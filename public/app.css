@@ -8524,7 +8524,7 @@ button:hover {
 .sidebar-brand-icon {
   height: 35px !important;
   position: relative;
-  top: -7px; }
+  top: -2px; }
 
 .sidebar-brand-text {
   left: 9px !important;
@@ -8548,3 +8548,6 @@ nav.sidebar-nav--dashboard ul.nav-pills {
 @media screen and (max-width: 768px) {
   nav.sidebar-nav--dashboard {
     display: none !important; } }
+
+.trades-table {
+  margin-top: 45px; }
