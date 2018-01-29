@@ -22,6 +22,7 @@ export default class AddDepositModal extends React.Component
 
         this.processForm = this.processForm.bind(this);
         this.changeFormData = this.changeFormData.bind(this);
+        this.clickedAddAnotherTrade = this.clickedAddAnotherTrade.bind(this);
     }
 
     processForm(event)
@@ -64,6 +65,22 @@ export default class AddDepositModal extends React.Component
         });
     }
 
+    clickedAddAnotherTrade(event)
+    {
+        event.preventDefault();
+
+        this.setState({
+            errors: {},
+            success: false,
+            loading: false,
+            formData: {
+                transaction_type: '',
+                in_coin_name: '',
+                in_amount: '',
+            }
+        });
+    }
+
     render()
     {
         return (
@@ -77,7 +94,7 @@ export default class AddDepositModal extends React.Component
                     <div className="modal-dialog" role="document">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h5 className="modal-title" id="exampleModalLabel">Add Deposit</h5>
+                                <h5 className="modal-title" id="exampleModalLabel"><span className="icon icon-align-bottom"></span>&nbsp;Add Deposit</h5>
                                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -90,6 +107,7 @@ export default class AddDepositModal extends React.Component
                                     formData={this.state.formData}
                                     success={this.state.success}
                                     loading={this.state.loading}
+                                    clickedAddAnotherTrade={this.clickedAddAnotherTrade}
                                 />
                             </div>
                         </div>

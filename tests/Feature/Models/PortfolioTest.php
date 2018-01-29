@@ -28,7 +28,7 @@ class PortfolioTest extends FeatureTestCase
         ]);
 
         $portfolios = $user->portfolios;
-        $this->assertEquals($portfolios->count(), 1);
+        $this->assertEquals($portfolios->count(), 2); // The default portfolio plus the one we just created.
         $this->assertEquals($portfolios->first()->pivot->permissions, 'owner');
     }
 

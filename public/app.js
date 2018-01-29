@@ -9651,7 +9651,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_fbjs_lib_shallowEqual__ = __webpack_require__(47);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_fbjs_lib_shallowEqual___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_fbjs_lib_shallowEqual__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_hoist_non_react_statics__ = __webpack_require__(78);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_hoist_non_react_statics__ = __webpack_require__(77);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_hoist_non_react_statics___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_hoist_non_react_statics__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_change_emitter__ = __webpack_require__(392);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_change_emitter___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_change_emitter__);
@@ -11544,7 +11544,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "BrowserRouter", function() { return __WEBPACK_IMPORTED_MODULE_0__BrowserRouter__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__HashRouter__ = __webpack_require__(360);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "HashRouter", function() { return __WEBPACK_IMPORTED_MODULE_1__HashRouter__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Link__ = __webpack_require__(74);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Link__ = __webpack_require__(73);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Link", function() { return __WEBPACK_IMPORTED_MODULE_2__Link__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__MemoryRouter__ = __webpack_require__(362);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "MemoryRouter", function() { return __WEBPACK_IMPORTED_MODULE_3__MemoryRouter__["a"]; });
@@ -11554,7 +11554,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Prompt", function() { return __WEBPACK_IMPORTED_MODULE_5__Prompt__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__Redirect__ = __webpack_require__(370);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Redirect", function() { return __WEBPACK_IMPORTED_MODULE_6__Redirect__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__Route__ = __webpack_require__(75);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__Route__ = __webpack_require__(74);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Route", function() { return __WEBPACK_IMPORTED_MODULE_7__Route__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__Router__ = __webpack_require__(50);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Router", function() { return __WEBPACK_IMPORTED_MODULE_8__Router__["a"]; });
@@ -11595,6 +11595,104 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 /***/ }),
 /* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseIsNative = __webpack_require__(495),
+    getValue = __webpack_require__(500);
+
+/**
+ * Gets the native function at `key` of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {string} key The key of the method to get.
+ * @returns {*} Returns the function if it's native, else `undefined`.
+ */
+function getNative(object, key) {
+  var value = getValue(object, key);
+  return baseIsNative(value) ? value : undefined;
+}
+
+module.exports = getNative;
+
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _axios = __webpack_require__(81);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _Auth = __webpack_require__(20);
+
+var _Auth2 = _interopRequireDefault(_Auth);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Request = function () {
+    function Request() {
+        _classCallCheck(this, Request);
+    }
+
+    _createClass(Request, null, [{
+        key: 'get',
+        value: function get(url) {
+            return new Promise(function (resolve, reject) {
+                _axios2.default.get(url, { headers: {
+                        'Authorization': _Auth2.default.getToken()
+                    } }).then(function (response) {
+                    var freshToken = response.headers['x-fresh-token'];
+                    if (freshToken) {
+                        _Auth2.default.authenticateUser(freshToken);
+                    }
+
+                    resolve(response);
+                }).catch(function (error) {
+                    reject(error);
+                });
+            });
+        }
+    }, {
+        key: 'post',
+        value: function post(url) {
+            var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+            return new Promise(function (resolve, reject) {
+                _axios2.default.post(url, data, { headers: {
+                        'Authorization': _Auth2.default.getToken()
+                    } }).then(function (response) {
+                    var freshToken = response.headers['x-fresh-token'];
+                    if (freshToken) {
+                        _Auth2.default.authenticateUser(freshToken);
+                    }
+
+                    resolve(response);
+                }).catch(function (error) {
+                    reject(error);
+                });
+            });
+        }
+    }]);
+
+    return Request;
+}();
+
+exports.default = Request;
+
+/***/ }),
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11666,104 +11764,6 @@ var Auth = function () {
 
 Auth.JWT_EXPIRES_AFTER = 420;
 exports.default = Auth;
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var baseIsNative = __webpack_require__(495),
-    getValue = __webpack_require__(500);
-
-/**
- * Gets the native function at `key` of `object`.
- *
- * @private
- * @param {Object} object The object to query.
- * @param {string} key The key of the method to get.
- * @returns {*} Returns the function if it's native, else `undefined`.
- */
-function getNative(object, key) {
-  var value = getValue(object, key);
-  return baseIsNative(value) ? value : undefined;
-}
-
-module.exports = getNative;
-
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _axios = __webpack_require__(55);
-
-var _axios2 = _interopRequireDefault(_axios);
-
-var _Auth = __webpack_require__(18);
-
-var _Auth2 = _interopRequireDefault(_Auth);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Request = function () {
-    function Request() {
-        _classCallCheck(this, Request);
-    }
-
-    _createClass(Request, null, [{
-        key: 'get',
-        value: function get(url) {
-            return new Promise(function (resolve, reject) {
-                _axios2.default.get(url, { headers: {
-                        'Authorization': _Auth2.default.getToken()
-                    } }).then(function (response) {
-                    var freshToken = response.headers['x-fresh-token'];
-                    if (freshToken) {
-                        _Auth2.default.authenticateUser(freshToken);
-                    }
-
-                    resolve(response);
-                }).catch(function (error) {
-                    reject(error);
-                });
-            });
-        }
-    }, {
-        key: 'post',
-        value: function post(url) {
-            var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-            return new Promise(function (resolve, reject) {
-                _axios2.default.post(url, data, { headers: {
-                        'Authorization': _Auth2.default.getToken()
-                    } }).then(function (response) {
-                    var freshToken = response.headers['x-fresh-token'];
-                    if (freshToken) {
-                        _Auth2.default.authenticateUser(freshToken);
-                    }
-
-                    resolve(response);
-                }).catch(function (error) {
-                    reject(error);
-                });
-            });
-        }
-    }]);
-
-    return Request;
-}();
-
-exports.default = Request;
 
 /***/ }),
 /* 21 */
@@ -12468,8 +12468,8 @@ module.exports = warning;
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return createLocation; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return locationsAreEqual; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_resolve_pathname__ = __webpack_require__(71);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_value_equal__ = __webpack_require__(72);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_resolve_pathname__ = __webpack_require__(70);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_value_equal__ = __webpack_require__(71);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__PathUtils__ = __webpack_require__(24);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -13001,7 +13001,7 @@ module.exports = isObject;
 /* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(19);
+var getNative = __webpack_require__(18);
 
 /* Built-in method references that are verified to be native. */
 var nativeCreate = getNative(Object, 'create');
@@ -13039,7 +13039,7 @@ module.exports = getMapData;
 
 var arrayLikeKeys = __webpack_require__(529),
     baseKeys = __webpack_require__(536),
-    isArrayLike = __webpack_require__(62);
+    isArrayLike = __webpack_require__(61);
 
 /**
  * Creates an array of the own enumerable property names of `object`.
@@ -13159,7 +13159,7 @@ var _propTypes = __webpack_require__(3);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _Loader = __webpack_require__(80);
+var _Loader = __webpack_require__(79);
 
 var _Loader2 = _interopRequireDefault(_Loader);
 
@@ -13484,11 +13484,11 @@ exports.locationsAreEqual = exports.createLocation = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _resolvePathname = __webpack_require__(71);
+var _resolvePathname = __webpack_require__(70);
 
 var _resolvePathname2 = _interopRequireDefault(_resolvePathname);
 
-var _valueEqual = __webpack_require__(72);
+var _valueEqual = __webpack_require__(71);
 
 var _valueEqual2 = _interopRequireDefault(_valueEqual);
 
@@ -13952,7 +13952,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Request = __webpack_require__(20);
+var _Request = __webpack_require__(19);
 
 var _Request2 = _interopRequireDefault(_Request);
 
@@ -14104,12 +14104,6 @@ exports.default = PortfolioBalanceData;
 /* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(415);
-
-/***/ }),
-/* 56 */
-/***/ (function(module, exports, __webpack_require__) {
-
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
@@ -14207,7 +14201,7 @@ module.exports = defaults;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
-/* 57 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -14291,7 +14285,7 @@ Chart.canvasHelpers = Chart.helpers.canvas;
 
 
 /***/ }),
-/* 58 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseIsEqualDeep = __webpack_require__(484),
@@ -14325,10 +14319,10 @@ module.exports = baseIsEqual;
 
 
 /***/ }),
-/* 59 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(19),
+var getNative = __webpack_require__(18),
     root = __webpack_require__(13);
 
 /* Built-in method references that are verified to be native. */
@@ -14338,7 +14332,7 @@ module.exports = Map;
 
 
 /***/ }),
-/* 60 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var mapCacheClear = __webpack_require__(501),
@@ -14376,7 +14370,7 @@ module.exports = MapCache;
 
 
 /***/ }),
-/* 61 */
+/* 60 */
 /***/ (function(module, exports) {
 
 /** Used as references for various `Number` constants. */
@@ -14417,11 +14411,11 @@ module.exports = isLength;
 
 
 /***/ }),
-/* 62 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isFunction = __webpack_require__(327),
-    isLength = __webpack_require__(61);
+    isLength = __webpack_require__(60);
 
 /**
  * Checks if `value` is array-like. A value is considered array-like if it's
@@ -14456,7 +14450,7 @@ module.exports = isArrayLike;
 
 
 /***/ }),
-/* 63 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseMatches = __webpack_require__(547),
@@ -14493,7 +14487,7 @@ module.exports = baseIteratee;
 
 
 /***/ }),
-/* 64 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isArray = __webpack_require__(14),
@@ -14528,7 +14522,7 @@ module.exports = isKey;
 
 
 /***/ }),
-/* 65 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14596,7 +14590,7 @@ function compareObjects(objA, objB) {
 }
 
 /***/ }),
-/* 66 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14635,7 +14629,7 @@ var ExecutionEnvironment = {
 module.exports = ExecutionEnvironment;
 
 /***/ }),
-/* 67 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14716,7 +14710,7 @@ module.exports = EventListener;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
-/* 68 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14758,7 +14752,7 @@ function getActiveElement(doc) /*?DOMElement*/{
 module.exports = getActiveElement;
 
 /***/ }),
-/* 69 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14801,7 +14795,7 @@ function containsNode(outerNode, innerNode) {
 module.exports = containsNode;
 
 /***/ }),
-/* 70 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14831,7 +14825,7 @@ function focusNode(node) {
 module.exports = focusNode;
 
 /***/ }),
-/* 71 */
+/* 70 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -14908,7 +14902,7 @@ function resolvePathname(to) {
 /* harmony default export */ __webpack_exports__["default"] = (resolvePathname);
 
 /***/ }),
-/* 72 */
+/* 71 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -14953,7 +14947,7 @@ function valueEqual(a, b) {
 /* harmony default export */ __webpack_exports__["default"] = (valueEqual);
 
 /***/ }),
-/* 73 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15014,7 +15008,7 @@ var isExtraneousPopstateEvent = exports.isExtraneousPopstateEvent = function isE
 };
 
 /***/ }),
-/* 74 */
+/* 73 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -15124,18 +15118,18 @@ Link.contextTypes = {
 /* harmony default export */ __webpack_exports__["a"] = (Link);
 
 /***/ }),
-/* 75 */
+/* 74 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react_router_es_Route__ = __webpack_require__(76);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react_router_es_Route__ = __webpack_require__(75);
 // Written in this round about way for babel-transform-imports
 
 
 /* harmony default export */ __webpack_exports__["a"] = (__WEBPACK_IMPORTED_MODULE_0_react_router_es_Route__["a" /* default */]);
 
 /***/ }),
-/* 76 */
+/* 75 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -15284,7 +15278,7 @@ Route.childContextTypes = {
 /* harmony default export */ __webpack_exports__["a"] = (Route);
 
 /***/ }),
-/* 77 */
+/* 76 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -15350,7 +15344,7 @@ var isExtraneousPopstateEvent = function isExtraneousPopstateEvent(event) {
 };
 
 /***/ }),
-/* 78 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15422,7 +15416,7 @@ module.exports = function hoistNonReactStatics(targetComponent, sourceComponent,
 
 
 /***/ }),
-/* 79 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15485,7 +15479,7 @@ var String = function () {
 exports.default = String;
 
 /***/ }),
-/* 80 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15551,7 +15545,7 @@ Loader.propTypes = {
 exports.default = Loader;
 
 /***/ }),
-/* 81 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -15595,6 +15589,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     return 'rgba(' + rgbValues + ', ' + opacity + ')';
   };
 });
+
+/***/ }),
+/* 81 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(415);
 
 /***/ }),
 /* 82 */
@@ -27539,7 +27539,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Request = __webpack_require__(20);
+var _Request = __webpack_require__(19);
 
 var _Request2 = _interopRequireDefault(_Request);
 
@@ -40052,7 +40052,7 @@ module.exports = baseGet;
 /***/ (function(module, exports, __webpack_require__) {
 
 var isArray = __webpack_require__(14),
-    isKey = __webpack_require__(64),
+    isKey = __webpack_require__(63),
     stringToPath = __webpack_require__(552),
     toString = __webpack_require__(555);
 
@@ -40095,11 +40095,11 @@ var _propTypes = __webpack_require__(3);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _Auth = __webpack_require__(18);
+var _Auth = __webpack_require__(20);
 
 var _Auth2 = _interopRequireDefault(_Auth);
 
-var _axios = __webpack_require__(55);
+var _axios = __webpack_require__(81);
 
 var _axios2 = _interopRequireDefault(_axios);
 
@@ -40230,7 +40230,7 @@ exports.default = CoinTextInput;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(341);
-module.exports = __webpack_require__(609);
+module.exports = __webpack_require__(610);
 
 
 /***/ }),
@@ -40256,11 +40256,11 @@ var _DashboardLayout = __webpack_require__(383);
 
 var _DashboardLayout2 = _interopRequireDefault(_DashboardLayout);
 
-var _FrontLayout = __webpack_require__(602);
+var _FrontLayout = __webpack_require__(603);
 
 var _FrontLayout2 = _interopRequireDefault(_FrontLayout);
 
-var _chart = __webpack_require__(57);
+var _chart = __webpack_require__(56);
 
 var _chart2 = _interopRequireDefault(_chart);
 
@@ -58301,7 +58301,7 @@ if (process.env.NODE_ENV === 'production') {
 /*
  Modernizr 3.0.0pre (Custom Build) | MIT
 */
-var aa=__webpack_require__(2),l=__webpack_require__(66),B=__webpack_require__(21),C=__webpack_require__(15),ba=__webpack_require__(67),da=__webpack_require__(68),ea=__webpack_require__(47),fa=__webpack_require__(69),ia=__webpack_require__(70),D=__webpack_require__(29);
+var aa=__webpack_require__(2),l=__webpack_require__(65),B=__webpack_require__(21),C=__webpack_require__(15),ba=__webpack_require__(66),da=__webpack_require__(67),ea=__webpack_require__(47),fa=__webpack_require__(68),ia=__webpack_require__(69),D=__webpack_require__(29);
 function E(a){for(var b=arguments.length-1,c="Minified React error #"+a+"; visit http://facebook.github.io/react/docs/error-decoder.html?invariant\x3d"+a,d=0;d<b;d++)c+="\x26args[]\x3d"+encodeURIComponent(arguments[d+1]);b=Error(c+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings.");b.name="Invariant Violation";b.framesToPop=1;throw b;}aa?void 0:E("227");
 var oa={children:!0,dangerouslySetInnerHTML:!0,defaultValue:!0,defaultChecked:!0,innerHTML:!0,suppressContentEditableWarning:!0,suppressHydrationWarning:!0,style:!0};function pa(a,b){return(a&b)===b}
 var ta={MUST_USE_PROPERTY:1,HAS_BOOLEAN_VALUE:4,HAS_NUMERIC_VALUE:8,HAS_POSITIVE_NUMERIC_VALUE:24,HAS_OVERLOADED_BOOLEAN_VALUE:32,HAS_STRING_BOOLEAN_VALUE:64,injectDOMPropertyConfig:function(a){var b=ta,c=a.Properties||{},d=a.DOMAttributeNamespaces||{},e=a.DOMAttributeNames||{};a=a.DOMMutationMethods||{};for(var f in c){ua.hasOwnProperty(f)?E("48",f):void 0;var g=f.toLowerCase(),h=c[f];g={attributeName:g,attributeNamespace:null,propertyName:f,mutationMethod:null,mustUseProperty:pa(h,b.MUST_USE_PROPERTY),
@@ -58601,14 +58601,14 @@ if (process.env.NODE_ENV !== "production") {
 var React = __webpack_require__(2);
 var invariant = __webpack_require__(22);
 var warning = __webpack_require__(30);
-var ExecutionEnvironment = __webpack_require__(66);
+var ExecutionEnvironment = __webpack_require__(65);
 var _assign = __webpack_require__(21);
 var emptyFunction = __webpack_require__(15);
-var EventListener = __webpack_require__(67);
-var getActiveElement = __webpack_require__(68);
+var EventListener = __webpack_require__(66);
+var getActiveElement = __webpack_require__(67);
 var shallowEqual = __webpack_require__(47);
-var containsNode = __webpack_require__(69);
-var focusNode = __webpack_require__(70);
+var containsNode = __webpack_require__(68);
+var focusNode = __webpack_require__(69);
 var emptyObject = __webpack_require__(29);
 var checkPropTypes = __webpack_require__(45);
 var hyphenateStyleName = __webpack_require__(352);
@@ -74845,7 +74845,7 @@ var _createTransitionManager = __webpack_require__(49);
 
 var _createTransitionManager2 = _interopRequireDefault(_createTransitionManager);
 
-var _DOMUtils = __webpack_require__(73);
+var _DOMUtils = __webpack_require__(72);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -75222,7 +75222,7 @@ var _createTransitionManager = __webpack_require__(49);
 
 var _createTransitionManager2 = _interopRequireDefault(_createTransitionManager);
 
-var _DOMUtils = __webpack_require__(73);
+var _DOMUtils = __webpack_require__(72);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -75788,8 +75788,8 @@ exports.default = createMemoryHistory;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_prop_types__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Route__ = __webpack_require__(75);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Link__ = __webpack_require__(74);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Route__ = __webpack_require__(74);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Link__ = __webpack_require__(73);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -76561,7 +76561,7 @@ Redirect.contextTypes = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__LocationUtils__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__PathUtils__ = __webpack_require__(24);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__createTransitionManager__ = __webpack_require__(53);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__DOMUtils__ = __webpack_require__(77);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__DOMUtils__ = __webpack_require__(76);
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -76865,7 +76865,7 @@ var createBrowserHistory = function createBrowserHistory() {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__LocationUtils__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__PathUtils__ = __webpack_require__(24);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__createTransitionManager__ = __webpack_require__(53);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__DOMUtils__ = __webpack_require__(77);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__DOMUtils__ = __webpack_require__(76);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 
@@ -77672,9 +77672,9 @@ Switch.propTypes = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_prop_types__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_hoist_non_react_statics__ = __webpack_require__(78);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_hoist_non_react_statics__ = __webpack_require__(77);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_hoist_non_react_statics___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_hoist_non_react_statics__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Route__ = __webpack_require__(76);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Route__ = __webpack_require__(75);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
@@ -77743,11 +77743,11 @@ var _TradesPage = __webpack_require__(582);
 
 var _TradesPage2 = _interopRequireDefault(_TradesPage);
 
-var _LogoutPage = __webpack_require__(600);
+var _LogoutPage = __webpack_require__(601);
 
 var _LogoutPage2 = _interopRequireDefault(_LogoutPage);
 
-var _PrivateRoute = __webpack_require__(601);
+var _PrivateRoute = __webpack_require__(602);
 
 var _PrivateRoute2 = _interopRequireDefault(_PrivateRoute);
 
@@ -77861,7 +77861,7 @@ var Menu = function (_React$Component) {
                     _react2.default.createElement(
                         _reactRouterDom.Link,
                         { className: "sidebar-brand img-responsive", to: "/dashboard" },
-                        _react2.default.createElement("img", { className: "sidebar-brand-icon", src: "/images/bird-icon.svg" }),
+                        _react2.default.createElement("img", { className: "sidebar-brand-icon", src: "/images/bird-no-feet-icon.svg" }),
                         _react2.default.createElement(
                             "span",
                             { className: "sidebar-brand-text" },
@@ -78501,11 +78501,11 @@ var _propTypes = __webpack_require__(3);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _String = __webpack_require__(79);
+var _String = __webpack_require__(78);
 
 var _String2 = _interopRequireDefault(_String);
 
-var _Loader = __webpack_require__(80);
+var _Loader = __webpack_require__(79);
 
 var _Loader2 = _interopRequireDefault(_Loader);
 
@@ -78746,7 +78746,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(2), __webpack_require__(3), __webpack_require__(6), __webpack_require__(7), __webpack_require__(81)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(2), __webpack_require__(3), __webpack_require__(6), __webpack_require__(7), __webpack_require__(80)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -82575,7 +82575,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(2), __webpack_require__(3), __webpack_require__(6), __webpack_require__(7), __webpack_require__(81)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(2), __webpack_require__(3), __webpack_require__(6), __webpack_require__(7), __webpack_require__(80)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -82887,7 +82887,7 @@ exports.default = AnimateOnChange;
 var utils = __webpack_require__(10);
 var bind = __webpack_require__(82);
 var Axios = __webpack_require__(417);
-var defaults = __webpack_require__(56);
+var defaults = __webpack_require__(55);
 
 /**
  * Create an instance of Axios
@@ -82970,7 +82970,7 @@ function isSlowBuffer (obj) {
 "use strict";
 
 
-var defaults = __webpack_require__(56);
+var defaults = __webpack_require__(55);
 var utils = __webpack_require__(10);
 var InterceptorManager = __webpack_require__(426);
 var dispatchRequest = __webpack_require__(427);
@@ -83511,7 +83511,7 @@ module.exports = InterceptorManager;
 var utils = __webpack_require__(10);
 var transformData = __webpack_require__(428);
 var isCancel = __webpack_require__(85);
-var defaults = __webpack_require__(56);
+var defaults = __webpack_require__(55);
 var isAbsoluteURL = __webpack_require__(429);
 var combineURLs = __webpack_require__(430);
 
@@ -84038,7 +84038,7 @@ var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _chart = __webpack_require__(57);
+var _chart = __webpack_require__(56);
 
 var _chart2 = _interopRequireDefault(_chart);
 
@@ -84048,7 +84048,7 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactChartjs = __webpack_require__(482);
 
-var _String = __webpack_require__(79);
+var _String = __webpack_require__(78);
 
 var _String2 = _interopRequireDefault(_String);
 
@@ -97275,7 +97275,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_prop_types__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_chart_js__ = __webpack_require__(57);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_chart_js__ = __webpack_require__(56);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_chart_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_chart_js__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash_isEqual__ = __webpack_require__(483);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash_isEqual___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_lodash_isEqual__);
@@ -97774,7 +97774,7 @@ var defaults = __WEBPACK_IMPORTED_MODULE_2_chart_js___default.a.defaults;
 /* 483 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseIsEqual = __webpack_require__(58);
+var baseIsEqual = __webpack_require__(57);
 
 /**
  * Performs a deep comparison between two values to determine if they are
@@ -98129,8 +98129,8 @@ module.exports = stackHas;
 /***/ (function(module, exports, __webpack_require__) {
 
 var ListCache = __webpack_require__(33),
-    Map = __webpack_require__(59),
-    MapCache = __webpack_require__(60);
+    Map = __webpack_require__(58),
+    MapCache = __webpack_require__(59);
 
 /** Used as the size to enable large array optimizations. */
 var LARGE_ARRAY_SIZE = 200;
@@ -98360,7 +98360,7 @@ module.exports = getValue;
 
 var Hash = __webpack_require__(502),
     ListCache = __webpack_require__(33),
-    Map = __webpack_require__(59);
+    Map = __webpack_require__(58);
 
 /**
  * Removes all key-value entries from the map.
@@ -98678,7 +98678,7 @@ module.exports = mapCacheSet;
 /* 513 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var MapCache = __webpack_require__(60),
+var MapCache = __webpack_require__(59),
     setCacheAdd = __webpack_require__(514),
     setCacheHas = __webpack_require__(515);
 
@@ -99377,7 +99377,7 @@ module.exports = stubFalse;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseGetTag = __webpack_require__(27),
-    isLength = __webpack_require__(61),
+    isLength = __webpack_require__(60),
     isObjectLike = __webpack_require__(28);
 
 /** `Object#toString` result references. */
@@ -99585,7 +99585,7 @@ module.exports = overArg;
 /***/ (function(module, exports, __webpack_require__) {
 
 var DataView = __webpack_require__(541),
-    Map = __webpack_require__(59),
+    Map = __webpack_require__(58),
     Promise = __webpack_require__(542),
     Set = __webpack_require__(543),
     WeakMap = __webpack_require__(544),
@@ -99648,7 +99648,7 @@ module.exports = getTag;
 /* 541 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(19),
+var getNative = __webpack_require__(18),
     root = __webpack_require__(13);
 
 /* Built-in method references that are verified to be native. */
@@ -99661,7 +99661,7 @@ module.exports = DataView;
 /* 542 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(19),
+var getNative = __webpack_require__(18),
     root = __webpack_require__(13);
 
 /* Built-in method references that are verified to be native. */
@@ -99674,7 +99674,7 @@ module.exports = Promise;
 /* 543 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(19),
+var getNative = __webpack_require__(18),
     root = __webpack_require__(13);
 
 /* Built-in method references that are verified to be native. */
@@ -99687,7 +99687,7 @@ module.exports = Set;
 /* 544 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(19),
+var getNative = __webpack_require__(18),
     root = __webpack_require__(13);
 
 /* Built-in method references that are verified to be native. */
@@ -99748,8 +99748,8 @@ module.exports = find;
 /* 546 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseIteratee = __webpack_require__(63),
-    isArrayLike = __webpack_require__(62),
+var baseIteratee = __webpack_require__(62),
+    isArrayLike = __webpack_require__(61),
     keys = __webpack_require__(39);
 
 /**
@@ -99808,7 +99808,7 @@ module.exports = baseMatches;
 /***/ (function(module, exports, __webpack_require__) {
 
 var Stack = __webpack_require__(325),
-    baseIsEqual = __webpack_require__(58);
+    baseIsEqual = __webpack_require__(57);
 
 /** Used to compose bitmasks for value comparisons. */
 var COMPARE_PARTIAL_FLAG = 1,
@@ -99905,10 +99905,10 @@ module.exports = getMatchData;
 /* 550 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseIsEqual = __webpack_require__(58),
+var baseIsEqual = __webpack_require__(57),
     get = __webpack_require__(551),
     hasIn = __webpack_require__(558),
-    isKey = __webpack_require__(64),
+    isKey = __webpack_require__(63),
     isStrictComparable = __webpack_require__(335),
     matchesStrictComparable = __webpack_require__(336),
     toKey = __webpack_require__(41);
@@ -100049,7 +100049,7 @@ module.exports = memoizeCapped;
 /* 554 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var MapCache = __webpack_require__(60);
+var MapCache = __webpack_require__(59);
 
 /** Error message constants. */
 var FUNC_ERROR_TEXT = 'Expected a function';
@@ -100295,7 +100295,7 @@ var castPath = __webpack_require__(338),
     isArguments = __webpack_require__(331),
     isArray = __webpack_require__(14),
     isIndex = __webpack_require__(333),
-    isLength = __webpack_require__(61),
+    isLength = __webpack_require__(60),
     toKey = __webpack_require__(41);
 
 /**
@@ -100365,7 +100365,7 @@ module.exports = identity;
 
 var baseProperty = __webpack_require__(563),
     basePropertyDeep = __webpack_require__(564),
-    isKey = __webpack_require__(64),
+    isKey = __webpack_require__(63),
     toKey = __webpack_require__(41);
 
 /**
@@ -100444,7 +100444,7 @@ module.exports = basePropertyDeep;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseFindIndex = __webpack_require__(566),
-    baseIteratee = __webpack_require__(63),
+    baseIteratee = __webpack_require__(62),
     toInteger = __webpack_require__(567);
 
 /* Built-in method references for those with the same name as other `lodash` methods. */
@@ -100769,7 +100769,7 @@ module.exports = baseAssignValue;
 /* 572 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(19);
+var getNative = __webpack_require__(18);
 
 var defineProperty = (function() {
   try {
@@ -100788,7 +100788,7 @@ module.exports = defineProperty;
 
 var arrayAggregator = __webpack_require__(574),
     baseAggregator = __webpack_require__(575),
-    baseIteratee = __webpack_require__(63),
+    baseIteratee = __webpack_require__(62),
     isArray = __webpack_require__(14);
 
 /**
@@ -100965,7 +100965,7 @@ module.exports = createBaseFor;
 /* 580 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isArrayLike = __webpack_require__(62);
+var isArrayLike = __webpack_require__(61);
 
 /**
  * Creates a `baseEach` or `baseEachRight` function.
@@ -101092,6 +101092,10 @@ var _AddDepositModal = __webpack_require__(598);
 
 var _AddDepositModal2 = _interopRequireDefault(_AddDepositModal);
 
+var _TradesTable = __webpack_require__(600);
+
+var _TradesTable2 = _interopRequireDefault(_TradesTable);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -101135,7 +101139,8 @@ var Trades = function (_React$Component) {
                 ),
                 _react2.default.createElement("hr", { className: "mt-3" }),
                 _react2.default.createElement(_AddDepositModal2.default, null),
-                _react2.default.createElement(_AddTradeModal2.default, null)
+                _react2.default.createElement(_AddTradeModal2.default, null),
+                _react2.default.createElement(_TradesTable2.default, null)
             );
         }
     }]);
@@ -101162,7 +101167,7 @@ var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _Request = __webpack_require__(20);
+var _Request = __webpack_require__(19);
 
 var _Request2 = _interopRequireDefault(_Request);
 
@@ -103001,7 +103006,7 @@ var _propTypes = __webpack_require__(3);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _compareObjects = __webpack_require__(65);
+var _compareObjects = __webpack_require__(64);
 
 var _compareObjects2 = _interopRequireDefault(_compareObjects);
 
@@ -103088,7 +103093,7 @@ var _Item = __webpack_require__(596);
 
 var _Item2 = _interopRequireDefault(_Item);
 
-var _compareObjects = __webpack_require__(65);
+var _compareObjects = __webpack_require__(64);
 
 var _compareObjects2 = _interopRequireDefault(_compareObjects);
 
@@ -103218,7 +103223,7 @@ var _propTypes = __webpack_require__(3);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _compareObjects = __webpack_require__(65);
+var _compareObjects = __webpack_require__(64);
 
 var _compareObjects2 = _interopRequireDefault(_compareObjects);
 
@@ -103425,7 +103430,7 @@ var _AddDepositForm = __webpack_require__(599);
 
 var _AddDepositForm2 = _interopRequireDefault(_AddDepositForm);
 
-var _Request = __webpack_require__(20);
+var _Request = __webpack_require__(19);
 
 var _Request2 = _interopRequireDefault(_Request);
 
@@ -103462,6 +103467,7 @@ var AddDepositModal = function (_React$Component) {
 
         _this.processForm = _this.processForm.bind(_this);
         _this.changeFormData = _this.changeFormData.bind(_this);
+        _this.clickedAddAnotherTrade = _this.clickedAddAnotherTrade.bind(_this);
         return _this;
     }
 
@@ -103505,6 +103511,22 @@ var AddDepositModal = function (_React$Component) {
             });
         }
     }, {
+        key: "clickedAddAnotherTrade",
+        value: function clickedAddAnotherTrade(event) {
+            event.preventDefault();
+
+            this.setState({
+                errors: {},
+                success: false,
+                loading: false,
+                formData: {
+                    transaction_type: '',
+                    in_coin_name: '',
+                    in_amount: ''
+                }
+            });
+        }
+    }, {
         key: "render",
         value: function render() {
             return _react2.default.createElement(
@@ -103531,7 +103553,8 @@ var AddDepositModal = function (_React$Component) {
                                 _react2.default.createElement(
                                     "h5",
                                     { className: "modal-title", id: "exampleModalLabel" },
-                                    "Add Deposit"
+                                    _react2.default.createElement("span", { className: "icon icon-align-bottom" }),
+                                    "\xA0Add Deposit"
                                 ),
                                 _react2.default.createElement(
                                     "button",
@@ -103552,7 +103575,8 @@ var AddDepositModal = function (_React$Component) {
                                     errors: this.state.errors,
                                     formData: this.state.formData,
                                     success: this.state.success,
-                                    loading: this.state.loading
+                                    loading: this.state.loading,
+                                    clickedAddAnotherTrade: this.clickedAddAnotherTrade
                                 })
                             )
                         )
@@ -103587,14 +103611,6 @@ var _react2 = _interopRequireDefault(_react);
 var _propTypes = __webpack_require__(3);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _axios = __webpack_require__(55);
-
-var _axios2 = _interopRequireDefault(_axios);
-
-var _Auth = __webpack_require__(18);
-
-var _Auth2 = _interopRequireDefault(_Auth);
 
 var _Button = __webpack_require__(42);
 
@@ -103636,20 +103652,32 @@ var AddDepositForm = function (_React$Component) {
                     { className: 'error-message' },
                     errors.summary
                 ),
-                _react2.default.createElement(_CoinTextInput2.default, {
-                    label: 'Buy Coin Name',
-                    name: 'in_coin_name',
-                    onChange: this.props.onChange,
-                    errorText: this.props.errors.in_coin_name,
-                    value: this.props.formData.in_coin_name
-                }),
-                _react2.default.createElement(_TextInput2.default, {
-                    label: 'Buy Coin Amount',
-                    name: 'in_amount',
-                    onChange: this.props.onChange,
-                    errorText: this.props.errors.in_amount,
-                    value: this.props.formData.in_amount
-                }),
+                _react2.default.createElement(
+                    'fieldset',
+                    null,
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'coinname-field' },
+                        _react2.default.createElement(_CoinTextInput2.default, {
+                            label: 'Coin Name',
+                            name: 'in_coin_name',
+                            onChange: this.props.onChange,
+                            errorText: this.props.errors.in_coin_name,
+                            value: this.props.formData.in_coin_name
+                        })
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { className: "coinamount-field" },
+                        _react2.default.createElement(_TextInput2.default, {
+                            label: 'Amount (in coins)',
+                            name: 'in_amount',
+                            onChange: this.props.onChange,
+                            errorText: this.props.errors.in_amount,
+                            value: this.props.formData.in_amount
+                        })
+                    )
+                ),
                 this.props.success && _react2.default.createElement(
                     'div',
                     { className: 'alert alert-success', role: 'alert' },
@@ -103657,7 +103685,7 @@ var AddDepositForm = function (_React$Component) {
                     _react2.default.createElement('br', null),
                     _react2.default.createElement(
                         'a',
-                        { href: '#' },
+                        { href: '', onClick: this.props.clickedAddAnotherTrade },
                         'Add another trade'
                     )
                 ),
@@ -103679,7 +103707,8 @@ AddDepositForm.propTypes = {
     errors: _propTypes2.default.object.isRequired,
     formData: _propTypes2.default.object.isRequired,
     success: _propTypes2.default.bool.isRequired,
-    loading: _propTypes2.default.bool.isRequired
+    loading: _propTypes2.default.bool.isRequired,
+    clickedAddAnotherTrade: _propTypes2.default.func.isRequired
 };
 exports.default = AddDepositForm;
 
@@ -103700,7 +103729,858 @@ var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _Auth = __webpack_require__(18);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var TradesTable = function (_React$Component) {
+    _inherits(TradesTable, _React$Component);
+
+    function TradesTable() {
+        _classCallCheck(this, TradesTable);
+
+        return _possibleConstructorReturn(this, (TradesTable.__proto__ || Object.getPrototypeOf(TradesTable)).apply(this, arguments));
+    }
+
+    _createClass(TradesTable, [{
+        key: "render",
+        value: function render() {
+            return _react2.default.createElement(
+                "table",
+                { className: "table", "data-sort": "table" },
+                _react2.default.createElement(
+                    "thead",
+                    null,
+                    _react2.default.createElement(
+                        "tr",
+                        null,
+                        _react2.default.createElement(
+                            "th",
+                            { className: "header" },
+                            _react2.default.createElement("input", { type: "checkbox", className: "select-all", id: "selectAll" })
+                        ),
+                        _react2.default.createElement(
+                            "th",
+                            { className: "header headerSortDown" },
+                            "Order"
+                        ),
+                        _react2.default.createElement(
+                            "th",
+                            { className: "header" },
+                            "Customer name"
+                        ),
+                        _react2.default.createElement(
+                            "th",
+                            { className: "header" },
+                            "Description"
+                        ),
+                        _react2.default.createElement(
+                            "th",
+                            { className: "header" },
+                            "Date"
+                        ),
+                        _react2.default.createElement(
+                            "th",
+                            { className: "header" },
+                            "Total"
+                        )
+                    )
+                ),
+                _react2.default.createElement(
+                    "tbody",
+                    null,
+                    _react2.default.createElement(
+                        "tr",
+                        null,
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement("input", { type: "checkbox", className: "select-row" })
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement(
+                                "a",
+                                { href: "#" },
+                                "#10001"
+                            )
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "First Last"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "Admin theme, marketing theme"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "01/01/2015"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "$200.00"
+                        )
+                    ),
+                    _react2.default.createElement(
+                        "tr",
+                        null,
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement("input", { type: "checkbox", className: "select-row" })
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement(
+                                "a",
+                                { href: "#" },
+                                "#10002"
+                            )
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "Firstname Last"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "Admin theme"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "01/01/2015"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "$100.00"
+                        )
+                    ),
+                    _react2.default.createElement(
+                        "tr",
+                        null,
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement("input", { type: "checkbox", className: "select-row" })
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement(
+                                "a",
+                                { href: "#" },
+                                "#10003"
+                            )
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "Name Another"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "Personal blog theme"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "01/01/2015"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "$100.00"
+                        )
+                    ),
+                    _react2.default.createElement(
+                        "tr",
+                        null,
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement("input", { type: "checkbox", className: "select-row" })
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement(
+                                "a",
+                                { href: "#" },
+                                "#10004"
+                            )
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "One More"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "Marketing theme, personal blog theme, admin theme"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "01/01/2015"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "$300.00"
+                        )
+                    ),
+                    _react2.default.createElement(
+                        "tr",
+                        null,
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement("input", { type: "checkbox", className: "select-row" })
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement(
+                                "a",
+                                { href: "#" },
+                                "#10005"
+                            )
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "Name Right Here"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "Personal blog theme, admin theme"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "01/02/2015"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "$200.00"
+                        )
+                    ),
+                    _react2.default.createElement(
+                        "tr",
+                        null,
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement("input", { type: "checkbox", className: "select-row" })
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement(
+                                "a",
+                                { href: "#" },
+                                "#10006"
+                            )
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "First Last"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "Admin theme, marketing theme"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "01/01/2015"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "$200.00"
+                        )
+                    ),
+                    _react2.default.createElement(
+                        "tr",
+                        null,
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement("input", { type: "checkbox", className: "select-row" })
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement(
+                                "a",
+                                { href: "#" },
+                                "#10007"
+                            )
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "Firstname Last"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "Admin theme"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "01/01/2015"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "$100.00"
+                        )
+                    ),
+                    _react2.default.createElement(
+                        "tr",
+                        null,
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement("input", { type: "checkbox", className: "select-row" })
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement(
+                                "a",
+                                { href: "#" },
+                                "#10008"
+                            )
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "Name Another"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "Personal blog theme"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "01/01/2015"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "$100.00"
+                        )
+                    ),
+                    _react2.default.createElement(
+                        "tr",
+                        null,
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement("input", { type: "checkbox", className: "select-row" })
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement(
+                                "a",
+                                { href: "#" },
+                                "#10009"
+                            )
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "One More"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "Marketing theme, personal blog theme, admin theme"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "01/01/2015"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "$300.00"
+                        )
+                    ),
+                    _react2.default.createElement(
+                        "tr",
+                        null,
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement("input", { type: "checkbox", className: "select-row" })
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement(
+                                "a",
+                                { href: "#" },
+                                "#10010"
+                            )
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "Name Right Here"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "Personal blog theme, admin theme"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "01/02/2015"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "$200.00"
+                        )
+                    ),
+                    _react2.default.createElement(
+                        "tr",
+                        null,
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement("input", { type: "checkbox", className: "select-row" })
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement(
+                                "a",
+                                { href: "#" },
+                                "#10011"
+                            )
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "First Last"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "Admin theme, marketing theme"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "01/01/2015"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "$200.00"
+                        )
+                    ),
+                    _react2.default.createElement(
+                        "tr",
+                        null,
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement("input", { type: "checkbox", className: "select-row" })
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement(
+                                "a",
+                                { href: "#" },
+                                "#10012"
+                            )
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "Firstname Last"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "Admin theme"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "01/01/2015"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "$100.00"
+                        )
+                    ),
+                    _react2.default.createElement(
+                        "tr",
+                        null,
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement("input", { type: "checkbox", className: "select-row" })
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement(
+                                "a",
+                                { href: "#" },
+                                "#10013"
+                            )
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "Name Another"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "Personal blog theme"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "01/01/2015"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "$100.00"
+                        )
+                    ),
+                    _react2.default.createElement(
+                        "tr",
+                        null,
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement("input", { type: "checkbox", className: "select-row" })
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement(
+                                "a",
+                                { href: "#" },
+                                "#10014"
+                            )
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "One More"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "Marketing theme, personal blog theme, admin theme"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "01/01/2015"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "$300.00"
+                        )
+                    ),
+                    _react2.default.createElement(
+                        "tr",
+                        null,
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement("input", { type: "checkbox", className: "select-row" })
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement(
+                                "a",
+                                { href: "#" },
+                                "#10015"
+                            )
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "Name Right Here"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "Personal blog theme, admin theme"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "01/02/2015"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "$200.00"
+                        )
+                    ),
+                    _react2.default.createElement(
+                        "tr",
+                        null,
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement("input", { type: "checkbox", className: "select-row" })
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement(
+                                "a",
+                                { href: "#" },
+                                "#10016"
+                            )
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "First Last"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "Admin theme, marketing theme"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "01/01/2015"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "$200.00"
+                        )
+                    ),
+                    _react2.default.createElement(
+                        "tr",
+                        null,
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement("input", { type: "checkbox", className: "select-row" })
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement(
+                                "a",
+                                { href: "#" },
+                                "#10017"
+                            )
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "Firstname Last"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "Admin theme"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "01/01/2015"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "$100.00"
+                        )
+                    ),
+                    _react2.default.createElement(
+                        "tr",
+                        null,
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement("input", { type: "checkbox", className: "select-row" })
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement(
+                                "a",
+                                { href: "#" },
+                                "#10018"
+                            )
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "Name Another"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "Personal blog theme"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "01/01/2015"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "$100.00"
+                        )
+                    ),
+                    _react2.default.createElement(
+                        "tr",
+                        null,
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement("input", { type: "checkbox", className: "select-row" })
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement(
+                                "a",
+                                { href: "#" },
+                                "#10019"
+                            )
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "One More"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "Marketing theme, personal blog theme, admin theme"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "01/01/2015"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "$300.00"
+                        )
+                    ),
+                    _react2.default.createElement(
+                        "tr",
+                        null,
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement("input", { type: "checkbox", className: "select-row" })
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            _react2.default.createElement(
+                                "a",
+                                { href: "#" },
+                                "#10020"
+                            )
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "Name Right Here"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "Personal blog theme, admin theme"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "01/02/2015"
+                        ),
+                        _react2.default.createElement(
+                            "td",
+                            null,
+                            "$200.00"
+                        )
+                    )
+                )
+            );
+        }
+    }]);
+
+    return TradesTable;
+}(_react2.default.Component);
+
+exports.default = TradesTable;
+
+/***/ }),
+/* 601 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(2);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _Auth = __webpack_require__(20);
 
 var _Auth2 = _interopRequireDefault(_Auth);
 
@@ -103742,7 +104622,7 @@ var Logout = function (_React$Component) {
 exports.default = Logout;
 
 /***/ }),
-/* 601 */
+/* 602 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -103758,7 +104638,7 @@ var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _Auth = __webpack_require__(18);
+var _Auth = __webpack_require__(20);
 
 var _Auth2 = _interopRequireDefault(_Auth);
 
@@ -103797,7 +104677,7 @@ var PrivateRoute = function (_React$Component) {
 exports.default = PrivateRoute;
 
 /***/ }),
-/* 602 */
+/* 603 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -103815,23 +104695,23 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = __webpack_require__(17);
 
-var _HomePage = __webpack_require__(603);
+var _HomePage = __webpack_require__(604);
 
 var _HomePage2 = _interopRequireDefault(_HomePage);
 
-var _AboutPage = __webpack_require__(604);
+var _AboutPage = __webpack_require__(605);
 
 var _AboutPage2 = _interopRequireDefault(_AboutPage);
 
-var _RegisterPage = __webpack_require__(605);
+var _RegisterPage = __webpack_require__(606);
 
 var _RegisterPage2 = _interopRequireDefault(_RegisterPage);
 
-var _LoginPage = __webpack_require__(607);
+var _LoginPage = __webpack_require__(608);
 
 var _LoginPage2 = _interopRequireDefault(_LoginPage);
 
-var _Auth = __webpack_require__(18);
+var _Auth = __webpack_require__(20);
 
 var _Auth2 = _interopRequireDefault(_Auth);
 
@@ -103950,7 +104830,7 @@ var FrontLayout = function (_React$Component) {
 exports.default = FrontLayout;
 
 /***/ }),
-/* 603 */
+/* 604 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -104000,7 +104880,7 @@ var Home = function (_React$Component) {
 exports.default = Home;
 
 /***/ }),
-/* 604 */
+/* 605 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -104050,7 +104930,7 @@ var About = function (_React$Component) {
 exports.default = About;
 
 /***/ }),
-/* 605 */
+/* 606 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -104066,11 +104946,11 @@ var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _RegisterForm = __webpack_require__(606);
+var _RegisterForm = __webpack_require__(607);
 
 var _RegisterForm2 = _interopRequireDefault(_RegisterForm);
 
-var _Request = __webpack_require__(20);
+var _Request = __webpack_require__(19);
 
 var _Request2 = _interopRequireDefault(_Request);
 
@@ -104167,7 +105047,7 @@ var Register = function (_React$Component) {
 exports.default = Register;
 
 /***/ }),
-/* 606 */
+/* 607 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -104285,7 +105165,7 @@ Register.propTypes = {
 exports.default = Register;
 
 /***/ }),
-/* 607 */
+/* 608 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -104301,15 +105181,15 @@ var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _LoginForm = __webpack_require__(608);
+var _LoginForm = __webpack_require__(609);
 
 var _LoginForm2 = _interopRequireDefault(_LoginForm);
 
-var _Auth = __webpack_require__(18);
+var _Auth = __webpack_require__(20);
 
 var _Auth2 = _interopRequireDefault(_Auth);
 
-var _Request = __webpack_require__(20);
+var _Request = __webpack_require__(19);
 
 var _Request2 = _interopRequireDefault(_Request);
 
@@ -104403,7 +105283,7 @@ var LoginPage = function (_React$Component) {
 exports.default = LoginPage;
 
 /***/ }),
-/* 608 */
+/* 609 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -104502,7 +105382,7 @@ Login.propTypes = {
 exports.default = Login;
 
 /***/ }),
-/* 609 */
+/* 610 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

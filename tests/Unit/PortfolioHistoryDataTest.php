@@ -4,6 +4,7 @@ namespace Tests\Unit\Auth;
 
 use App\Common\Auth\InvalidTokenException;
 use App\Common\Auth\JwtGuard;
+use App\Models\History\PortfolioCoinDayHistory;
 use App\Models\History\PortfolioCoinMinuteHistory;
 use App\Models\Portfolio;
 use App\Models\User;
@@ -17,16 +18,20 @@ class PortfolioHistoryDataTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_get_yesterday_history_model()
+    public function testGetYesterdayHistoryModel()
     {
         $portfolio = $this->createPortfolio();
 
         Eloquent::unguard();
-        PortfolioCoinMinuteHistory::create([
+        PortfolioCoinDayHistory::create([
             'portfolio_id' => $portfolio->id,
-            'date' => Carbon::now()->subDays(100)->format('Y-m-d H:i:00'),
+            'date' => Carbon::now()->subDays(100)->format('Y-m-d'),
             'btc_value' => 0.1,
-            'usd_value' => 500
+            'usd_value' => 500,
+            'btc_value_low' => 0,
+            'btc_value_high' => 1,
+            'usd_value_low' => 0,
+            'usd_value_high' => 1,
         ]);
 
         $model = $portfolio->getYesterdayHistoryModel();
@@ -35,11 +40,15 @@ class PortfolioHistoryDataTest extends TestCase
         $this->assertEquals(0.1, $model->btc_value);
         $this->assertEquals(500, $model->usd_value);
 
-        PortfolioCoinMinuteHistory::create([
+        PortfolioCoinDayHistory::create([
             'portfolio_id' => $portfolio->id,
-            'date' => Carbon::now()->subDay(1)->format('Y-m-d H:i:00'),
+            'date' => Carbon::now()->subDay(1)->format('Y-m-d'),
             'btc_value' => 10,
-            'usd_value' => 5000
+            'usd_value' => 5000,
+            'btc_value_low' => 0,
+            'btc_value_high' => 1,
+            'usd_value_low' => 0,
+            'usd_value_high' => 1,
         ]);
 
         $model = $portfolio->getYesterdayHistoryModel();
@@ -47,6 +56,8 @@ class PortfolioHistoryDataTest extends TestCase
         $this->assertNotNull($model);
         $this->assertEquals(10, $model->btc_value);
         $this->assertEquals(5000, $model->usd_value);
+
+        Eloquent::reguard();
     }
 
     /**

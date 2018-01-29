@@ -67,79 +67,108 @@ class PortfolioHistory
         }
     }
 
-    public static function saveHourHistory()
+    public static function saveAllHourHistory()
+    {
+        foreach (Portfolio::all() as $portfolio) {
+            PortfolioHistory::saveSingleHourHistory($portfolio);
+        }
+    }
+
+    public static function saveSingleHourHistory(Portfolio $portfolio)
     {
         $now = Carbon::now()->format('Y-m-d H:00:00');
         $previousHour = Carbon::now()->subHour()->format('Y-m-d H:00:00');
 
-        foreach (Portfolio::all() as $portfolio) {
-            $portfolioHistoryCoins = PortfolioCoinMinuteHistory::wherePortfolioId($portfolio->id)
-                ->where('date', '>', $previousHour)
-                ->where('date', '<=', $now)
-                ->get();
+        $portfolioHistoryCoins = PortfolioCoinMinuteHistory::wherePortfolioId($portfolio->id)
+            ->where('date', '>', $previousHour)
+            ->where('date', '<=', $now)
+            ->get();
 
-            $results = self::getLowHighAndAverages($portfolioHistoryCoins, $portfolio);
+        if ($portfolioHistoryCoins->isEmpty()) {
+            print "Aborting while setting portfolio coin hour history because there are no minute history coins.\n";
+            return;
+        }
 
-            try {
-                $portfolioHistory = new PortfolioCoinHourHistory();
-                $portfolioHistory->portfolio_id = $portfolio->id;
-                $portfolioHistory->date = $now;
-                $portfolioHistory->usd_value = $portfolio->usd_value;
-                $portfolioHistory->btc_value = $portfolio->btc_value;
+        $results = self::getLowHighAndAverages($portfolioHistoryCoins, $portfolio);
 
-                foreach($results as $key => $value) {
-                    $portfolioHistory->{$key} = $value;
-                }
+        $portfolioHistory = PortfolioCoinHourHistory::wherePortfolioId($portfolio->id)
+            ->where('date', '=', $now)
+            ->first();
+        if (! $portfolioHistory) {
+            $portfolioHistory = new PortfolioCoinHourHistory();
+        }
 
-                $portfolioHistory->save();
-            } catch (\Exception $e) {
-                print "Exception while setting portfolio hour history.\n";
+        try {
+            $portfolioHistory->portfolio_id = $portfolio->id;
+            $portfolioHistory->date = $now;
+            $portfolioHistory->usd_value = $portfolio->usd_value;
+            $portfolioHistory->btc_value = $portfolio->btc_value;
+
+            foreach($results as $key => $value) {
+                $portfolioHistory->{$key} = $value;
             }
+
+            $portfolioHistory->save();
+        } catch (\Exception $e) {
+            print "Exception while setting portfolio hour history.\n";
         }
     }
 
     public static function saveDayHistory()
     {
+        foreach (Portfolio::all() as $portfolio) {
+            self::saveSingleDayHistory($portfolio);
+        }
+    }
+
+    public static function saveSingleDayHistory(Portfolio $portfolio)
+    {
         $now = Carbon::now()->format('Y-m-d');
         $nowWithHour = Carbon::now()->format('Y-m-d 00:00:00');
         $yesterday = Carbon::now()->subDay()->format('Y-m-d 00:00:00');
 
-        foreach (Portfolio::all() as $portfolio) {
-            $portfolioHistoryCoins = PortfolioCoinMinuteHistory::wherePortfolioId($portfolio->id)
-                ->where('date', '>=', $yesterday)
-                ->where('date', '<', $nowWithHour)
-                ->get();
+        $portfolioHistoryCoins = PortfolioCoinMinuteHistory::wherePortfolioId($portfolio->id)
+            ->where('date', '>=', $yesterday)
+            ->where('date', '<', $nowWithHour)
+            ->get();
 
-            $results = self::getLowHighAndAverages($portfolioHistoryCoins, $portfolio);
+        if ($portfolioHistoryCoins->isEmpty()) {
+            print "Aborting while setting portfolio coin day history because there are no minute history coins.\n";
+            return;
+        }
 
-            try {
-                $portfolioHistory = new PortfolioCoinDayHistory();
-                $portfolioHistory->portfolio_id = $portfolio->id;
-                $portfolioHistory->date = $now;
-                $portfolioHistory->usd_value = $portfolio->usd_value;
-                $portfolioHistory->btc_value = $portfolio->btc_value;
+        $results = self::getLowHighAndAverages($portfolioHistoryCoins, $portfolio);
 
-                foreach($results as $key => $value) {
-                    $portfolioHistory->{$key} = $value;
-                }
+        $portfolioHistory = PortfolioCoinDayHistory::wherePortfolioId($portfolio->id)
+            ->where('date', '=', $now)
+            ->first();
+        if (! $portfolioHistory) {
+            $portfolioHistory = new PortfolioCoinDayHistory();
+        }
 
-                $portfolioHistory->save();
-            } catch (\Exception $e) {
-                print "Exception while setting portfolio day history.\n";
+        try {
+            $portfolioHistory->portfolio_id = $portfolio->id;
+            $portfolioHistory->date = $now;
+            $portfolioHistory->usd_value = $portfolio->usd_value;
+            $portfolioHistory->btc_value = $portfolio->btc_value;
+
+            foreach($results as $key => $value) {
+                $portfolioHistory->{$key} = $value;
             }
+
+            $portfolioHistory->save();
+        } catch (\Exception $e) {
+            print "Exception while setting portfolio day history.\n";
         }
     }
 
     private static function getLowHighAndAverages($portfolioHistories, $portfolio) {
         $usdHigh = 0;
         $usdLow  = 1000000000;
-        $usdAverage = 0;
 
         $btcHigh = 0;
         $btcLow  = 1000000000;
-        $btcAverage = 0;
 
-        $n = 0;
         foreach($portfolioHistories as $history) {
             if ($history->btc_value > $btcHigh) {
                 $btcHigh = $history->btc_value;
@@ -153,32 +182,20 @@ class PortfolioHistory
             if ($history->usd_value < $usdLow) {
                 $usdLow = $history->usd_value;
             }
-
-            $usdAverage += $history->usd_value;
-            $btcAverage += $history->btc_value;
-
-            $n++;
         }
 
-        if ($n == 0) {
-            $usdHigh = $portfolio->usd_value;
-            $usdLow = $portfolio->usd_value;
-            $usdAverage = $portfolio->usd_value;
+        $usdHigh = $portfolio->usd_value;
+        $usdLow = $portfolio->usd_value;
 
-            $btcHigh = $portfolio->btc_value;
-            $btcLow = $portfolio->btc_value;
-            $btcAverage = $portfolio->btc_value;
-        } else {
-            $usdAverage /= $n;
-            $btcAverage /= $n;
-        }
+
+        $btcHigh = $portfolio->btc_value;
+        $btcLow = $portfolio->btc_value;
+
 
         return [
-            'btc_value' => $btcAverage,
             'btc_value_low' => $btcLow,
             'btc_value_high' => $btcHigh,
 
-            'usd_value' => $usdAverage,
             'usd_value_low' => $usdLow,
             'usd_value_high' => $usdHigh,
         ];

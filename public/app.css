@@ -8509,6 +8509,15 @@ button:hover {
 .invalid-feedback--always-show {
   display: block !important; }
 
+.coinname-field {
+  width: 66%;
+  float: left;
+  padding-right: 10px; }
+
+.coinamount-field {
+  width: 33%;
+  display: inline-block; }
+
 .sidebar-brand:hover {
   color: #cfd2da !important; }
 

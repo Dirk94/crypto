@@ -33,7 +33,7 @@ class UpdatePrices extends Command
         }
 
         PortfolioHistory::saveAllMinuteHistory();
-        PortfolioHistory::saveHourHistory();
+        PortfolioHistory::saveAllHourHistory();
         PortfolioHistory::saveDayHistory();
 
         PortfolioHistory::cleanupOldHistory();

@@ -22,7 +22,6 @@ class FeatureTestCase extends TestCase
             'password' => 'test'
         ]);
 
-        $content = json_decode($response->getContent());
-        return $content->token;
+        return json_decode($response->getContent())->token;
     }
 }

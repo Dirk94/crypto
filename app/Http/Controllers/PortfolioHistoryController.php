@@ -12,7 +12,7 @@ use Carbon\Carbon;
 
 class PortfolioHistoryController extends Controller
 {
-    const MINUTE_POINTS_TO_RETURN=50,
+    const MINUTE_POINTS_TO_RETURN = 50,
         HOUR_POINTS_TO_RETURN = 50,
         DAY_POINTS_TO_RETURN = 50;
 
