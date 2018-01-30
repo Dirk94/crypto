@@ -131,7 +131,7 @@ class Portfolio extends Model
 
     public function getUsdValue30dAgoAttribute()
     {
-        $model = $this->getDaysAgoHistoryModel(7);
+        $model = $this->getDaysAgoHistoryModel(30);
 
         if (! $model) {
             return 0;
