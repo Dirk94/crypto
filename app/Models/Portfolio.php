@@ -245,7 +245,7 @@ class Portfolio extends Model
         $yesterday = Carbon::now()->format('Y-m-d');
 
         $model = PortfolioCoinDayHistory::wherePortfolioId($this->id)
-            ->where('date', '<=', $yesterday)
+            ->where('date', '<', $yesterday)
             ->orderBy('date', 'DESC')
             ->first();
 
@@ -258,7 +258,7 @@ class Portfolio extends Model
         $oneHourAgo = Carbon::now()->format('Y-m-d H:00:00');
 
         $model = PortfolioCoinHourHistory::wherePortfolioId($this->id)
-            ->where('date', '<=', $oneHourAgo)
+            ->where('date', '<', $oneHourAgo)
             ->orderBy('date', 'DESC')
             ->first();
 
@@ -280,7 +280,7 @@ class Portfolio extends Model
 
     public function getDaysAgoHistoryModel($days)
     {
-        // Yesterday is actually today so substract 1.
+        // Yesterday is actually today so subtract 1.
         $days--;
         $yesterday = Carbon::now()->subDays($days)->format('Y-m-d');
 

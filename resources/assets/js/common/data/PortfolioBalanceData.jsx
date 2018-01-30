@@ -15,6 +15,9 @@ export default class PortfolioBalanceData {
     static KEY_BALANCE = 'portfolioBalance';
     static KEY_BALANCE_TIMESTAMP = 'portfolioBalanceTimestamp';
 
+    static KEY_TRANSACTIONS = 'transactions';
+    static KEY_TRANSACTIONS_TIMESTAMP = 'transactionsTimestamp';
+
     static DATA_EXPIRE_TIME = 1; // in minutes
 
     static getMinuteData() {
@@ -89,6 +92,34 @@ export default class PortfolioBalanceData {
                 .then((response) => {
                     localStorage.setItem(PortfolioBalanceData.KEY_DAY_DATA, JSON.stringify(response.data));
                     localStorage.setItem(PortfolioBalanceData.KEY_DAY_DATA_TIMESTAMP, moment().format('x'));
+
+                    return resolve(response.data);
+                })
+                .catch((error) => {
+                    return reject(error);
+                })
+        });
+    }
+
+
+    static getTransactionData() {
+        return new Promise((resolve, reject) => {
+            let data = localStorage.getItem(PortfolioBalanceData.KEY_TRANSACTIONS);
+            let timestamp = localStorage.getItem(PortfolioBalanceData.KEY_TRANSACTIONS_TIMESTAMP);
+
+            let now = moment();
+            let momentTimestamp = moment(timestamp, 'x');
+            const diffInMinutes = now.diff(momentTimestamp) / 1000 / 60;
+
+            if (data !== null && diffInMinutes < PortfolioBalanceData.DATA_EXPIRE_TIME) {
+                const parsedData = JSON.parse(data);
+                return resolve(parsedData);
+            }
+
+            Request.get('/api/portfolios/' + localStorage.getItem('defaultPortfolioId'))
+                .then((response) => {
+                    localStorage.setItem(PortfolioBalanceData.KEY_TRANSACTIONS, JSON.stringify(response.data));
+                    localStorage.setItem(PortfolioBalanceData.KEY_TRANSACTIONS_TIMESTAMP, moment().format('x'));
 
                     return resolve(response.data);
                 })

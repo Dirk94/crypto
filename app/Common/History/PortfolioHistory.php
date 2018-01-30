@@ -101,8 +101,12 @@ class PortfolioHistory
         try {
             $portfolioHistory->portfolio_id = $portfolio->id;
             $portfolioHistory->date = $now;
-            $portfolioHistory->usd_value = $portfolio->usd_value;
-            $portfolioHistory->btc_value = $portfolio->btc_value;
+
+            if (! $portfolioHistory->exists) {
+                // Only set this value initially.
+                $portfolioHistory->usd_value = $portfolio->usd_value;
+                $portfolioHistory->btc_value = $portfolio->btc_value;
+            }
 
             foreach($results as $key => $value) {
                 $portfolioHistory->{$key} = $value;
@@ -149,8 +153,12 @@ class PortfolioHistory
         try {
             $portfolioHistory->portfolio_id = $portfolio->id;
             $portfolioHistory->date = $now;
-            $portfolioHistory->usd_value = $portfolio->usd_value;
-            $portfolioHistory->btc_value = $portfolio->btc_value;
+
+            if (! $portfolioHistory->exists) {
+                // Only save this value initially.
+                $portfolioHistory->usd_value = $portfolio->usd_value;
+                $portfolioHistory->btc_value = $portfolio->btc_value;
+            }
 
             foreach($results as $key => $value) {
                 $portfolioHistory->{$key} = $value;

@@ -8551,3 +8551,9 @@ nav.sidebar-nav--dashboard ul.nav-pills {
 
 .trades-table {
   margin-top: 45px; }
+  .trades-table__crypto-icon {
+    width: 18px;
+    height: 18px;
+    position: relative;
+    top: -1px;
+    margin-right: 10px; }

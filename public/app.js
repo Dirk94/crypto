@@ -14050,6 +14050,32 @@ var PortfolioBalanceData = function () {
             });
         }
     }, {
+        key: 'getTransactionData',
+        value: function getTransactionData() {
+            return new Promise(function (resolve, reject) {
+                var data = localStorage.getItem(PortfolioBalanceData.KEY_TRANSACTIONS);
+                var timestamp = localStorage.getItem(PortfolioBalanceData.KEY_TRANSACTIONS_TIMESTAMP);
+
+                var now = (0, _moment2.default)();
+                var momentTimestamp = (0, _moment2.default)(timestamp, 'x');
+                var diffInMinutes = now.diff(momentTimestamp) / 1000 / 60;
+
+                if (data !== null && diffInMinutes < PortfolioBalanceData.DATA_EXPIRE_TIME) {
+                    var parsedData = JSON.parse(data);
+                    return resolve(parsedData);
+                }
+
+                _Request2.default.get('/api/portfolios/' + localStorage.getItem('defaultPortfolioId')).then(function (response) {
+                    localStorage.setItem(PortfolioBalanceData.KEY_TRANSACTIONS, JSON.stringify(response.data));
+                    localStorage.setItem(PortfolioBalanceData.KEY_TRANSACTIONS_TIMESTAMP, (0, _moment2.default)().format('x'));
+
+                    return resolve(response.data);
+                }).catch(function (error) {
+                    return reject(error);
+                });
+            });
+        }
+    }, {
         key: 'getBalance',
         value: function getBalance() {
             return new Promise(function (resolve, reject) {
@@ -14097,6 +14123,8 @@ PortfolioBalanceData.KEY_DAY_DATA = 'portfolioBalanceDayData';
 PortfolioBalanceData.KEY_DAY_DATA_TIMESTAMP = 'portfolioBalanceDayDataTimestamp';
 PortfolioBalanceData.KEY_BALANCE = 'portfolioBalance';
 PortfolioBalanceData.KEY_BALANCE_TIMESTAMP = 'portfolioBalanceTimestamp';
+PortfolioBalanceData.KEY_TRANSACTIONS = 'transactions';
+PortfolioBalanceData.KEY_TRANSACTIONS_TIMESTAMP = 'transactionsTimestamp';
 PortfolioBalanceData.DATA_EXPIRE_TIME = 1;
 exports.default = PortfolioBalanceData;
 
@@ -101096,6 +101124,10 @@ var _TradesTable = __webpack_require__(600);
 
 var _TradesTable2 = _interopRequireDefault(_TradesTable);
 
+var _PortfolioBalanceData = __webpack_require__(54);
+
+var _PortfolioBalanceData2 = _interopRequireDefault(_PortfolioBalanceData);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -101110,10 +101142,29 @@ var Trades = function (_React$Component) {
     function Trades() {
         _classCallCheck(this, Trades);
 
-        return _possibleConstructorReturn(this, (Trades.__proto__ || Object.getPrototypeOf(Trades)).apply(this, arguments));
+        var _this = _possibleConstructorReturn(this, (Trades.__proto__ || Object.getPrototypeOf(Trades)).call(this));
+
+        _this.state = {
+            transactions: []
+        };
+        return _this;
     }
 
     _createClass(Trades, [{
+        key: "componentDidMount",
+        value: function componentDidMount() {
+            var _this2 = this;
+
+            _PortfolioBalanceData2.default.getTransactionData().then(function (response) {
+                _this2.setState({
+                    transactions: response
+                });
+            }).catch(function (error) {
+                console.log("Error while getting transaction data!");
+                console.log(error);
+            });
+        }
+    }, {
         key: "render",
         value: function render() {
             return _react2.default.createElement(
@@ -101141,7 +101192,9 @@ var Trades = function (_React$Component) {
                 _react2.default.createElement(_AddDepositModal2.default, null),
                 _react2.default.createElement(_AddTradeModal2.default, null),
                 _react2.default.createElement("div", { style: { clear: 'both' } }),
-                _react2.default.createElement(_TradesTable2.default, null)
+                _react2.default.createElement(_TradesTable2.default, {
+                    transactions: this.state.transactions
+                })
             );
         }
     }]);
@@ -103730,6 +103783,10 @@ var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _propTypes = __webpack_require__(3);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -103748,68 +103805,108 @@ var TradesTable = function (_React$Component) {
     }
 
     _createClass(TradesTable, [{
-        key: "render",
+        key: 'render',
         value: function render() {
             return _react2.default.createElement(
-                "table",
-                { className: "table trades-table", "data-sort": "table" },
+                'table',
+                { className: 'table trades-table', 'data-sort': 'table' },
                 _react2.default.createElement(
-                    "thead",
+                    'thead',
                     null,
                     _react2.default.createElement(
-                        "tr",
+                        'tr',
                         null,
                         _react2.default.createElement(
-                            "th",
-                            { className: "header" },
-                            "Date"
+                            'th',
+                            { className: 'header' },
+                            'Date'
                         ),
                         _react2.default.createElement(
-                            "th",
-                            { className: "header" },
-                            "Buy Coin"
+                            'th',
+                            { className: 'header' },
+                            'Buy Coin'
                         ),
                         _react2.default.createElement(
-                            "th",
-                            { className: "header" },
-                            "Buy Amount"
+                            'th',
+                            { className: 'header' },
+                            'Buy Amount'
                         ),
                         _react2.default.createElement(
-                            "th",
-                            { className: "header" },
-                            "Sell Coin"
+                            'th',
+                            { className: 'header' },
+                            'Sell Coin'
                         ),
                         _react2.default.createElement(
-                            "th",
-                            { className: "header" },
-                            "Sell Amount"
+                            'th',
+                            { className: 'header' },
+                            'Sell Amount'
                         )
                     )
                 ),
                 _react2.default.createElement(
-                    "tbody",
+                    'tbody',
                     null,
-                    _react2.default.createElement(
-                        "tr",
-                        null,
-                        _react2.default.createElement(
-                            "td",
+                    this.props.transactions.map(function (transaction, index) {
+                        return _react2.default.createElement(
+                            'tr',
                             null,
-                            "Today 11:23"
-                        ),
-                        _react2.default.createElement(
-                            "td",
-                            null,
-                            "Request (REQ)"
-                        ),
-                        _react2.default.createElement(
-                            "td",
-                            null,
-                            "50"
-                        ),
-                        _react2.default.createElement("td", null),
-                        _react2.default.createElement("td", null)
-                    )
+                            _react2.default.createElement(
+                                'td',
+                                null,
+                                transaction.created_at
+                            ),
+                            _react2.default.createElement(
+                                'td',
+                                null,
+                                transaction.in_coin_id != null && _react2.default.createElement(
+                                    'div',
+                                    null,
+                                    _react2.default.createElement(
+                                        'div',
+                                        { 'class': 'trades-table__crypto-icon', style: { display: 'inline-block' } },
+                                        _react2.default.createElement('img', {
+                                            className: 'trades-table__crypto-icon',
+                                            src: "/images/coin-icons/" + transaction.in_coin_symbol.toLowerCase() + ".svg",
+                                            style: TradesTable.symbolsThatHaveAnIcon.indexOf(transaction.in_coin_symbol.toLowerCase()) > -1 ? {} : { display: 'none' }
+                                        })
+                                    ),
+                                    transaction.in_coin_name + " (" + transaction.in_coin_symbol + ")"
+                                )
+                            ),
+                            _react2.default.createElement(
+                                'td',
+                                null,
+                                transaction.in_coin_id != null && _react2.default.createElement(
+                                    'span',
+                                    null,
+                                    transaction.in_amount
+                                )
+                            ),
+                            _react2.default.createElement(
+                                'td',
+                                null,
+                                transaction.out_coin_id != null && _react2.default.createElement(
+                                    'span',
+                                    null,
+                                    _react2.default.createElement('img', {
+                                        className: 'trades-table__crypto-icon',
+                                        src: "/images/coin-icons/" + transaction.out_coin_symbol.toLowerCase() + ".svg",
+                                        style: TradesTable.symbolsThatHaveAnIcon.indexOf(transaction.out_coin_symbol.toLowerCase()) > -1 ? {} : { display: 'none' }
+                                    }),
+                                    transaction.out_coin_name + "(" + transaction.out_coin_symbol + ")"
+                                )
+                            ),
+                            _react2.default.createElement(
+                                'td',
+                                null,
+                                transaction.out_coin_id != null && _react2.default.createElement(
+                                    'span',
+                                    null,
+                                    transaction.out_coin_amount
+                                )
+                            )
+                        );
+                    })
                 )
             );
         }
@@ -103818,6 +103915,10 @@ var TradesTable = function (_React$Component) {
     return TradesTable;
 }(_react2.default.Component);
 
+TradesTable.symbolsThatHaveAnIcon = ['act', 'ada', 'adx', 'ae', 'aion', 'amp', 'ant', 'ardr', 'ark', 'atm', 'bat', 'bay', 'bcc', 'bch', 'bcn', 'bdl', 'bela', 'blcn', 'blk', 'block', 'bnb', 'bnt', 'bq', 'bqx', 'btc', 'btcd', 'btcz', 'btg', 'btm', 'bts', 'btx', 'burst', 'cdn', 'clam', 'cloak', 'cnd', 'cnx', 'cny', 'cred', 'crpt', 'cvc', 'dash', 'dat', 'data', 'dbc', 'dcn', 'dcr', 'dent', 'dgb', 'dgd', 'doge', 'drgn', 'edg', 'edoge', 'elf', 'ella', 'emc', 'emc2', 'eng', 'eos', 'etc', 'eth', 'ethos', 'etn', 'etp', 'eur', 'evx', 'exmo', 'exp', 'fair', 'fct', 'fil', 'fldc', 'flo', 'fun', 'game', 'gas', 'gbp', 'gbx', 'gbyte', 'gno', 'gnt', 'grc', 'grs', 'gup', 'gxs', 'hsr', 'huc', 'hush', 'icn', 'icx', 'ins', 'iost', 'jpy', 'kcs', 'kin', 'kmd', 'knc', 'krb', 'lbc', 'link', 'lkk', 'lrc', 'lsk', 'ltc', 'maid', 'mana', 'mcap', 'mco', 'med', 'miota', 'mkr', 'mln', 'mnx', 'mona', 'mtl', 'music', 'nas', 'nav', 'ndz', 'nebl', 'neo', 'neos', 'ngc', 'nlc2', 'nlg', 'nmc', 'nxs', 'nxt', 'omg', 'omni', 'ost', 'osx', 'pac', 'part', 'pasl', 'pay', 'pink', 'pirl', 'pivx', 'plr', 'poe', 'pot', 'powr', 'ppc', 'ppt', 'pura', 'qash', 'qiwi', 'qlc', 'qsp', 'qtum', 'rads', 'rcn', 'rdd', 'rdn', 'rep', 'req', 'rhoc', 'ric', 'rise', 'rlc', 'rpx', 'rub', 'salt', 'san', 'sbd', 'sberbank', 'sc', 'sky', 'smart', 'sngls', 'snt', 'sphtx', 'srn', 'start', 'steem', 'storj', 'storm', 'strat', 'sub', 'sys', 'taas', 'tau', 'tkn', 'tnc', 'trx', 'tzc', 'ubq', 'usd', 'usdt', 'ven', 'veri', 'via', 'vivo', 'vrc', 'vtc', 'waves', 'wax', 'wtc', 'xbc', 'xcp', 'xdn', 'xem', 'xlm', 'xmg', 'xmr', 'xmy', 'xp', 'xpm', 'xrb', 'xrp', 'xtz', 'xuc', 'xvc', 'xvg', 'xzc', 'zcl', 'zcl', 'zec', 'zen', 'zrx'];
+TradesTable.propTypes = {
+    transactions: _propTypes2.default.array
+};
 exports.default = TradesTable;
 
 /***/ }),

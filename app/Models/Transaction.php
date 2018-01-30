@@ -36,6 +36,67 @@ class Transaction extends Model
         'type', 'out_coin_id', 'in_coin_id', 'out_amount', 'in_amount'
     ];
 
+    protected $appends = [
+        'out_coin_name', 'in_coin_name',
+        'out_coin_symbol', 'in_coin_symbol',
+    ];
+
+    public function getOutCoinNameAttribute()
+    {
+        if ($this->out_coin_id === null) {
+            return null;
+        }
+
+        $coin = Coin::whereId($this->out_coin_id)->first();
+        if (! $coin) {
+            return null;
+        }
+
+        return $coin->name;
+    }
+
+    public function getInCoinNameAttribute()
+    {
+        if ($this->in_coin_id === null) {
+            return null;
+        }
+
+        $coin = Coin::whereId($this->in_coin_id)->first();
+        if (! $coin) {
+            return null;
+        }
+
+        return $coin->name;
+    }
+
+    public function getOutCoinSymbolAttribute()
+    {
+        if ($this->out_coin_id === null) {
+            return null;
+        }
+
+        $coin = Coin::whereId($this->out_coin_id)->first();
+        if (! $coin) {
+            return null;
+        }
+
+        return $coin->symbol;
+    }
+
+    public function getInCoinSymbolAttribute()
+    {
+        if ($this->in_coin_id === null) {
+            return null;
+        }
+
+        $coin = Coin::whereId($this->in_coin_id)->first();
+        if (! $coin) {
+            return null;
+        }
+
+        return $coin->symbol;
+    }
+
     public function portfolio()
     {
         return $this->belongsTo(Portfolio::class);

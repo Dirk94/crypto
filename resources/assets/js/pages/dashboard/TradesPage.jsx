@@ -2,9 +2,33 @@ import React from 'react';
 import AddTradeModal from "./partials/AddTradeModal.jsx";
 import AddDepositModal from "./partials/AddDepositModal.jsx";
 import TradesTable from "./partials/TradesTable.jsx";
+import PortfolioBalanceData from "../../common/data/PortfolioBalanceData.jsx";
 
 export default class Trades extends React.Component
 {
+    constructor()
+    {
+        super();
+
+        this.state = {
+            transactions: []
+        }
+    }
+
+    componentDidMount()
+    {
+        PortfolioBalanceData.getTransactionData()
+            .then((response) => {
+                this.setState({
+                    transactions: response
+                });
+            })
+            .catch((error) => {
+                console.log("Error while getting transaction data!");
+                console.log(error);
+            });
+    }
+
     render()
     {
         return (
@@ -22,7 +46,9 @@ export default class Trades extends React.Component
                 <AddTradeModal />
                 <div style={{clear: 'both'}} />
 
-                <TradesTable />
+                <TradesTable
+                    transactions={this.state.transactions}
+                />
             </div>
         );
     }
