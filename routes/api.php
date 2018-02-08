@@ -25,4 +25,5 @@ Route::group([
     Route::get('portfolios/{portfolio}/history/minutes', 'PortfolioHistoryController@getMinuteHistory')->name('api.portfolios.history.minutes');
     Route::get('portfolios/{portfolio}/history/hours', 'PortfolioHistoryController@getHourHistory')->name('api.portfolios.history.hours');
     Route::get('portfolios/{portfolio}/history/days', 'PortfolioHistoryController@getDayHistory')->name('api.portfolios.history.days');
+    Route::get('portfolios/{portfolio}/history/recalculate', 'PortfolioHistoryController@recalculatePortfolioHistory')->name('api.portfolios.history.recalculate');
 });

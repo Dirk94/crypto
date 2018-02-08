@@ -5,6 +5,7 @@ namespace App\Http\Requests\Portfolios\Transactions;
 use App\Models\Coin;
 use App\Models\Portfolio;
 use App\Models\PortfolioCoin;
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -26,19 +27,16 @@ class AddTradeToPortfolioRequest extends FormRequest
             return;
         }
 
+        $transactionAt = $this->request->has('transaction_at') ?
+            Carbon::createFromFormat('Y-m-d H:i:s', $this->request->get('transaction_at')) :
+            Carbon::now();
+
         $amount = $this->request->get('out_amount');
+        $amountInPortfolio = $portfolio->getBalanceAt($transactionAt, $coin);
 
-        $portfolioCoin = PortfolioCoin::wherePortfolioId($portfolio->id)
-            ->whereCoinId($coin->id)
-            ->first();
-
-        $validator->after(function($validator) use ($portfolioCoin, $amount) {
-            if (! $portfolioCoin) {
-                $validator->errors()->add('out_coin_name', 'The out_coin does not exists in the portfolio.');
-            } else {
-                if ($portfolioCoin->amount < $amount) {
-                    $validator->errors()->add('out_amount', 'Insufficient balance.');
-                }
+        $validator->after(function($validator) use ($amount, $amountInPortfolio) {
+            if ($amountInPortfolio < $amount) {
+                $validator->errors()->add('out_amount', 'Insufficient balance at the given date.');
             }
         });
     }
@@ -50,6 +48,7 @@ class AddTradeToPortfolioRequest extends FormRequest
             'out_coin_name' => 'required|exists:coins,name',
             'in_amount' => 'required|numeric|min:0',
             'out_amount' => 'required|numeric|min:0',
+            'transaction_at' => 'date_format:Y-m-d H:i:s|before_or_equal:' . Carbon::now()->format('Y-m-d H:i:s'),
         ];
     }
 }

@@ -1,5 +1,12 @@
 const path = require('path');
 const webpack = require('webpack');
+const Dotenv = require('dotenv-webpack');
+
+// Allow the use of javascript environment files.
+const DotenvPluginConfig = new Dotenv({
+    path: '.js.env',
+    safe: false
+});
 
 // Use the provide plugin to provide dependencies to the global scope.
 // jQuery and Popper are needed globally for bootstrap v4.
@@ -26,14 +33,21 @@ const CopyWebpackPluginConfig = new CopyWebpackPlugin([
 ]);
 
 // Uglify the bundles and reduce the file sizes.
-UglifyJsPluginConfig = new webpack.optimize.UglifyJsPlugin({
+const UglifyJsPluginConfig = new webpack.optimize.UglifyJsPlugin({
     compress: { warnings: false },
+});
+
+// Get a notification when a new build completes
+const WebpackBuildNotifierPlugin = require('webpack-build-notifier');
+const WebpackBuildNotifierPluginConfig = new WebpackBuildNotifierPlugin({
+    title: 'CryptoBird',
+    logo: path.resolve('public/favicon.png')
 });
 
 module.exports = {
     // Generate a dependency graph for both the javascript and sass files.
     entry: [
-        './resources/assets/js/index.js',
+        './resources/assets/js/index.tsx',
         './resources/assets/sass/index.scss'
     ],
 
@@ -47,11 +61,16 @@ module.exports = {
 
     module: {
         loaders: [
+            {
+                test: /\.tsx?$/,
+                use: 'ts-loader',
+                exclude: [/vendor/, /node_modules/]
+            },
 
             // Pack all the sass and css files.
             {
                 test: /\.scss$/,
-                exclude: /node_modules/,
+                exclude: [/vendor/, /node_modules/],
                 use: ExtractTextPlugin.extract({
                     use: [
                         {
@@ -70,13 +89,6 @@ module.exports = {
                 }),
             },
 
-            // Transpile ES6 to ES5 using Babel
-            {
-                test: [/\.js$/, /\.jsx$/],
-                loader: 'babel-loader',
-                exclude: /node_modules/,
-            },
-
             // Deal with font files
             {
                 test: /\.(eot|svg|ttf|woff|woff2)$/,
@@ -92,10 +104,17 @@ module.exports = {
             }
         ]
     },
+
+    resolve: {
+        extensions: ['.ts', '.tsx', '.js']
+    },
+
     plugins: [
+        DotenvPluginConfig,
         ProvidePluginConfig,
         ExtractTextPluginConfig,
         CopyWebpackPluginConfig,
+        WebpackBuildNotifierPluginConfig,
         //UglifyJsPluginConfig,
     ]
 }

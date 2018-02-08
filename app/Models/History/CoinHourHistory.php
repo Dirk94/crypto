@@ -20,6 +20,14 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\History\CoinHourHistory whereUsdMarketCap($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\History\CoinHourHistory whereUsdValue($value)
  * @mixin \Eloquent
+ * @property float $btc_value_high
+ * @property float $btc_value_low
+ * @property float $usd_value_high
+ * @property float $usd_value_low
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\History\CoinHourHistory whereBtcValueHigh($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\History\CoinHourHistory whereBtcValueLow($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\History\CoinHourHistory whereUsdValueHigh($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\History\CoinHourHistory whereUsdValueLow($value)
  */
 class CoinHourHistory extends Model
 {

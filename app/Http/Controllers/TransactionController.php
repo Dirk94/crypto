@@ -21,11 +21,9 @@ class TransactionController extends Controller
         $transaction->in_coin_id = Coin::whereName($request->get('in_coin_name'))->first()->id;
         $transaction->type = Transaction::TYPE_DEPOSIT;
 
-        if (! $portfolio->depositTransaction($transaction)) {
-            return response()->json(['error' => 'Something went wrong'], 422);
-        }
+        $portfolio->transactions()->save($transaction);
 
-        return JsonResponse::send();
+        return JsonResponse::send($transaction);
     }
 
     public function withdrawFromPortfolio(WithdrawFromPortfolioRequest $request, Portfolio $portfolio)
@@ -36,11 +34,9 @@ class TransactionController extends Controller
         $transaction->out_coin_id = Coin::whereName($request->get('out_coin_name'))->first()->id;
         $transaction->type = Transaction::TYPE_WITHDRAWAL;
 
-        if (! $portfolio->withdrawTransaction($transaction)) {
-            return response()->json(['error' => 'Something went wrong'], 422);
-        }
+        $portfolio->transactions()->save($transaction);
 
-        return JsonResponse::send();
+        return JsonResponse::send($transaction);
     }
 
     public function addTradeToPortfolio(AddTradeToPortfolioRequest $request, Portfolio $portfolio)
@@ -52,9 +48,7 @@ class TransactionController extends Controller
         $transaction->in_coin_id = Coin::whereName($request->get('in_coin_name'))->first()->id;
         $transaction->type = Transaction::TYPE_TRADE;
 
-        if (! $portfolio->addTradeTransaction($transaction)) {
-            return response()->json(['error' => 'Something went wrong'], 422);
-        }
+        $portfolio->transactions()->save($transaction);
 
         return JsonResponse::send($transaction);
     }

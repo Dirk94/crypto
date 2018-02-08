@@ -2,6 +2,7 @@
 
 namespace App\Common\History;
 
+use App\Common\Helpers\DateUtils;
 use App\Models\Coin;
 use App\Models\History\CoinDayHistory;
 use App\Models\History\CoinHourHistory;
@@ -101,6 +102,56 @@ class CoinHistory
                 print "Exception while setting coin day history.\n";
             }
         }
+    }
+
+    public static function getCoinHistoryModel(int $coinId, Carbon $date)
+    {
+        $date = DateUtils::toNearestFiveMinutes($date);
+        $coinHistory = CoinMinuteHistory::whereCoinId($coinId)
+            ->where('date', '<=', $date)
+            ->orderBy('date', 'DESC')
+            ->first();
+
+        if (! $coinHistory) {
+            $coinHistory = CoinHourHistory::whereCoinId($coinId)
+                ->where('date', '<=', $date)
+                ->orderBy('date', 'DESC')
+                ->first();
+        }
+
+        if (! $coinHistory) {
+            $coinHistory = CoinDayHistory::whereCoinId($coinId)
+                ->where('date', '<=', $date)
+                ->orderBy('date', 'DESC')
+                ->first();
+        }
+
+        return $coinHistory;
+    }
+
+    public static function getCoinHourOrDayHistoryModel(int $coinId, Carbon $date)
+    {
+        $coinHistory = CoinHourHistory::whereCoinId($coinId)
+            ->where('date', '<=', $date)
+            ->orderBy('date', 'DESC')
+            ->first();
+
+        if (! $coinHistory) {
+            $coinHistory = CoinDayHistory::whereCoinId($coinId)
+                ->where('date', '<=', $date)
+                ->orderBy('date', 'DESC')
+                ->first();
+        }
+
+        return $coinHistory;
+    }
+
+    public static function getCoinDayHistoryModel(int $coinId, Carbon $date)
+    {
+        return CoinDayHistory::whereCoinId($coinId)
+            ->where('date', '<=', $date)
+            ->orderBy('date', 'DESC')
+            ->first();
     }
 
     private static function setPropertiesOfHistoryCoin($historyCoin, Coin $coin)

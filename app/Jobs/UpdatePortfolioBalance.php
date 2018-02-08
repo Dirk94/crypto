@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Common\Helpers\DateUtils;
 use App\Common\History\PortfolioHistory;
 use App\Models\Portfolio;
 use App\Models\Transaction;
@@ -16,22 +17,30 @@ class UpdatePortfolioBalance implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    /** @var Portfolio The portfolio to update. */
     private $portfolio;
 
-    public function __construct(Portfolio $portfolio)
+    /** @var Carbon The date of coin rates this update job should use. Defaults to now. */
+    private $date;
+
+    public function __construct(Portfolio $portfolio, Carbon $date = null)
     {
         $this->portfolio = $portfolio;
+
+        if ($date === null) {
+            $date = Carbon::now();
+        }
+        $this->date = $date;
     }
 
     public function handle()
     {
         // Update the balance of the portfolio.
-        $this->portfolio->updateBalance();
+        $this->portfolio->updateBalance($this->date);
 
         // Then recalculate the portfolio history.
         // This is done so that the charts are updated as well.
-        $date = Carbon::now();
-        $date->minute = floor($date->minute / 5 ) * 5;
+        $date = DateUtils::toNearestFiveMinutes($this->date);
 
         PortfolioHistory::saveSingleMinuteHistory(
             $this->portfolio,

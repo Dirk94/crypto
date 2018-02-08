@@ -1,8 +1,7 @@
 <?php
 namespace App\Models;
 
-
-use App\Jobs\UpdatePortfolioBalance;
+use App\Common\History\CoinHistory;
 use App\Models\History\PortfolioCoinDayHistory;
 use App\Models\History\PortfolioCoinHourHistory;
 use App\Models\History\PortfolioCoinMinuteHistory;
@@ -33,6 +32,14 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Portfolio whereUsdValue($value)
  * @property-read mixed $btc_value1d_ago
  * @property-read mixed $usd_value1d_ago
+ * @property-read mixed $btc_value1h_ago
+ * @property-read mixed $btc_value30d_ago
+ * @property-read mixed $btc_value5m_ago
+ * @property-read mixed $btc_value7d_ago
+ * @property-read mixed $usd_value1h_ago
+ * @property-read mixed $usd_value30d_ago
+ * @property-read mixed $usd_value5m_ago
+ * @property-read mixed $usd_value7d_ago
  */
 class Portfolio extends Model
 {
@@ -48,76 +55,24 @@ class Portfolio extends Model
         'usd_value_5m_ago',  'btc_value_5m_ago',
     ];
 
-    public function depositTransaction(Transaction $transaction)
-    {
-        $coin = $this->coins()
-            ->whereCoinId($transaction->in_coin_id)
-            ->first();
-
-        if (! $coin) {
-            $coin = new PortfolioCoin([
-                'portfolio_id' => $this->id,
-                'coin_id' => $transaction->in_coin_id,
-            ]);
-        }
-
-        $coin->amount += $transaction->in_amount;
-        $coin->save();
-
-        $this->transactions()->save($transaction);
-
-        // Do this as a job since it may take some time.
-        UpdatePortfolioBalance::dispatch($this);
-
-        return true;
-    }
-
-    public function withdrawTransaction(Transaction $transaction)
-    {
-        $coin = $this->coins()
-            ->whereCoinId($transaction->out_coin_id)
-            ->first();
-
-        if (! $coin) {
-            return false;
-        }
-
-        if ($coin->amount < $transaction->out_amount) {
-            return false;
-        }
-
-        $coin->amount -= $transaction->out_amount;
-        $coin->save();
-
-        $transaction->portfolio()->associate($this);
-        $transaction->save();
-
-        // Do this as a job since it may take some time.
-        UpdatePortfolioBalance::dispatch($this);
-
-        return true;
-    }
-
-    public function addTradeTransaction(Transaction $transaction)
-    {
-        if (! $this->withdrawTransaction($transaction)) {
-            return false;
-        }
-        if (! $this->depositTransaction($transaction)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public function updateBalance()
+    public function updateBalance($date)
     {
         $totalUsd = 0;
         $totalBtc = 0;
 
-        foreach($this->coins as $coin) {
-            $usdValue = $coin->amount * $coin->coin->usd_value;
-            $btcValue = $coin->amount * $coin->coin->btc_value;
+        foreach(PortfolioCoin::wherePortfolioId($this->id)->get() as $coin) {
+            if ($date === null) {
+                $coinUsdValue = $coin->coin->usd_value;
+                $coinBtcvalue = $coin->coin->btc_value;
+            } else {
+                $coinHistory = CoinHistory::getCoinHistoryModel($coin->coin_id, $date);
+
+                $coinUsdValue = ($coinHistory !== null) ? $coinHistory->usd_value : $coin->coin->usd_value;
+                $coinBtcvalue = ($coinHistory !== null) ? $coinHistory->btc_value : $coin->coin->btc_value;
+            }
+
+            $usdValue = $coin->amount * $coinUsdValue;
+            $btcValue = $coin->amount * $coinBtcvalue;
 
             $totalUsd += $usdValue;
             $totalBtc += $btcValue;
@@ -126,6 +81,43 @@ class Portfolio extends Model
         $this->btc_value = $totalBtc;
         $this->usd_value = $totalUsd;
         $this->save();
+    }
+
+    /**
+     * @param Carbon $date
+     * @param Coin $coin
+     *
+     * @return double Returns the amount of the given coin the portfolio had at the given date.
+     */
+    public function getBalanceAt(Carbon $date, Coin $coin)
+    {
+        $transactions = $this->transactions()
+            ->where('transaction_at', '<=', $date)
+            ->where(function($query) use ($coin) {
+                $query->where('in_coin_id', $coin->id);
+                $query->orWhere('out_coin_id', $coin->id);
+            })->orderBy('transaction_at', 'ASC')
+            ->get();
+
+        $amount = 0;
+        foreach($transactions as $transaction) {
+            switch($transaction->type) {
+                case Transaction::TYPE_DEPOSIT:
+                    $amount += $transaction->in_amount;
+                    break 1;
+
+                case Transaction::TYPE_WITHDRAWAL:
+                    $amount -= $transaction->out_amount;
+                    break 1;
+
+                case Transaction::TYPE_TRADE:
+                    if ($transaction->in_coin_id === $coin->id)  { $amount += $transaction->in_amount;  }
+                    if ($transaction->out_coin_id === $coin->id) { $amount -= $transaction->out_amount; }
+                    break 1;
+            }
+        }
+
+        return $amount;
     }
 
 

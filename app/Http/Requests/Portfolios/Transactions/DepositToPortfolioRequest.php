@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Portfolios\Transactions;
 
 use App\Models\Portfolio;
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,6 +20,7 @@ class DepositToPortfolioRequest extends FormRequest
         return [
             'in_coin_name' => 'required|exists:coins,name',
             'in_amount' => 'required|numeric|min:0.0000000001',
+            'transaction_at' => 'date_format:Y-m-d H:i:s|before_or_equal:' . Carbon::now()->format('Y-m-d H:i:s'),
         ];
     }
 
@@ -31,6 +33,9 @@ class DepositToPortfolioRequest extends FormRequest
             'in_amount.required' => 'Please enter an amount',
             'in_amount.min' => 'The amount must be greater than 0',
             'in_amount.numeric' => 'Please enter a valid number',
+
+            'transaction_at.date_format' => 'Please enter a date in the Y-m-d H:i:s format',
+            'transaction_at.before_or_equal' => 'Please enter a date that is not in the future',
         ];
     }
 }

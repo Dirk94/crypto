@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Common\Helpers\DateUtils;
 use App\Common\Helpers\JsonResponse;
+use App\Common\History\RecalculatePortfolioHistory;
 use App\Http\Requests\Portfolios\Permissions\PortfolioHasReadPermissionRequest;
 use App\Models\History\PortfolioCoinDayHistory;
 use App\Models\History\PortfolioCoinHourHistory;
@@ -16,10 +18,22 @@ class PortfolioHistoryController extends Controller
         HOUR_POINTS_TO_RETURN = 50,
         DAY_POINTS_TO_RETURN = 50;
 
+    public function recalculatePortfolioHistory(Portfolio $portfolio)
+    {
+        // TODO: dispatch this job in a queue.
+        $startTime = round(microtime(true) * 1000);
+        $success = RecalculatePortfolioHistory::recalculateHistory($portfolio);
+        $endTime = round(microtime(true) * 1000);
+
+        return response()->json([
+            'success' => $success,
+            'time' => ($endTime - $startTime) . 'ms'
+        ]);
+    }
+
     public function getMinuteHistory(PortfolioHasReadPermissionRequest $request, Portfolio $portfolio)
     {
-        $date = Carbon::now();
-        $date->minute = floor($date->minute / 5 ) * 5;
+        $date = DateUtils::toNearestFiveMinutes(Carbon::now());
 
         $firstDateExists = PortfolioCoinMinuteHistory::wherePortfolioId($portfolio->id)
             ->where('date', '=', $date->format('Y-m-d H:i:00'))

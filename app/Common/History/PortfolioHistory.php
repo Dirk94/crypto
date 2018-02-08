@@ -2,6 +2,7 @@
 
 namespace App\Common\History;
 
+use App\Common\Helpers\DateUtils;
 use App\Models\History\PortfolioCoinDayHistory;
 use App\Models\History\PortfolioCoinHourHistory;
 use App\Models\History\PortfolioCoinMinuteHistory;
@@ -10,9 +11,9 @@ use Carbon\Carbon;
 
 class PortfolioHistory
 {
-    const TIME_TO_KEEP_MINUTE_DATA = 2880, // In minutes (48h)
-        TIME_TO_KEEP_HOUR_DATA = 168,      // In hours   (7d)
-        TIME_TO_KEEP_DAY_DATA = 3650;      // In days    (10y)
+    const TIME_TO_KEEP_MINUTE_DATA = 250,  // In minutes
+        TIME_TO_KEEP_HOUR_DATA = 168,      // In hours
+        TIME_TO_KEEP_DAY_DATA = 3650;      // In days
 
     public static function cleanupOldHistory()
     {
@@ -28,9 +29,7 @@ class PortfolioHistory
 
     public static function saveAllMinuteHistory()
     {
-        $carbonNow = Carbon::now();
-        $carbonNow->minute = floor($carbonNow->minute / 5) * 5;
-        $now = $carbonNow->format('Y-m-d H:i:00');
+        $now = DateUtils::toNearestFiveMinutes(Carbon::now())->format('Y-m-d H:i:s');
 
         foreach (Portfolio::all() as $portfolio) {
             self::saveSingleMinuteHistory($portfolio, $now);
@@ -40,9 +39,7 @@ class PortfolioHistory
     public static function saveSingleMinuteHistory(Portfolio $portfolio, $now = null, $override = false)
     {
         if ($now === null) {
-            $carbonNow = Carbon::now();
-            $carbonNow->minute = floor($carbonNow->minute / 5) * 5;
-            $now = $carbonNow->format('Y-m-d H:i:00');
+            $now = DateUtils::toNearestFiveMinutes(Carbon::now())->format('Y-m-d H:i:s');
         }
 
         if ($override) {
@@ -59,6 +56,7 @@ class PortfolioHistory
         try {
             $portfolioHistory->portfolio_id = $portfolio->id;
             $portfolioHistory->date = $now;
+            print "SAVING MINUTE HISTORY USD VALUE: " . $portfolio->usd_value . "\n";
             $portfolioHistory->usd_value = $portfolio->usd_value;
             $portfolioHistory->btc_value = $portfolio->btc_value;
             $portfolioHistory->save();
