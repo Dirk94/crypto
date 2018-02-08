@@ -1,7 +1,0 @@
----
-- name: Deploy all servers
-  hosts: all
-  vars_files:
-   - "group_vars/{{ env }}.yml"
-  include:
-   - "roles/{{ env }}/tasks/main.yml"

@@ -56,8 +56,20 @@ class TransactionController extends Controller
         return JsonResponse::send([], 204);
     }
 
-    public function updateTransaction(Request $request, Portfolio $portfolio, Transaction $transaction)
+    public function updateTransaction(CreateTransactionRequest $request, Portfolio $portfolio, Transaction $transaction)
     {
-        die("TODO");
+        $transaction->fill($request->all());
+        $transaction->processed = false;
+
+        if ($request->has('in_coin_name') && $transaction->type !== Transaction::TYPE_WITHDRAWAL) {
+            $transaction->in_coin_id = Coin::whereName($request->get('in_coin_name'))->first()->id;
+        }
+        if ($request->has('out_coin_name') && $transaction->type !== Transaction::TYPE_DEPOSIT) {
+            $transaction->out_coin_id = Coin::whereName($request->get('out_coin_name'))->first()->id;
+        }
+
+        $transaction->save();
+
+        return JsonResponse::send($transaction);
     }
 }
