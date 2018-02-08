@@ -141,6 +141,14 @@ class Transaction extends Model
         return true;
     }
 
+    public function softDelete()
+    {
+        $this->processed = false;
+        $this->deleted = true;
+        $this->save();
+    }
+
+
     public function getTransactionAtUtcAttribute()
     {
         $transactionAt = ($this->transaction_at !== null) ?

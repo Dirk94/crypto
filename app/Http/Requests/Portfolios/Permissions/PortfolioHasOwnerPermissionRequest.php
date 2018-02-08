@@ -12,7 +12,21 @@ class PortfolioHasOwnerPermissionRequest extends FormRequest
     {
         $portfolio = Portfolio::find($this->route('portfolio'))->first();
 
-        return Auth::user()->can('owner', $portfolio);
+        if (! Auth::user()->can('owner', $portfolio)) {
+            return false;
+        }
+
+        $transactionId = $this->route('transaction');
+        if ($transactionId) {
+            $transaction = Transaction::find($transactionId)->first();
+            if (! $transaction) {
+                return false;
+            }
+
+            return ($transaction->portfolio->id === $portfolio->id);
+        }
+
+        return true;
     }
 
     public function rules()

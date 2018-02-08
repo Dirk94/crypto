@@ -56,7 +56,6 @@ class PortfolioHistory
         try {
             $portfolioHistory->portfolio_id = $portfolio->id;
             $portfolioHistory->date = $now;
-            print "SAVING MINUTE HISTORY USD VALUE: " . $portfolio->usd_value . "\n";
             $portfolioHistory->usd_value = $portfolio->usd_value;
             $portfolioHistory->btc_value = $portfolio->btc_value;
             $portfolioHistory->save();

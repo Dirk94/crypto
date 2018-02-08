@@ -28,7 +28,6 @@ class RecalculatePortfolioHistory
 
         $firstMinuteDate = DateUtils::toNearestFiveMinutes(Carbon::now()->subMinutes(PortfolioHistory::TIME_TO_KEEP_MINUTE_DATA));
         $firstHourDate = Carbon::now()->subHours(PortfolioHistory::TIME_TO_KEEP_HOUR_DATA);
-        $firstDayDate = Carbon::now()->subDays(PortfolioHistory::TIME_TO_KEEP_DAY_DATA);
 
         $firstTransactionDate = DateUtils::toNearestFiveMinutes($transactions->first()->transaction_at);
         $startDate = DateUtils::toNearestFiveMinutes($firstTransactionDate);
@@ -38,7 +37,7 @@ class RecalculatePortfolioHistory
         self::destroyPortfolioHistory($portfolio, $startDate);
 
         while($startDate->lessThan($latestDate)) {
-            self::calculatePortfolioValueAt($portfolio, $startDate, $firstMinuteDate, $firstHourDate, $firstDayDate);
+            self::calculatePortfolioValueAt($portfolio, $startDate, $firstMinuteDate, $firstHourDate);
 
             if ($startDate->greaterThan($firstMinuteDate)) {
                 $startDate->addMinutes(5);
@@ -52,13 +51,7 @@ class RecalculatePortfolioHistory
         return true;
     }
 
-    private static function calculatePortfolioValueAt(
-        Portfolio $portfolio,
-        Carbon $datetime,
-        Carbon $firstMinuteDate,
-        Carbon $firstHourDate,
-        Carbon $firstDayDate
-    ) {
+    private static function calculatePortfolioValueAt(Portfolio $portfolio, Carbon $datetime, Carbon $firstMinuteDate, Carbon $firstHourDate) {
 
         $transactions = $portfolio->transactions()
             ->whereProcessed(false)

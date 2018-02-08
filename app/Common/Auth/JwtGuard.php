@@ -171,6 +171,6 @@ class JwtGuard implements Guard
 
     private function getJwtTokenFromRequest()
     {
-        return Request::header('authorization');
+        return Request::header('Authorization');
     }
 }

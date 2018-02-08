@@ -17,10 +17,12 @@ Route::group([
 
     Route::post('portfolios/{portfolio}/users/{user}', 'PortfolioController@addUserToPortfolio')->name('api.portfolios.users.add');
 
-    Route::get('portfolios/{portfolio}', 'TransactionController@listTransactionsOfPortfolio')->name('api.portfolios.list');
-    Route::post('portfolios/{portfolio}/deposit', 'TransactionController@depositToPortfolio')->name('api.portfolios.deposit');
-    Route::post('portfolios/{portfolio}/withdraw', 'TransactionController@withdrawFromPortfolio')->name('api.portfolios.withdraw');
-    Route::post('portfolios/{portfolio}/trade', 'TransactionController@addTradeToPortfolio')->name('api.portfolios.trade');
+    Route::get('portfolios/{portfolio}/transactions', 'TransactionController@listTransactionsOfPortfolio')->name('api.portfolios.list');
+    Route::post('portfolios/{portfolio}/transactions', 'TransactionController@createTransaction')->name('api.portfolios.create');
+
+    Route::get('portfolios/{portfolio}/transactions/{transaction}', 'TransactionController@getSingleTransaction')->name('api.portfolios.transactions.get');
+    Route::delete('portfolios/{portfolio}/transactions/{transaction}', 'TransactionController@deleteTransaction')->name('api.portfolios.transactions.delete');
+    Route::put('portfolios/{portfolio}/transactions/{transaction}', 'TransactionController@updateTransaction')->name('api.portfolios.transactions.update');
 
     Route::get('portfolios/{portfolio}/history/minutes', 'PortfolioHistoryController@getMinuteHistory')->name('api.portfolios.history.minutes');
     Route::get('portfolios/{portfolio}/history/hours', 'PortfolioHistoryController@getHourHistory')->name('api.portfolios.history.hours');

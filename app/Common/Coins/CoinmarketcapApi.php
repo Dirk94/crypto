@@ -23,7 +23,7 @@ class CoinmarketcapApi implements CoinApi
 
         foreach($coinsResponse as $jsonObject) {
             $coin = Coin::whereApiName($jsonObject->id)->first();
-            if (!$coin) {
+            if (! $coin) {
                 $coin = new Coin();
             }
             $this->updateCoinAttributes($coin, $jsonObject);
