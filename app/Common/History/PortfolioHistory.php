@@ -22,9 +22,6 @@ class PortfolioHistory
 
         $hourDeleteDate = Carbon::now()->subHour(self::TIME_TO_KEEP_HOUR_DATA);
         PortfolioCoinDayHistory::where('date', '<=', $hourDeleteDate)->delete();
-
-        $dayDeleteDate = Carbon::now()->subDays(self::TIME_TO_KEEP_DAY_DATA);
-        PortfolioCoinDayHistory::where('date', '<=', $dayDeleteDate)->delete();
     }
 
     public static function saveAllMinuteHistory()

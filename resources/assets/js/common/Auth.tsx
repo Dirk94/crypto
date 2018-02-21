@@ -1,4 +1,5 @@
 import * as  moment from 'moment';
+import Session from "./Session";
 
 export default class Auth
 {
@@ -8,22 +9,21 @@ export default class Auth
 
     static login(token: string)
     {
-        // Sanity function: remove old localStorage
         Auth.logout();
 
         const tokenReceivedAt = moment().format('x');
-        localStorage.setItem(Auth.KEY_TOKEN_RECEIVED_AT, tokenReceivedAt);
-        localStorage.setItem(Auth.KEY_TOKEN, token);
+        Session.store(Auth.KEY_TOKEN_RECEIVED_AT, tokenReceivedAt);
+        Session.store(Auth.KEY_TOKEN, token);
     }
 
     static isLoggedIn()
     {
-        const token = localStorage.getItem(Auth.KEY_TOKEN);
+        const token = Session.get(Auth.KEY_TOKEN);
         if (! token) {
             return false;
         }
 
-        const tokenReceivedAtString = localStorage.getItem(Auth.KEY_TOKEN_RECEIVED_AT);
+        const tokenReceivedAtString = Session.get(Auth.KEY_TOKEN_RECEIVED_AT);
         const tokenReceivedAt = moment(tokenReceivedAtString, 'x');
         const differenceInMinutes = moment().diff(tokenReceivedAt) / 1000 / 60;
 
@@ -37,11 +37,11 @@ export default class Auth
 
     static logout()
     {
-        localStorage.clear();
+        Session.clear();
     }
 
     static getToken()
     {
-        return localStorage.getItem(Auth.KEY_TOKEN);
+        return Session.get(Auth.KEY_TOKEN);
     }
 }

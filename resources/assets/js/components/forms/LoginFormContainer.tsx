@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import Request from '../../common/Request';
+import Session from '../../common/Session';
 import Auth from '../../common/Auth';
 import LoginForm from "./LoginForm";
 
@@ -38,9 +39,8 @@ export default class LoginFormContainer extends React.Component<any, any>
         Request.post('/api/login', this.state.user)
             .then((response: any) => {
                 let token = response.data.token;
-                localStorage.setItem('defaultPortfolioId', response.data.default_portfolio_id);
-
                 Auth.login(token);
+                Session.store('portfolio_id', response.data.default_portfolio_id);
                 this.props.history.push('/dashboard');
             })
             .catch((error: any) => {
