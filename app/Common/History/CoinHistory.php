@@ -12,8 +12,7 @@ use Carbon\Carbon;
 class CoinHistory
 {
     const TIME_TO_KEEP_MINUTE_DATA = 2880, // In minutes (48h)
-        TIME_TO_KEEP_HOUR_DATA = 168,      // In hours   (7d)
-        TIME_TO_KEEP_DAY_DATA = 3650;      // In days    (10y)
+        TIME_TO_KEEP_HOUR_DATA = 168;      // In hours   (7d)
 
     public static function cleanupOldHistory()
     {
@@ -22,9 +21,6 @@ class CoinHistory
 
         $hourDeleteDate = Carbon::now()->subHour(self::TIME_TO_KEEP_HOUR_DATA);
         CoinHourHistory::where('date', '<=', $hourDeleteDate)->delete();
-
-        $dayDeleteDate = Carbon::now()->subDays(self::TIME_TO_KEEP_DAY_DATA);
-        CoinDayHistory::where('date', '<=', $dayDeleteDate)->delete();
     }
 
     public static function saveMinuteHistory()

@@ -39,6 +39,7 @@ export default class LoginFormContainer extends React.Component<any, any>
         Request.post('/api/login', this.state.user)
             .then((response: any) => {
                 let token = response.data.token;
+                Auth.logout();
                 Auth.login(token);
                 Session.store('portfolio_id', response.data.default_portfolio_id);
                 this.props.history.push('/dashboard');

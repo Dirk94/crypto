@@ -27,7 +27,7 @@ export default class Auth
         if (differenceInMinutes >= process.env.JWT_EXPIRE_TIME) {
             Auth.logout();
             return false;
-        }
+        }P
 
         return true;
     }

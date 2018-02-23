@@ -7,15 +7,6 @@ export default class Auth
 
     static KEY_TOKEN = 'token';
 
-    static login(token: string)
-    {
-        Auth.logout();
-
-        const tokenReceivedAt = moment().format('x');
-        Session.store(Auth.KEY_TOKEN_RECEIVED_AT, tokenReceivedAt);
-        Session.store(Auth.KEY_TOKEN, token);
-    }
-
     static isLoggedIn()
     {
         const token = Session.get(Auth.KEY_TOKEN);
@@ -33,6 +24,13 @@ export default class Auth
         }
 
         return true;
+    }
+
+    static login(token: string)
+    {
+        const tokenReceivedAt = moment().format('x');
+        Session.store(Auth.KEY_TOKEN_RECEIVED_AT, tokenReceivedAt);
+        Session.store(Auth.KEY_TOKEN, token);
     }
 
     static logout()

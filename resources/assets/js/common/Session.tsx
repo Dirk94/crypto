@@ -13,6 +13,7 @@ export default class Session
 
     static clear()
     {
+        console.log("Clearing session...");
         localStorage.clear();
     }
 }
