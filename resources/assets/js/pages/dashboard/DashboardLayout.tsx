@@ -3,6 +3,8 @@ import PrivateRoute from '../../components/PrivateRoute';
 import OverviewPage from './OverviewPage';
 import {Link, Switch, NavLink, Route} from 'react-router-dom';
 import Error404Page from '../Error404Page';
+import LogoutPage from "./LogoutPage";
+import TradesPage from "./TradesPage";
 
 export default class DashboardLayout extends React.Component<any, any>
 {
@@ -47,6 +49,8 @@ export default class DashboardLayout extends React.Component<any, any>
                     <div className="col-md-9 content">
                         <Switch>
                             <PrivateRoute exact path='/dashboard' component={OverviewPage} />
+                            <PrivateRoute exact path='/dashboard/logout' component={LogoutPage} />
+                            <PrivateRoute exact path='/dashboard/trades' component={TradesPage} />
 
                             <Route path='*' component={Error404Page} />
                         </Switch>

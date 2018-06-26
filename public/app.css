@@ -6097,6 +6097,9 @@ textarea {
   display: block;
   background-color: #1e2127; }
 
+.modal {
+  display: block !important; }
+
 .modal-body-scroller {
   max-height: 500px;
   overflow: auto;
