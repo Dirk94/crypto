@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Common\Helpers\JsonResponse;
+use App\Common\History\RecalculatePortfolioHistory;
 use App\Http\Requests\Portfolios\Permissions\PortfolioHasReadPermissionRequest;
 use App\Http\Requests\Portfolios\Permissions\PortfolioHasWritePermissionRequest;
 use App\Http\Requests\Portfolios\Transactions\AddTradeToPortfolioRequest;
@@ -30,6 +31,8 @@ class TransactionController extends Controller
 
         $portfolio->transactions()->save($transaction);
 
+        RecalculatePortfolioHistory::recalculateHistory($portfolio);
+
         return JsonResponse::send($transaction);
     }
 
@@ -53,6 +56,8 @@ class TransactionController extends Controller
     {
         $transaction->softDelete();
 
+        RecalculatePortfolioHistory::recalculateHistory($portfolio);
+
         return JsonResponse::send([], 204);
     }
 
@@ -69,6 +74,8 @@ class TransactionController extends Controller
         }
 
         $transaction->save();
+
+        RecalculatePortfolioHistory::recalculateHistory($portfolio);
 
         return JsonResponse::send($transaction);
     }
