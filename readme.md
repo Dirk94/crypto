@@ -6,4 +6,3 @@ Crypto portfolio investment tracker.
 
 Made with React and Laravel.
 
-[mycryptobird.com](https://mycryptobird.com)
